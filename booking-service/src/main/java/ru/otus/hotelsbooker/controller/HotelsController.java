@@ -27,10 +27,10 @@ public class HotelsController {
         return hotelsService.findAll(city);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public HotelDto getHotelById(@PathVariable Long id) {
         // TODO сделать реализацию
-        return null;
+        return hotelsService.getHotelById(id);
     }
 
     @PostMapping
