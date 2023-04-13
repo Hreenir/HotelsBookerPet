@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode.Exclude;
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Exclude
+    @Exclude //для чего это?
     private Long id;
     private String name;
     private String city;

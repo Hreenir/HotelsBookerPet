@@ -31,6 +31,16 @@ public class HotelService {
     public List<Hotel> findAll(String city) {
         return city == null ? hotelRepository.findAll() : hotelRepository.findAllByCityIgnoreCase(city);
     }
+    public HotelDto getHotelById(long id){
+        Hotel hotel = hotelRepository.findAllById(id);
+        return HotelDto.builder()
+                .name(hotel.getName())
+                .address(hotel.getAddress())
+                .country(hotel.getCountry())
+                .city(hotel.getCity())
+                .build();
+
+    }
 
     public Long save(HotelDto hotelDto) {
         Hotel hotel = Hotel.builder()
