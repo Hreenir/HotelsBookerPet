@@ -5,14 +5,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.model.Hotel;
-import ru.otus.hotelsbooker.repository.HotelRepository;
+import ru.otus.hotelsbooker.repository.HotelJpaRepository;
+import ru.otus.hotelsbooker.repository.HotelMapRepository;
 import ru.otus.hotelsbooker.model.Room;
 @Service
 public class HotelService {
-    private final HotelRepository hotelRepository;
+    private final HotelJpaRepository hotelRepository;
     @Autowired
-    public HotelService(HotelRepository hotelRepository) {
+    public HotelService(HotelJpaRepository hotelRepository) {
         this.hotelRepository = hotelRepository;
     }
 
@@ -22,6 +24,18 @@ public class HotelService {
     }
 
     public List<Hotel> findAll(String city) {
-        return hotelRepository.findAll(city);
+        return city == null ? hotelRepository.findAll() : hotelRepository.findAllByCityIgnoreCase(city);
+    }
+
+    public Long save(HotelDto hotelDto) {
+        Hotel hotel = Hotel.builder()
+                .name(hotelDto.getName())
+                .address(hotelDto.getAddress())
+                .country(hotelDto.getCountry())
+                .city(hotelDto.getCity())
+                .rating(hotelDto.getRating())
+                .build();
+        Hotel saved = hotelRepository.save(hotel);
+        return saved.getId();
     }
 }
