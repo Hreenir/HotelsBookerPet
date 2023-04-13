@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.List;
 import lombok.*;
+import lombok.EqualsAndHashCode.Exclude;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +20,7 @@ import lombok.*;
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Exclude
     private Long id;
     private String name;
     private String city;

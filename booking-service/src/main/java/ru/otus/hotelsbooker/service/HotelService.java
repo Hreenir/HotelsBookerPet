@@ -1,5 +1,6 @@
 package ru.otus.hotelsbooker.service;
 
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
