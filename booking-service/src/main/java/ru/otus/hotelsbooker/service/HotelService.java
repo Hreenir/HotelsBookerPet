@@ -10,6 +10,10 @@ import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
 import ru.otus.hotelsbooker.repository.HotelMapRepository;
 import ru.otus.hotelsbooker.model.Room;
+
+/**
+ *
+ */
 @Service
 public class HotelService {
     private final HotelJpaRepository hotelRepository;
@@ -33,7 +37,7 @@ public class HotelService {
                 .address(hotelDto.getAddress())
                 .country(hotelDto.getCountry())
                 .city(hotelDto.getCity())
-                .rating(hotelDto.getRating())
+                .rating(8.0)
                 .build();
         Hotel saved = hotelRepository.save(hotel);
         return saved.getId();

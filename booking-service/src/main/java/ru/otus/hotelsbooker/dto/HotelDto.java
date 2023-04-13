@@ -19,6 +19,5 @@ public class HotelDto implements Serializable {
     private String name;
     private String city;
     private String country;
-    private double rating;
     private String address;
 }
