@@ -1,6 +1,6 @@
 package ru.otus.hotelsbooker.controller;
 
-import jakarta.websocket.server.PathParam;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,28 +13,26 @@ import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.service.HotelService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/hotel")
 public class HotelsController {
 
-    @Autowired
-    HotelService hotelsService;
+  @Autowired
+  HotelService hotelsService;
 
-    @GetMapping
-    public List<Hotel> getAllHotels(@RequestParam(name = "city", required = false) String city) {
-        return hotelsService.findAll(city);
-    }
+  @GetMapping
+  public List<Hotel> getAllHotels(@RequestParam(name = "city", required = false) String city) {
+    return hotelsService.findAll(city);
+  }
 
-    @GetMapping("/{id}")
-    public HotelDto getHotelById(@PathVariable Long id) {
-        // TODO сделать реализацию
-        return hotelsService.getHotelById(id);
-    }
+  @GetMapping("/{id}")
+  public HotelDto getHotelById(@PathVariable Long id) {
+    // TODO сделать реализацию
+    return hotelsService.getHotelById(id);
+  }
 
-    @PostMapping
-    public Long createHotel(@RequestBody HotelDto hotel) {
-        return hotelsService.save(hotel);
-    }
+  @PostMapping
+  public HotelDto createHotel(@RequestBody HotelDto hotel) {
+    return hotelsService.createNewHotel(hotel);
+  }
 }
