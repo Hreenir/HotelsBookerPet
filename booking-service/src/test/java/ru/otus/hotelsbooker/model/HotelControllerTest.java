@@ -19,7 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.otus.hotelsbooker.dto.HotelDto;
+import ru.otus.hotelsbooker.dto.RoomDto;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +38,7 @@ public class HotelControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Value(value="${local.server.port}")
+    @Value(value = "${local.server.port}")
     private int port;
 
     @Autowired
@@ -53,7 +56,9 @@ public class HotelControllerTest {
     @Test
     @DisplayName("Тестирование API добавления отелей")
     public void testCreateNewHotelRestTemplate() throws Exception {
-        HotelDto hotel = new HotelDto("Hilton", "Moscow", "Russia", "Red Square building 1");
+        List<RoomDto> rooms = new ArrayList<>();
+        HotelDto hotel = new HotelDto
+                (1L, "Hilton", "Moscow", "Russia", "Red Square building 1", 8.0, rooms);
         String hotelJson = objectMapper.writeValueAsString(hotel);
         // create headers
         HttpHeaders headers = new HttpHeaders();

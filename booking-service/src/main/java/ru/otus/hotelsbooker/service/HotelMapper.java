@@ -1,22 +1,29 @@
 package ru.otus.hotelsbooker.service;
 
 import ru.otus.hotelsbooker.dto.HotelDto;
+import ru.otus.hotelsbooker.dto.RoomDto;
 import ru.otus.hotelsbooker.model.Hotel;
+
+import java.util.List;
 
 /**
  * паттерн маппер для отеля
  */
 public class HotelMapper {
 
-  public static HotelDto mapToDto(Hotel hotel) {
-    return HotelDto.builder()
-        .id(hotel.getId())
-        .name(hotel.getName())
-        .address(hotel.getAddress())
-        .country(hotel.getCountry())
-        .city(hotel.getCity())
-        .rating(hotel.getRating())
-        .build();
-  }
+    public static HotelDto mapToDto(Hotel hotel) {
+        List<RoomDto> roomsDto =  hotel.getRooms().stream()
+                .map(room -> RoomMapper.mapToRoomDto(room))
+                .toList();
+        return HotelDto.builder()
+                .id(hotel.getId())
+                .name(hotel.getName())
+                .address(hotel.getAddress())
+                .country(hotel.getCountry())
+                .city(hotel.getCity())
+                .rating(hotel.getRating())
+                .rooms(roomsDto)
+                .build();
+    }
 
 }

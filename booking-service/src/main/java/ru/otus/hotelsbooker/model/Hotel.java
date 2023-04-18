@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.EqualsAndHashCode.Exclude;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,6 +25,8 @@ public class Hotel {
     private double rating;
     private String address;
     @OneToMany
-    private List<Room> rooms;
+    @JoinColumn(name = "hotel")
+    private List<Room> rooms = new ArrayList<>();
+
 
 }

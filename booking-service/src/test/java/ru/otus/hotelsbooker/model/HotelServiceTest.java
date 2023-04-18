@@ -2,6 +2,9 @@ package ru.otus.hotelsbooker.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import jakarta.transaction.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +57,10 @@ public class HotelServiceTest {
     hotelService.createNewHotel(hotel4);
     // actions
     double rating = 8.0;
-    List<Hotel> actual = hotelService.findAll("Москва");
-    List<Hotel> expected = List.of(
-        new Hotel(1L, "Hilton", "Москва", "Россия", rating, "Красная площать д.1"),
-        new Hotel(3L, "Hilton", "Москва", "Россия", rating, "Красная площать д.1"));
+    List<HotelDto> actual = hotelService.findAll("Москва");
+    List<HotelDto> expected = List.of(
+        new HotelDto(1L, "Hilton", "Москва", "Россия", "Красная площадь д.1", 8.0),
+        new HotelDto(3L, "Hilton", "Москва", "Россия",  "Красная площадь д.1", 8.0));
     assertEquals(expected, actual);
   }
 
@@ -73,12 +76,12 @@ public class HotelServiceTest {
     hotelService.createNewHotel(hotel3);
     hotelService.createNewHotel(hotel4);
 
-    List<Hotel> actual = hotelService.findAll(null);
-    List<Hotel> expected = List.of(
-        new Hotel(1L, "Hilton", "Москва", "Россия", 8.0, "Красная площать д.1"),
-        new Hotel(2L, "Hilton", "Нижний Новгород", "Россия", 8.0, "Красная площать д.1"),
-        new Hotel(3L, "Hilton", "Москва", "Россия", 8.0, "Красная площать д.1"),
-        new Hotel(4L, "Hilton", "Санкт-Петербург", "Россия", 8.0, "Красная площать д.1"));
+    List<HotelDto> actual = hotelService.findAll(null);
+    List<HotelDto> expected = List.of(
+        new HotelDto(1L,"Hilton", "Москва", "Россия", "Красная площать д.1",8.0),
+        new HotelDto(2L,"Hilton", "Нижний Новгород", "Россия", "Красная площать д.1",8.0),
+        new HotelDto(3L,"Hilton", "Москва", "Россия", "Красная площать д.1",8.0),
+        new HotelDto(4L,"Hilton", "Санкт-Петербург", "Россия", "Красная площать д.1",8.0));
     assertEquals(expected, actual);
   }
 }

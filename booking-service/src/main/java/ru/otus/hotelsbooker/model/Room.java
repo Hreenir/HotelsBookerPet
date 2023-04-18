@@ -19,10 +19,9 @@ public class Room {
     private Long id;
     private String name;
     private int capacity;
+    @Column(name = "pricebyday")
     private BigDecimal priceByDay;
     @ManyToOne
     @JoinColumn(name = "hotel")
     private Hotel hotel;
-
-
 }

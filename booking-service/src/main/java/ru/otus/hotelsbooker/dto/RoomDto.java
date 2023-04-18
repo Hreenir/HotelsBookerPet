@@ -16,4 +16,6 @@ public class RoomDto {
     private String name;
     private int capacity;
     private BigDecimal priceByDay;
+
+
 }

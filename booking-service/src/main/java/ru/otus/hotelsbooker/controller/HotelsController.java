@@ -32,7 +32,7 @@ public class HotelsController {
      */
     // todo: change return type to HotelDto
     @GetMapping
-    public List<Hotel> getAllHotels(@RequestParam(name = "city", required = false) String city) {
+    public List<HotelDto> getAllHotels(@RequestParam(name = "city", required = false) String city) {
         return hotelsService.findAll(city);
     }
 
@@ -56,14 +56,15 @@ public class HotelsController {
      * @param hotel
      * @return
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping(consumes = "application/json")
     public HotelDto createHotel(@RequestBody HotelDto hotel) {
         return hotelsService.createNewHotel(hotel);
     }
-   /* @PostMapping(consumes = "/{id}/application1/json", produces = "application/json")
-    public RoomDto addRoom(@RequestBody RoomDto room){
-        return hotelsService.addRoom(room);
+
+    @PostMapping(path = "/{id}/room", consumes = "application/json")
+    public RoomDto addRoom(@RequestBody RoomDto room,@PathVariable Long id){
+        return hotelsService.addRoom(room, id);
     }
-    */
+
 
 }
