@@ -3,6 +3,7 @@ package ru.otus.hotelsbooker.model;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +20,7 @@ class HotelRepositoryTest {
     private  HotelService hotelService;
 
 
-    @Test
+    @Test //данный тест есть в HotelServiceTest, поправить
     void testFindByCity() {
         HotelDto hotelDtoFirst = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
         HotelDto hotelDtoSecond = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));
@@ -30,7 +31,7 @@ class HotelRepositoryTest {
 
     }
 
-    @Test
+    @Test //данный тест есть в HotelServiceTest, поправить
     void testFindAll() {
         HotelDto hotelDtoFirst = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
         HotelDto hotelDtoSecond = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));

@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,14 +22,16 @@ public class HotelServiceTest {
 
 
     @Test
-    void если_создать_новый_отель_то_по_умолчанию_у_него_будет_рейтинг_8() {
+    @DisplayName("Тестирование метода создания отеля с дефолтным рейтингом")
+    void ifCreateNewHotelHotelWillBeHaveDefaultRating () {
         HotelDto hotelDto = new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1");
         HotelDto savedHotelDto = hotelService.createNewHotel(hotelDto);
         assertEquals(8.0, savedHotelDto.getRating());
     }
 
     @Test
-    void созданный_и_сохраненный_отель_можно_прочитать_и_у_него_будут_такие_же_данные() {
+    @DisplayName("Тестирование метода изменения данных отеля")
+    void createdAndSavedHotelCanBeReadAndHotelWillBeHaveTheSameData () {
         //when
         HotelDto hotel = new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1");
         HotelDto createdDto = hotelService.createNewHotel(hotel);
@@ -38,7 +41,8 @@ public class HotelServiceTest {
     }
 
     @Test
-    void если_обновить_данные_отеля_то_после_его_получения_у_него_будут_эти_данные() {
+    @DisplayName("Тестирование метода изменения данных отеля")
+    void ifUpdateHotelDataThenHotelDataWillBeUpdated() {
         //1. Создать отель, который буду обновлять
         //2. Обновляю его hotelService.updateHotel
         //3. Получаю его снова HotelService.getHotelById
@@ -46,9 +50,9 @@ public class HotelServiceTest {
     }
 
     @Test
-    void test_that_findAll_with_given_city_gets_only_hotel_in_the_city() {
+    @DisplayName("Тестирование метода поиск отелей по городу")
+    void testThatFindAllWithGivenCityGetsOnlyHotelInTheCity() {
         // prepare
-
         HotelDto hotel1 = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
         HotelDto hotel2 = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));
         HotelDto hotel3 = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
@@ -63,7 +67,8 @@ public class HotelServiceTest {
     }
 
     @Test
-    void test_that_findAll_without_city_get_all_hotels() {
+    @DisplayName("Тестирование метода поиск всех отелей")
+    void testThatFindAllWithoutCityGetAllHotels() {
         // prepare
         HotelDto hotel1 = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
         HotelDto hotel2 = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));

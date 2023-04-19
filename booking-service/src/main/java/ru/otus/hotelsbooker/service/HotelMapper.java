@@ -13,7 +13,7 @@ public class HotelMapper {
 
     public static HotelDto mapToDto(Hotel hotel) {
         List<RoomDto> roomsDto =  hotel.getRooms().stream()
-                .map(room -> RoomMapper.mapToRoomDto(room))
+                .map(RoomMapper::mapToRoomDto)
                 .toList();
         return HotelDto.builder()
                 .id(hotel.getId())

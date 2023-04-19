@@ -21,30 +21,21 @@ import java.util.Objects;
 @EqualsAndHashCode
 public class HotelDto {
 
-  @Setter(AccessLevel.NONE)
-  private Long id;
-  private String name;
-  private String city;
-  private String country;
-  private String address;
-  @Setter(AccessLevel.NONE)
-  private Double rating;
-  @EqualsAndHashCode.Exclude
-  private List<RoomDto> rooms = new ArrayList<>();
+    @Setter(AccessLevel.NONE)
+    private Long id;
+    private String name;
+    private String city;
+    private String country;
+    private String address;
+    @Setter(AccessLevel.NONE)
+    private Double rating;
+    @EqualsAndHashCode.Exclude
+    private List<RoomDto> rooms = new ArrayList<>();
 
-  public HotelDto(String name, String city, String country, String address) {
-    this.name = name;
-    this.city = city;
-    this.country = country;
-    this.address = address;
-  }
-
-  public HotelDto(Long id, String name, String city, String country, String address, Double rating) {
-    this.id = id;
-    this.name = name;
-    this.city = city;
-    this.country = country;
-    this.address = address;
-    this.rating = rating;
-  }
+    public HotelDto(String name, String city, String country, String address) {
+        this.name = name;
+        this.city = city;
+        this.country = country;
+        this.address = address;
+    }
 }
