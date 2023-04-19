@@ -61,9 +61,16 @@ public class HotelsController {
         return hotelsService.createNewHotel(hotel);
     }
 
+    /**
+     * POST localhost:8881/hotel/{id}/room
+     * * body {}
+     * @param roomDto
+     * @param id
+     * @return
+     */
     @PostMapping(path = "/{id}/room", consumes = "application/json")
-    public RoomDto addRoom(@RequestBody RoomDto room,@PathVariable Long id){
-        return hotelsService.addRoom(room, id);
+    public RoomDto addRoom(@RequestBody RoomDto roomDto,@PathVariable Long id){
+        return hotelsService.addRoom(roomDto, id);
     }
 
 

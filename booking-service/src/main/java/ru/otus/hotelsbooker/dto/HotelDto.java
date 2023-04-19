@@ -29,6 +29,7 @@ public class HotelDto {
   private String address;
   @Setter(AccessLevel.NONE)
   private Double rating;
+  @EqualsAndHashCode.Exclude
   private List<RoomDto> rooms = new ArrayList<>();
 
   public HotelDto(String name, String city, String country, String address) {
@@ -45,18 +46,5 @@ public class HotelDto {
     this.country = country;
     this.address = address;
     this.rating = rating;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    HotelDto hotelDto = (HotelDto) o;
-    return Objects.equals(name, hotelDto.name) && Objects.equals(city, hotelDto.city) && Objects.equals(country, hotelDto.country) && Objects.equals(address, hotelDto.address) && Objects.equals(rating, hotelDto.rating);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, city, country, address, rating);
   }
 }

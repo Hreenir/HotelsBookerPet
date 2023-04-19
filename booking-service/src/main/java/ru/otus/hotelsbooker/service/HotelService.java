@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.hotelsbooker.dto.HotelDto;
@@ -18,6 +19,7 @@ import ru.otus.hotelsbooker.repository.RoomJpaRepository;
  * комнаты
  */
 @Service
+@Getter
 public class HotelService {
 
     private final static double DEFAULT_RATING_FOR_NEW_HOTEL = 8.0;
@@ -69,6 +71,8 @@ public class HotelService {
         return HotelMapper.mapToDto(createdHotel);
     }
 
+
+
     public HotelDto updateHotel(HotelDto hotelDto) {
         // но сначала написать для тест (TDD)
         // реализовать логики поиска отделя, обновление данных и сохранения
@@ -83,7 +87,6 @@ public class HotelService {
         room.setHotel(hotel);
         roomJpaRepository.save(room);
         hotel.getRooms().add(room);
-        hotelRepository.save(hotel);
         return RoomMapper.mapToRoomDto(room);
 
     }

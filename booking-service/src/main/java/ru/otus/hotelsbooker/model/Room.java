@@ -24,4 +24,6 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "hotel")
     private Hotel hotel;
+
+
 }

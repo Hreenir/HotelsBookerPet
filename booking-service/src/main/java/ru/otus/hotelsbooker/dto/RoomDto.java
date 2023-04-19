@@ -17,5 +17,9 @@ public class RoomDto {
     private int capacity;
     private BigDecimal priceByDay;
 
-
+    public RoomDto(String name, int capacity, BigDecimal priceByDay) {
+        this.name = name;
+        this.capacity = capacity;
+        this.priceByDay = priceByDay;
+    }
 }
