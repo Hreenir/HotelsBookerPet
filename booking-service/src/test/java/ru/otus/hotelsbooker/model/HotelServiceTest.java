@@ -14,9 +14,9 @@ import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.service.HotelService;
 
 @SpringBootTest
-@Transactional
 public class HotelServiceTest {
-
+    //добавить удаление
+    // поправить логику
     @Autowired
     private HotelService hotelService;
 
@@ -58,11 +58,10 @@ public class HotelServiceTest {
         HotelDto hotel3 = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
         HotelDto hotel4 = hotelService.createNewHotel(new HotelDto("Hilton", "Санкт-Петербург", "Россия", "Красная площадь д.1"));
         // actions
-        double rating = 8.0;
         List<HotelDto> actual = hotelService.findAll("Москва");
         List<HotelDto> expected = List.of(
-                hotelService.getHotelById(hotel1.getId()),
-                hotelService.getHotelById(hotel3.getId()));
+                hotel1,
+                hotel3);
         assertEquals(expected, actual);
     }
 

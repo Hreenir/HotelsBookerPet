@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import ru.otus.hotelsbooker.repository.RoomJpaRepository;
  */
 @Service
 @Getter
+@Transactional
 public class HotelService {
 
     private final static double DEFAULT_RATING_FOR_NEW_HOTEL = 8.0;
@@ -44,6 +46,7 @@ public class HotelService {
                 .map(hotel -> HotelMapper.mapToDto(hotel))
                 .toList();
     }
+
 
     public HotelDto getHotelById(long id) {
         Hotel hotel = hotelRepository.findAllById(id);
@@ -70,8 +73,17 @@ public class HotelService {
 
         return HotelMapper.mapToDto(createdHotel);
     }
-
-
+    public void deleteNewHotel(HotelDto hotelDto) {
+        Hotel hotel = Hotel.builder()
+                .name(hotelDto.getName())
+                .address(hotelDto.getAddress())
+                .country(hotelDto.getCountry())
+                .city(hotelDto.getCity())
+                .rating(DEFAULT_RATING_FOR_NEW_HOTEL)
+                .rooms(new ArrayList<>())
+                .build();
+        hotelRepository.delete(hotel);
+    }
 
     public HotelDto updateHotel(HotelDto hotelDto) {
         // но сначала написать для тест (TDD)
