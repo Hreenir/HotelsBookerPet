@@ -40,7 +40,7 @@ public class HotelServiceTest {
     }
 
     @Test
-    @DisplayName("Тестирование метода изменения данных отеля")
+    @DisplayName("Тестирование корректного создания отеля")
     void createdAndSavedHotelCanBeReadAndHotelWillBeHaveTheSameData () {
         HotelDto hotelDto = hotelService.createNewHotel(HotelDto.builder()
                 .name("Hilton")
