@@ -1,6 +1,7 @@
 package ru.otus.hotelsbooker.model;
 
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 
 import org.junit.jupiter.api.DisplayName;
@@ -16,12 +17,18 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
+@Deprecated
 class HotelRepositoryTest {
     @Autowired
     private HotelJpaRepository hotelJpaRepository;
-
+    @AfterEach
+    public void clear(){
+        List<Hotel> list = hotelJpaRepository.findAll();
+        list.forEach(hotel -> hotelJpaRepository.delete(hotel));
+    }
 
     @Test
+    @DisplayName("Тестирование метода поиск всех отелей")
     void testFindByCity() {
         Hotel hotelFirst = hotelJpaRepository.save(Hotel.builder()
                 .name("Hilton")
@@ -42,16 +49,5 @@ class HotelRepositoryTest {
         Assertions.assertEquals(expected, actual, "invalid");
 
     }
-/*
-    @Test
-    void testFindAll() {
-        HotelDto hotelDtoFirst = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
-        HotelDto hotelDtoSecond = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));
-        List<HotelDto> actual = hotelService.findAll(null);
-        List<HotelDto> expected = List.of(
-                hotelService.getHotelById(hotelDtoFirst.getId()),
-                hotelService.getHotelById(hotelDtoSecond.getId()));
-        Assertions.assertEquals(expected, actual, "invalid");
 
-    }*/
 }

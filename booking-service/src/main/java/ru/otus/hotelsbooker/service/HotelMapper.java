@@ -25,9 +25,4 @@ public class HotelMapper {
                 .rooms(roomsDto)
                 .build();
     }
-
-    public static Hotel mapToDto(HotelDto hotelDto) {
-
-        return null;
-    }
 }
