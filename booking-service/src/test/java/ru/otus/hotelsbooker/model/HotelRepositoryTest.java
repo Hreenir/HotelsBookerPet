@@ -1,30 +1,45 @@
 package ru.otus.hotelsbooker.model;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.hotelsbooker.repository.HotelMapRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import ru.otus.hotelsbooker.dto.HotelDto;
+import ru.otus.hotelsbooker.service.HotelService;
 
 import java.util.List;
 
+@SpringBootTest
+@Transactional
 class HotelRepositoryTest {
-    private HotelMapRepository hotelRepository = new HotelMapRepository();
+    @Autowired
+    private  HotelService hotelService;
 
-    @Test
+
+    @Test //данный тест есть в HotelServiceTest, поправить
     void testFindByCity() {
-        List<Hotel> actual = hotelRepository.findAllByCityIgnoreCase("Москва");
-        List<Hotel> expected = List.of(
-                new Hotel(1L,"Hilton", "Москва", "Россия", 9.6, "Красная площать д.1"),
-                new Hotel(3L,"Hilton", "Москва", "Россия", 9.6, "Красная площать д.1"));
+        HotelDto hotelDtoFirst = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
+        HotelDto hotelDtoSecond = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));
+        List<HotelDto> actual = hotelService.findAll("Москва");
+        List<HotelDto> expected = List.of(
+                hotelService.getHotelById(hotelDtoFirst.getId()));
         Assertions.assertEquals(expected, actual, "invalid");
+
     }
-    @Test
+
+    @Test //данный тест есть в HotelServiceTest, поправить
     void testFindAll() {
-        List<Hotel> actual = hotelRepository.findAllByCityIgnoreCase(null);
-        List<Hotel> expected = List.of(
-                        new Hotel(1L,"Hilton", "Москва", "Россия", 9.6, "Красная площать д.1"),
-                        new Hotel(2L,"Hilton", "Нижний Новгород", "Россия", 9.6, "Красная площать д.1"),
-                        new Hotel(3L,"Hilton", "Москва", "Россия", 9.6, "Красная площать д.1"),
-                        new Hotel(4L,"Hilton", "Санкт-Петербург", "Россия", 9.6, "Красная площать д.1"));
+        HotelDto hotelDtoFirst = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
+        HotelDto hotelDtoSecond = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));
+        List<HotelDto> actual = hotelService.findAll(null);
+        List<HotelDto> expected = List.of(
+                hotelService.getHotelById(hotelDtoFirst.getId()),
+                hotelService.getHotelById(hotelDtoSecond.getId()));
         Assertions.assertEquals(expected, actual, "invalid");
+
     }
 }

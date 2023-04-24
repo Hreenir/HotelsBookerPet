@@ -1,14 +1,11 @@
 package ru.otus.hotelsbooker.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.EqualsAndHashCode.Exclude;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,11 +17,16 @@ import lombok.EqualsAndHashCode.Exclude;
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Exclude //для чего это?
+    @Exclude
     private Long id;
     private String name;
     private String city;
     private String country;
     private double rating;
     private String address;
+    @OneToMany
+    @JoinColumn(name = "hotel")
+    private List<Room> rooms = new ArrayList<>();
+
+
 }
