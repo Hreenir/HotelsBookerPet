@@ -2,42 +2,54 @@ package ru.otus.hotelsbooker.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.hotelsbooker.dto.HotelDto;
+import ru.otus.hotelsbooker.repository.HotelJpaRepository;
 import ru.otus.hotelsbooker.service.HotelService;
 
 @SpringBootTest
 public class HotelServiceTest {
-    //добавить удаление
-    // поправить логику
+    //почему не удаляется?
     @Autowired
     private HotelService hotelService;
-
+    @Autowired
+    private HotelJpaRepository hotelJpaRepository;
+    @AfterEach
+    public void clear(){
+        List<Hotel> list = hotelJpaRepository.findAll();
+        list.forEach(hotel -> hotelJpaRepository.delete(hotel));
+    }
 
     @Test
     @DisplayName("Тестирование метода создания отеля с дефолтным рейтингом")
     void ifCreateNewHotelHotelWillBeHaveDefaultRating () {
-        HotelDto hotelDto = new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1");
-        HotelDto savedHotelDto = hotelService.createNewHotel(hotelDto);
-        assertEquals(8.0, savedHotelDto.getRating());
+        HotelDto hotelDto = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Москва")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        assertEquals(8.0, hotelDto.getRating());
     }
 
     @Test
     @DisplayName("Тестирование метода изменения данных отеля")
     void createdAndSavedHotelCanBeReadAndHotelWillBeHaveTheSameData () {
-        //when
-        HotelDto hotel = new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1");
-        HotelDto createdDto = hotelService.createNewHotel(hotel);
-        //then
-        HotelDto savedDto = hotelService.getHotelById(createdDto.getId());
-        assertEquals(createdDto, savedDto);
+        HotelDto hotelDto = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Москва")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        HotelDto savedDto = hotelService.getHotelById(hotelDto.getId());
+        assertEquals(hotelDto, savedDto);
     }
 
     @Test
@@ -53,10 +65,30 @@ public class HotelServiceTest {
     @DisplayName("Тестирование метода поиск отелей по городу")
     void testThatFindAllWithGivenCityGetsOnlyHotelInTheCity() {
         // prepare
-        HotelDto hotel1 = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
-        HotelDto hotel2 = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));
-        HotelDto hotel3 = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
-        HotelDto hotel4 = hotelService.createNewHotel(new HotelDto("Hilton", "Санкт-Петербург", "Россия", "Красная площадь д.1"));
+        HotelDto hotel1 = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Москва")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        HotelDto hotel2 = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Нижний Новгород")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        HotelDto hotel3 = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Москва")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        HotelDto hotel4 = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Санкт-Петербург")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
         // actions
         List<HotelDto> actual = hotelService.findAll("Москва");
         List<HotelDto> expected = List.of(
@@ -69,17 +101,37 @@ public class HotelServiceTest {
     @DisplayName("Тестирование метода поиск всех отелей")
     void testThatFindAllWithoutCityGetAllHotels() {
         // prepare
-        HotelDto hotel1 = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
-        HotelDto hotel2 = hotelService.createNewHotel(new HotelDto("Hilton", "Нижний Новгород", "Россия", "Красная площадь д.1"));
-        HotelDto hotel3 = hotelService.createNewHotel(new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1"));
-        HotelDto hotel4 = hotelService.createNewHotel(new HotelDto("Hilton", "Санкт-Петербург", "Россия", "Красная площадь д.1"));
+        HotelDto hotel1 = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Москва")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        HotelDto hotel2 = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Нижний Новгород")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        HotelDto hotel3 = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Москва")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        HotelDto hotel4 = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Санкт-Петербург")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
 
         List<HotelDto> actual = hotelService.findAll(null);
         List<HotelDto> expected = List.of(
-                hotelService.getHotelById(hotel1.getId()),
-                hotelService.getHotelById(hotel2.getId()),
-                hotelService.getHotelById(hotel3.getId()),
-                hotelService.getHotelById(hotel4.getId()));
+                hotel1,
+                hotel2,
+                hotel3,
+                hotel4);
         assertEquals(expected, actual);
     }
 }

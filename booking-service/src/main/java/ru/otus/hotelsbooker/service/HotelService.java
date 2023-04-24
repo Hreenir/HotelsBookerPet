@@ -71,18 +71,11 @@ public class HotelService {
 
         Hotel createdHotel = hotelRepository.save(hotel);
 
+
         return HotelMapper.mapToDto(createdHotel);
     }
-    public void deleteNewHotel(HotelDto hotelDto) {
-        Hotel hotel = Hotel.builder()
-                .name(hotelDto.getName())
-                .address(hotelDto.getAddress())
-                .country(hotelDto.getCountry())
-                .city(hotelDto.getCity())
-                .rating(DEFAULT_RATING_FOR_NEW_HOTEL)
-                .rooms(new ArrayList<>())
-                .build();
-        hotelRepository.delete(hotel);
+    public void deleteHotel(Long id) {
+        hotelRepository.deleteById(id);
     }
 
     public HotelDto updateHotel(HotelDto hotelDto) {
