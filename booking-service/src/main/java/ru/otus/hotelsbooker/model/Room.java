@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +26,9 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "hotel")
     private Hotel hotel;
+    @OneToMany
+    @JoinColumn(name = "room")
+    private List<LocalRoom> rooms = new ArrayList<>();
 
 
 }
