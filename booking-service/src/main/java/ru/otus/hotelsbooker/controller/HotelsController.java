@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.dto.RoomDto;
-import ru.otus.hotelsbooker.model.Hotel;
-import ru.otus.hotelsbooker.model.Room;
 import ru.otus.hotelsbooker.service.HotelService;
 
 @RestController

@@ -12,7 +12,7 @@ import java.util.List;
 public class HotelMapper {
 
     public static HotelDto mapToDto(Hotel hotel) {
-        List<RoomDto> roomsDto =  hotel.getRooms().stream()
+        List<RoomDto> roomsDto = hotel.getRooms().stream()
                 .map(RoomMapper::mapToRoomDto)
                 .toList();
         return HotelDto.builder()
@@ -26,4 +26,8 @@ public class HotelMapper {
                 .build();
     }
 
+    public static Hotel mapToDto(HotelDto hotelDto) {
+
+        return null;
+    }
 }
