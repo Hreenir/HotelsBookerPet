@@ -16,7 +16,6 @@ public class LocalRoom {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @EqualsAndHashCode.Exclude
     private long id;
-    @Column(name = "room_number")
     private int roomNumber;
     private boolean enabled;
     @ManyToOne
