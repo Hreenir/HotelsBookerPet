@@ -1,9 +1,7 @@
 package ru.otus.hotelsbooker.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,11 +16,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.dto.RoomDto;
+import ru.otus.hotelsbooker.repository.RolesJpaRepository;
+import ru.otus.hotelsbooker.repository.UsersJpaRepository;
 import ru.otus.hotelsbooker.service.HotelService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,6 +45,31 @@ public class HotelControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private HotelService hotelService;
+    @Autowired
+    private RolesJpaRepository rolesJpaRepository;
+    @Autowired
+    private UsersJpaRepository usersJpaRepository;
+    @BeforeEach
+    public void prepare(){
+        Role roleUser = Role.builder()
+                .name("ROLE_USER")
+                .build();
+        Role roleHotel = Role.builder()
+                .name("ROLE_HOTEL")
+                .build();
+        rolesJpaRepository.saveAll(List.of(roleUser,roleHotel));
+        User user = User.builder()
+                .username("user")
+                .password("$2a$10$9VyipY09UB19OCWeUG0Ciu5SMFs0y2/Xco/J8uARQTN0bgh8pSU3i")
+                .roles(Set.of(roleUser, roleHotel))
+                .build();
+        usersJpaRepository.save(user);
+    }
+    @AfterEach
+    public void clear(){
+        List<User> users = usersJpaRepository.findAll();
+        users.forEach(user -> usersJpaRepository.delete(user));
+    }
 
     /**
      * <h1>Тестирование API добавления отелей</h1>
@@ -60,6 +87,7 @@ public class HotelControllerTest {
         String hotelJson = objectMapper.writeValueAsString(hotel);
         // create headers
         HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("user", "user");
         // set `content-type` header
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
@@ -91,6 +119,7 @@ public class HotelControllerTest {
         String hotelJson = objectMapper.writeValueAsString(hotel);
         // create headers
         HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("user", "user");
         // set `content-type` header
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
@@ -121,6 +150,7 @@ public class HotelControllerTest {
         String roomJson = objectMapper.writeValueAsString(roomDto);
         // create headers
         HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("user", "user");
         // set `content-type` header
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
@@ -151,6 +181,7 @@ public class HotelControllerTest {
         String roomJson = objectMapper.writeValueAsString(roomDto);
         // create headers
         HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("user", "user");
         // set `content-type` header
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
