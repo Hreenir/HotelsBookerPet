@@ -1,11 +1,7 @@
 package ru.otus.hotelsbooker.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,12 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.otus.hotelsbooker.dto.HotelDto;
+import ru.otus.hotelsbooker.dto.RoomDto;
+import ru.otus.hotelsbooker.repository.RolesJpaRepository;
+import ru.otus.hotelsbooker.repository.UsersJpaRepository;
+import ru.otus.hotelsbooker.service.HotelService;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,13 +36,40 @@ public class HotelControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Value(value="${local.server.port}")
+    @Value(value = "${local.server.port}")
     private int port;
 
     @Autowired
     private MockMvc mockMvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private HotelService hotelService;
+    @Autowired
+    private RolesJpaRepository rolesJpaRepository;
+    @Autowired
+    private UsersJpaRepository usersJpaRepository;
+    @BeforeEach
+    public void prepare(){
+        Role roleUser = Role.builder()
+                .name("ROLE_USER")
+                .build();
+        Role roleHotel = Role.builder()
+                .name("ROLE_HOTEL")
+                .build();
+        rolesJpaRepository.saveAll(List.of(roleUser,roleHotel));
+        User user = User.builder()
+                .username("user")
+                .password("$2a$10$9VyipY09UB19OCWeUG0Ciu5SMFs0y2/Xco/J8uARQTN0bgh8pSU3i")
+                .roles(Set.of(roleUser, roleHotel))
+                .build();
+        usersJpaRepository.save(user);
+    }
+    @AfterEach
+    public void clear(){
+        List<User> users = usersJpaRepository.findAll();
+        users.forEach(user -> usersJpaRepository.delete(user));
+    }
 
     /**
      * <h1>Тестирование API добавления отелей</h1>
@@ -53,10 +81,13 @@ public class HotelControllerTest {
     @Test
     @DisplayName("Тестирование API добавления отелей")
     public void testCreateNewHotelRestTemplate() throws Exception {
-        HotelDto hotel = new HotelDto("Hilton", "Moscow", "Russia", "Red Square building 1");
+        List<RoomDto> rooms = new ArrayList<>();
+        HotelDto hotel = new HotelDto
+                (1L, "Hilton", "Moscow", "Russia", "Red Square building 1", 8.0, rooms);
         String hotelJson = objectMapper.writeValueAsString(hotel);
         // create headers
         HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("user", "user");
         // set `content-type` header
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
@@ -88,6 +119,7 @@ public class HotelControllerTest {
         String hotelJson = objectMapper.writeValueAsString(hotel);
         // create headers
         HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("user", "user");
         // set `content-type` header
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
@@ -106,5 +138,64 @@ public class HotelControllerTest {
         Assertions.assertEquals(hotel.getName(), body2.getName());
         Assertions.assertEquals(hotel.getCity(), body2.getCity());
         Assertions.assertEquals(hotel.getCountry(), body2.getCountry());
+    }
+
+    @Test
+    @DisplayName("Тестирование API успешного добавления номера в отель")
+    public void testCreateNewRoomSuccessfullyMockMvc() throws Exception {
+        HotelDto hotelDto = new HotelDto("Hilton", "Moscow", "Russia", "Red Square building 1");
+        hotelDto = hotelService.createNewHotel(hotelDto);
+        RoomDto roomDto = new RoomDto(1L, "single", 1, new BigDecimal(100));
+
+        String roomJson = objectMapper.writeValueAsString(roomDto);
+        // create headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("user", "user");
+        // set `content-type` header
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // set `accept` header
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        Long id = hotelDto.getId();
+        // способ 2
+        MvcResult mvcResult = mockMvc.perform(
+                        post("/hotel/" + id + "/room")
+                                .headers(headers)
+                                .content(roomJson.getBytes()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        RoomDto body2 = objectMapper.readValue(contentAsString, RoomDto.class);
+        Assertions.assertEquals(roomDto.getName(), body2.getName());
+        Assertions.assertEquals(roomDto.getCapacity(), body2.getCapacity());
+        Assertions.assertEquals(roomDto.getPriceByDay(), body2.getPriceByDay());
+    }
+
+    @Test
+    @DisplayName("Тестирование API неуспешного добавления апартаментов в отель")
+    public void testCreateNewRoomNotSuccessfullyMockMvc() throws Exception {
+        HotelDto hotelDto = new HotelDto("Hilton", "Moscow", "Russia", "Red Square building 1");
+        hotelDto = hotelService.createNewHotel(hotelDto);
+        RoomDto roomDto = new RoomDto(1L, "single", 1, new BigDecimal(100));
+
+        String roomJson = objectMapper.writeValueAsString(roomDto);
+        // create headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("user", "user");
+        // set `content-type` header
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        // set `accept` header
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        Long id = hotelDto.getId();
+        // способ 2
+        HttpEntity<String> entity = new HttpEntity<>(roomJson, headers);
+        ResponseEntity<RoomDto> roomDtoResponseEntity = restTemplate
+                .postForEntity("http://localhost:" + port + "/hotel/132/room", entity, RoomDto.class);
+
+        Assertions.assertEquals(roomDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(500));
+        RoomDto body = roomDtoResponseEntity.getBody();
+        Assertions.assertEquals(null, body.getName());
+        Assertions.assertEquals(0, body.getCapacity());
+        Assertions.assertEquals(null, body.getPriceByDay());
     }
 }

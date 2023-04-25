@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.hotelsbooker.model.BookingCase;
 import ru.otus.hotelsbooker.model.Hotel;
-import ru.otus.hotelsbooker.repository.HotelMapRepository;
 import ru.otus.hotelsbooker.model.Room;
 
 /**
@@ -25,16 +24,16 @@ public class BookingSearchService {
 
     public List<BookingCase> search(String city, LocalDate arrivalDate, LocalDate departureDate) {
         // Получить все отели в городе
-        HotelMapRepository hotelRepository = new HotelMapRepository();
-        List<Hotel> hotels = hotelRepository.findAllByCityIgnoreCase(city);
+        //HotelMapRepository hotelRepository = new HotelMapRepository();
+        //List<Hotel> hotels = hotelRepository.findAllByCityIgnoreCase(city);
 
         // у отелей получить свободные на указанные даты номера
         List<Room> rooms = new ArrayList<>();
 
-        for (Hotel hotel : hotels) {
-            List<Room> freeRooms = hotelService.findFreeRooms(hotel, arrivalDate, departureDate);
-            rooms.addAll(freeRooms);
-        }
+       //for (Hotel hotel : hotels) {
+       //    List<Room> freeRooms = hotelService.findFreeRooms(hotel, arrivalDate, departureDate);
+       //    rooms.addAll(freeRooms);
+       //}
 
         // полученный список отсортировать по рейтингу отеля
 

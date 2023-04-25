@@ -1,30 +1,53 @@
 package ru.otus.hotelsbooker.model;
 
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.hotelsbooker.repository.HotelMapRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import ru.otus.hotelsbooker.dto.HotelDto;
+import ru.otus.hotelsbooker.repository.HotelJpaRepository;
+import ru.otus.hotelsbooker.service.HotelService;
 
 import java.util.List;
 
+@SpringBootTest
+@Transactional
+@Deprecated
 class HotelRepositoryTest {
-    private HotelMapRepository hotelRepository = new HotelMapRepository();
+    @Autowired
+    private HotelJpaRepository hotelJpaRepository;
+    @AfterEach
+    public void clear(){
+        List<Hotel> list = hotelJpaRepository.findAll();
+        list.forEach(hotel -> hotelJpaRepository.delete(hotel));
+    }
 
     @Test
+    @DisplayName("Тестирование метода поиск всех отелей")
     void testFindByCity() {
-        List<Hotel> actual = hotelRepository.findAllByCityIgnoreCase("Москва");
+        Hotel hotelFirst = hotelJpaRepository.save(Hotel.builder()
+                .name("Hilton")
+                .city("Москва")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+        Hotel hotelSecond = hotelJpaRepository.save(Hotel.builder()
+                .name("Hilton")
+                .city("Нижний Новгород")
+                .country("Россия")
+                .address("Красная площадь д.1")
+                .build());
+
+        List<Hotel> actual = hotelJpaRepository.findAllByCityIgnoreCase("Москва");
         List<Hotel> expected = List.of(
-                new Hotel(1L,"Hilton", "Москва", "Россия", 9.6, "Красная площать д.1"),
-                new Hotel(3L,"Hilton", "Москва", "Россия", 9.6, "Красная площать д.1"));
+                hotelJpaRepository.findAllById(hotelFirst.getId()));
         Assertions.assertEquals(expected, actual, "invalid");
+
     }
-    @Test
-    void testFindAll() {
-        List<Hotel> actual = hotelRepository.findAllByCityIgnoreCase(null);
-        List<Hotel> expected = List.of(
-                        new Hotel(1L,"Hilton", "Москва", "Россия", 9.6, "Красная площать д.1"),
-                        new Hotel(2L,"Hilton", "Нижний Новгород", "Россия", 9.6, "Красная площать д.1"),
-                        new Hotel(3L,"Hilton", "Москва", "Россия", 9.6, "Красная площать д.1"),
-                        new Hotel(4L,"Hilton", "Санкт-Петербург", "Россия", 9.6, "Красная площать д.1"));
-        Assertions.assertEquals(expected, actual, "invalid");
-    }
+
 }
