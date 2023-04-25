@@ -46,12 +46,12 @@ public class HotelService {
   public HotelDto createNewHotel(HotelDto hotelDto) {
 
     Hotel hotel = Hotel.builder()
-        .name(hotelDto.getName())
-        .address(hotelDto.getAddress())
-        .country(hotelDto.getCountry())
-        .city(hotelDto.getCity())
-        .rating(DEFAULT_RATING_FOR_NEW_HOTEL)
-        .build();
+            .name(hotelDto.getName())
+            .address(hotelDto.getAddress())
+            .country(hotelDto.getCountry())
+            .city(hotelDto.getCity())
+            .rating(DEFAULT_RATING_FOR_NEW_HOTEL)
+            .build();
 
     Hotel createdHotel = hotelRepository.save(hotel);
 
@@ -59,9 +59,25 @@ public class HotelService {
   }
 
   public HotelDto updateHotel(Long id, HotelDto hotelDto) {
-    // но сначала написать для тест (TDD)
-    // реализовать логики поиска отделя, обновление данных и сохранения
-    // только потом подключить контролер
-    return null;
+
+    Hotel hotel = hotelRepository.findAllById(id);
+
+    if (hotelDto.getName() != null) {
+      hotel.setName(hotelDto.getName());
+    }
+    if (hotelDto.getCity() != null) {
+      hotel.setCity(hotelDto.getCity());
+    }
+    if (hotelDto.getCountry() != null) {
+      hotel.setCountry(hotelDto.getCountry());
+    }
+    if (hotelDto.getAddress() != null) {
+      hotel.setAddress(hotelDto.getAddress());
+    }
+
+    Hotel updatedHotel = hotelRepository.save(hotel);
+
+    return HotelMapper.mapToDto(updatedHotel);
+
   }
 }

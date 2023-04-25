@@ -3,10 +3,13 @@ package ru.otus.hotelsbooker.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import jakarta.transaction.Transactional;
 import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.hotelsbooker.dto.HotelDto;
+import ru.otus.hotelsbooker.repository.HotelJpaRepository;
 import ru.otus.hotelsbooker.service.HotelService;
 
 @SpringBootTest
@@ -34,12 +37,26 @@ public class HotelServiceTest {
   }
 
   @Test
+
+
   void если_обновить_данные_отеля_то_после_его_получения_у_него_будут_эти_данные(){
-    //1. Создать отель, который буду обновлять
-    //2. Обновляю его hotelService.updateHotel
-    //3. Получаю его снова HotelService.getHotelById
-    //4. Сравнить
+
+    HotelDto hotel = new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1");
+    HotelDto createdDto = hotelService.createNewHotel(hotel);
+
+    createdDto.setName("Москва");
+
+    HotelDto updateDto = hotelService.updateHotel(createdDto.getId(), createdDto);
+    HotelDto savedDto = hotelService.getHotelById(updateDto.getId());
+
+    assertEquals(updateDto, savedDto);
+
   }
+
+
+
+
+
 
   @Test
   void test_that_findAll_with_given_city_gets_only_hotel_in_the_city() {

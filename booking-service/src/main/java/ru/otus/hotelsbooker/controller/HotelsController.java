@@ -2,13 +2,7 @@ package ru.otus.hotelsbooker.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.service.HotelService;
@@ -55,4 +49,22 @@ public class HotelsController {
   public HotelDto createHotel(@RequestBody HotelDto hotel) {
     return hotelsService.createNewHotel(hotel);
   }
+
+
+
+
+  /**
+   * PuT localhost:8881/hotel/{id}
+   * body {}
+   * @param hotel
+   * @return
+   */
+
+  @PutMapping(consumes = "application/json", produces = "application/json")
+  public HotelDto updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel) {
+
+      return hotelsService.updateHotel(id, hotel);
+
+  }
+
 }
