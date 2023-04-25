@@ -41,17 +41,6 @@ public class HotelsController {
         return hotelsService.getHotelById(id);
     }
 
-    /**
-     * POST localhost:8881/hotel
-     * body {}
-     *
-     * @param hotel
-     * @return
-     */
-    @PostMapping(consumes = "application/json")
-    public HotelDto createHotel(@RequestBody HotelDto hotel) {
-        return hotelsService.createNewHotel(hotel);
-    }
 
     /**
      * POST localhost:8881/hotel/{id}/room
