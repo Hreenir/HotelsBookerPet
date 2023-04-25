@@ -52,14 +52,25 @@ public class HotelServiceTest {
         assertEquals(hotelDto, savedDto);
     }
 
-    @Test
-    @DisplayName("Тестирование метода изменения данных отеля")
-    void ifUpdateHotelDataThenHotelDataWillBeUpdated() {
-        //1. Создать отель, который буду обновлять
-        //2. Обновляю его hotelService.updateHotel
-        //3. Получаю его снова HotelService.getHotelById
-        //4. Сравнить
-    }
+  @Test
+  @DisplayName("Тестирование метода изменения данных отеля")
+  void ifUpdateHotelDataThenHotelDataWillBeUpdated() {
+    HotelDto hotel = new HotelDto("Hilton", "Москва", "Россия", "Красная площадь д.1");
+    HotelDto createdDto = hotelService.createNewHotel(hotel);
+
+    createdDto.setName("Москва");
+
+    HotelDto updateDto = hotelService.updateHotel(createdDto.getId(), createdDto);
+    HotelDto savedDto = hotelService.getHotelById(updateDto.getId());
+
+    assertEquals(updateDto, savedDto);
+
+  }
+
+
+
+
+
 
     @Test
     @DisplayName("Тестирование метода поиск отелей по городу")

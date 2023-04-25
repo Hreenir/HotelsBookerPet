@@ -78,11 +78,27 @@ public class HotelService {
         hotelRepository.deleteById(id);
     }
 
-    public HotelDto updateHotel(HotelDto hotelDto) {
-        // но сначала написать для тест (TDD)
-        // реализовать логики поиска отделя, обновление данных и сохранения
-        // только потом подключить контролер
-        return null;
+    public HotelDto updateHotel(Long id, HotelDto hotelDto) {
+
+        Hotel hotel = hotelRepository.findAllById(id);
+
+        if (hotelDto.getName() != null) {
+            hotel.setName(hotelDto.getName());
+        }
+        if (hotelDto.getCity() != null) {
+            hotel.setCity(hotelDto.getCity());
+        }
+        if (hotelDto.getCountry() != null) {
+            hotel.setCountry(hotelDto.getCountry());
+        }
+        if (hotelDto.getAddress() != null) {
+            hotel.setAddress(hotelDto.getAddress());
+        }
+
+        Hotel updatedHotel = hotelRepository.save(hotel);
+
+        return HotelMapper.mapToDto(updatedHotel);
+
     }
 
     public RoomDto addRoom(RoomDto roomDto, Long id) {

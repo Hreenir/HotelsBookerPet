@@ -3,13 +3,7 @@ package ru.otus.hotelsbooker.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.dto.RoomDto;
 import ru.otus.hotelsbooker.service.HotelService;
@@ -47,17 +41,6 @@ public class HotelsController {
         return hotelsService.getHotelById(id);
     }
 
-    /**
-     * POST localhost:8881/hotel
-     * body {}
-     *
-     * @param hotel
-     * @return
-     */
-    @PostMapping(consumes = "application/json")
-    public HotelDto createHotel(@RequestBody HotelDto hotel) {
-        return hotelsService.createNewHotel(hotel);
-    }
 
     /**
      * POST localhost:8881/hotel/{id}/room
@@ -71,5 +54,33 @@ public class HotelsController {
         return hotelsService.addRoom(roomDto, id);
     }
 
+
+  /**
+   * POST localhost:8881/hotel
+   * body {}
+    * @param hotel
+   * @return
+   */
+  @PostMapping(consumes = "application/json", produces = "application/json")
+  public HotelDto createHotel(@RequestBody HotelDto hotel) {
+    return hotelsService.createNewHotel(hotel);
+  }
+
+
+
+
+  /**
+   * PuT localhost:8881/hotel/{id}
+   * body {}
+   * @param hotel
+   * @return
+   */
+
+  @PutMapping(consumes = "application/json", produces = "application/json")
+  public HotelDto updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel) {
+
+      return hotelsService.updateHotel(id, hotel);
+
+  }
 
 }
