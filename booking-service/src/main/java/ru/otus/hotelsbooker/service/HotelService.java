@@ -99,9 +99,4 @@ public class HotelService {
 
     }
 
-    public RoomDto addRoom(RoomDto roomDto, Long id) {
-        Hotel hotel = hotelRepository.findAllById(id);
-        return  roomService.addRoom(roomDto, hotel);
-    }
-
 }
