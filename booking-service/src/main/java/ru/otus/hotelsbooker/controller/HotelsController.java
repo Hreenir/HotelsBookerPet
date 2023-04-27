@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.hotelsbooker.dto.HotelDto;
-import ru.otus.hotelsbooker.dto.RoomDto;
 import ru.otus.hotelsbooker.service.HotelService;
 
 @RestController

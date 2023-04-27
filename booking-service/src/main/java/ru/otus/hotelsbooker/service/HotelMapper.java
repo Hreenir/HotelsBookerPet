@@ -1,7 +1,5 @@
 package ru.otus.hotelsbooker.service;
 
-import ru.otus.hotelsbooker.dto.HotelDto;
-import ru.otus.hotelsbooker.dto.RoomDto;
 import ru.otus.hotelsbooker.model.Hotel;
 
 import java.util.List;

@@ -14,8 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.otus.hotelsbooker.dto.HotelDto;
-import ru.otus.hotelsbooker.dto.RoomDto;
 import ru.otus.hotelsbooker.repository.RolesJpaRepository;
 import ru.otus.hotelsbooker.repository.UsersJpaRepository;
 import ru.otus.hotelsbooker.service.HotelService;
@@ -24,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

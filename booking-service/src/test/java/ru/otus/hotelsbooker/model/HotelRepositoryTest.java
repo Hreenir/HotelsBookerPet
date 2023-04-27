@@ -9,9 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
-import ru.otus.hotelsbooker.service.HotelService;
 
 import java.util.List;
 

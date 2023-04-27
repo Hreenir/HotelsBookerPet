@@ -11,7 +11,8 @@
 	<modules>
 		<module>booking-service</module>
 		<module>telegram-bot</module>
-	</modules>
+        <module>core-library</module>
+    </modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

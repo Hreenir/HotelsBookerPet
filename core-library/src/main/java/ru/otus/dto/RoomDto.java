@@ -1,6 +1,4 @@
-package ru.otus.hotelsbooker.dto;
-
-import lombok.*;
+package ru.otus.dto;
 
 import java.math.BigDecimal;
 
