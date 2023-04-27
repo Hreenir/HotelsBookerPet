@@ -29,14 +29,15 @@ public class HotelService {
     private final HotelJpaRepository hotelRepository;
     private final RoomJpaRepository roomJpaRepository;
     private final LocalRoomJpaRepository localRoomJpaRepository;
+    private final RoomService roomService;
 
     @Autowired
-    public HotelService(HotelJpaRepository hotelRepository, RoomJpaRepository roomJpaRepository, LocalRoomJpaRepository localRoomJpaRepository) {
+    public HotelService(HotelJpaRepository hotelRepository, RoomJpaRepository roomJpaRepository, LocalRoomJpaRepository localRoomJpaRepository, RoomService roomService) {
         this.hotelRepository = hotelRepository;
         this.roomJpaRepository = roomJpaRepository;
         this.localRoomJpaRepository = localRoomJpaRepository;
+        this.roomService = roomService;
     }
-
 
     public List<Room> findFreeRooms(Hotel hotel, LocalDate arrivalDate, LocalDate departureDate) {
         // поиск свободных номер по датам
@@ -50,16 +51,10 @@ public class HotelService {
                 .toList();
     }
 
-
     public HotelDto getHotelById(long id) {
         Hotel hotel = hotelRepository.findAllById(id);
         return HotelMapper.mapToDto(hotel);
     }
-
-    // DTO->BL (мы пишем)->DTO
-    // createHotel -> createNewHotel
-    // createHotel -> newHotel
-    // createHotel -> createHotel
 
     public HotelDto createNewHotel(HotelDto hotelDto) {
 
@@ -73,10 +68,9 @@ public class HotelService {
                 .build();
 
         Hotel createdHotel = hotelRepository.save(hotel);
-
-
         return HotelMapper.mapToDto(createdHotel);
     }
+
     public void deleteHotel(Long id) {
         hotelRepository.deleteById(id);
     }
@@ -105,16 +99,9 @@ public class HotelService {
     }
 
     public RoomDto addRoom(RoomDto roomDto, Long id) {
-
         Hotel hotel = hotelRepository.findAllById(id);
-        Room room = RoomMapper.mapToRoom(roomDto);
-        room.setHotel(hotel);
-        roomJpaRepository.save(room);
-        hotel.getRooms().add(room);
-        return RoomMapper.mapToRoomDto(room);
+        roomService.addRoom(roomDto, hotel);
+        return roomDto;
+    }
 
-    }
-    public void disableLocalRoom(long localRoomId){
-        localRoomJpaRepository.disableLocalRoom(localRoomId);
-    }
 }
