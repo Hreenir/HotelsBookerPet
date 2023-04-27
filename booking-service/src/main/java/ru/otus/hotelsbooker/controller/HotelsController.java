@@ -94,7 +94,7 @@ public class HotelsController {
         return hotelsService.updateHotel(id, hotel);
     }
 
-    @PostMapping(path = "room/{id}", consumes = "application/json",produces = "application/json")
+    @PostMapping(path = "/{id}/localroom", consumes = "application/json",produces = "application/json")
     public LocalRoomDto addLocalRoom(@RequestBody LocalRoomDto localRoomDto, @PathVariable Long id){
         return roomService.addLocalRoom(localRoomDto,id);
     }
