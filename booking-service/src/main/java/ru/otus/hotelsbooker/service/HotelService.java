@@ -101,8 +101,7 @@ public class HotelService {
 
     public RoomDto addRoom(RoomDto roomDto, Long id) {
         Hotel hotel = hotelRepository.findAllById(id);
-        roomService.addRoom(roomDto, hotel);
-        return roomDto;
+        return  roomService.addRoom(roomDto, hotel);
     }
 
 }
