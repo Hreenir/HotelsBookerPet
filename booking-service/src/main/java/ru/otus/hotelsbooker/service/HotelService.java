@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.dto.RoomDto;
+import ru.otus.hotelsbooker.mapper.HotelMapper;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.Room;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;

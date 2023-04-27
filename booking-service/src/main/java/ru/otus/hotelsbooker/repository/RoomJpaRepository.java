@@ -6,6 +6,7 @@ import ru.otus.hotelsbooker.model.Room;
 
 
 public interface RoomJpaRepository extends JpaRepository<Room, Long>  {
-    Room findAllById(long id);
+    Room findById(long id);
 
 }
+

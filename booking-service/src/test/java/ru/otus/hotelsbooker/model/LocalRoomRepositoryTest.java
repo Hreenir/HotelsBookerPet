@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
 import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
 import ru.otus.hotelsbooker.repository.RoomJpaRepository;
+import ru.otus.hotelsbooker.service.RoomService;
 
 import java.math.BigDecimal;
 @Transactional
@@ -23,6 +24,7 @@ public class LocalRoomRepositoryTest {
     private RoomJpaRepository roomJpaRepository;
     @Autowired
     private HotelJpaRepository hotelJpaRepository;
+
     private LocalRoom localRoom;
 
     @BeforeEach
@@ -55,5 +57,11 @@ public class LocalRoomRepositoryTest {
         localRoomJpaRepository.disableLocalRoom(localRoom.getId());
         localRoom = localRoomJpaRepository.findById(localRoom.getId()).get();
         Assertions.assertEquals(false, localRoom.isEnabled());
+    }
+    @Test
+    @DisplayName("Тестирование добавления локальной комнаты")
+    public void testAddLocalRoom(){
+        LocalRoom savedLocalRoom = localRoomJpaRepository.save(localRoom);
+        Assertions.assertEquals(localRoom,savedLocalRoom);
     }
 }

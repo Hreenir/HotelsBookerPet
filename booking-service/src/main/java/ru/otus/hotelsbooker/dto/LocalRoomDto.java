@@ -14,7 +14,8 @@ public class LocalRoomDto {
     private Long id;
     private int roomNumber;
     private boolean enabled;
-    private Room room;
+    @EqualsAndHashCode.Exclude
+    private RoomDto room;
 
 
 }

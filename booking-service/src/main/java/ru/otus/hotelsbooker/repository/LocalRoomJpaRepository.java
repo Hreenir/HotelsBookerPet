@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.LocalRoom;
 import ru.otus.hotelsbooker.model.Role;
+import ru.otus.hotelsbooker.model.Room;
 
 import java.util.Set;
 

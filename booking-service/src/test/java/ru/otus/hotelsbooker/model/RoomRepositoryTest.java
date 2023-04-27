@@ -20,16 +20,16 @@ public class RoomRepositoryTest {
     private HotelService hotelService;
 
 
-   /* @Test
+    @Test
     @DisplayName("Тестирование успешного добавления апартаментов в отель")
     void testSuccessfullyAddRoomToAHotel() {
         HotelDto hotelDto = hotelService.createNewHotel(new HotelDto("Hilton", "Moscow", "Russia", "address"));
-        RoomDto roomDtoFirst = hotelService.addRoom(new RoomDto("Single", 1, new BigDecimal(100)), hotelDto.getId());
-        RoomDto roomDtoSecond = hotelService.addRoom(new RoomDto("Double", 2, new BigDecimal(100)), hotelDto.getId());
+        RoomDto roomDtoFirst = hotelService.addRoom(new RoomDto(1L,"Single", 1, new BigDecimal(100)), hotelDto.getId());
+        RoomDto roomDtoSecond = hotelService.addRoom(new RoomDto(2L,"Double", 2, new BigDecimal(100)), hotelDto.getId());
         List<RoomDto> actual = List.of(roomDtoFirst, roomDtoSecond);
         List<RoomDto> expected = hotelService.getHotelById(hotelDto.getId()).getRooms();
         Assertions.assertEquals(expected, actual);
-    }*/
+    }
     @Test
     @DisplayName("Тестирование связности апартоментов с отелем")
     void testThatHotelIdMatchesWithHotelIdAddedRoom() {
