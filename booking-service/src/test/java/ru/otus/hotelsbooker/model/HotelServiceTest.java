@@ -67,11 +67,6 @@ public class HotelServiceTest {
 
   }
 
-
-
-
-
-
     @Test
     @DisplayName("Тестирование метода поиск отелей по городу")
     void testThatFindAllWithGivenCityGetsOnlyHotelInTheCity() {

@@ -55,6 +55,11 @@ public class HotelsController {
     }
 
 
+    @DeleteMapping(path = "/localroom/{id}")
+    public void disableLocalRoom(@PathVariable Long id){
+        hotelsService.disableLocalRoom(id);
+    }
+
   /**
    * POST localhost:8881/hotel
    * body {}
@@ -65,9 +70,6 @@ public class HotelsController {
   public HotelDto createHotel(@RequestBody HotelDto hotel) {
     return hotelsService.createNewHotel(hotel);
   }
-
-
-
 
   /**
    * PuT localhost:8881/hotel/{id}
