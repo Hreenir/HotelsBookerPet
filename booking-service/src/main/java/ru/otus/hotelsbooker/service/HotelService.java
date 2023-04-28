@@ -115,6 +115,8 @@ public class HotelService {
 
     }
     public void disableLocalRoom(long localRoomId){
-        localRoomJpaRepository.disableLocalRoom(localRoomId);
+        if (localRoomJpaRepository.findLocalRoomById(localRoomId) != null) {
+            localRoomJpaRepository.disableLocalRoom(localRoomId);
+        }
     }
 }

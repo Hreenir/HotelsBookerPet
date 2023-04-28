@@ -55,7 +55,7 @@ public class HotelsController {
     }
 
 
-    @PutMapping(path = "/localroom/{id}")
+    @DeleteMapping(path = "/localroom/{id}")
     public void disableLocalRoom(@PathVariable Long id){
         hotelsService.disableLocalRoom(id);
     }

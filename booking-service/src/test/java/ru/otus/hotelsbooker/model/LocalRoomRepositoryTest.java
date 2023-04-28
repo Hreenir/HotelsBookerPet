@@ -1,10 +1,8 @@
 package ru.otus.hotelsbooker.model;
 
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
@@ -14,7 +12,9 @@ import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
 import ru.otus.hotelsbooker.repository.RoomJpaRepository;
 
 import java.math.BigDecimal;
-@Transactional
+import java.util.List;
+
+
 @SpringBootTest
 public class LocalRoomRepositoryTest {
     @Autowired
@@ -33,20 +33,29 @@ public class LocalRoomRepositoryTest {
                 .country("Россия")
                 .address("Красная площадь д.1")
                 .build());
-        Room room = Room.builder()
+        Room room = roomJpaRepository.save(Room.builder()
                 .name("Single")
                 .capacity(1)
                 .hotel(hotel)
                 .priceByDay(new BigDecimal(1100))
-                .build();
-        localRoom = LocalRoom.builder()
+                .build());
+        localRoom = localRoomJpaRepository.save(LocalRoom.builder()
                 .roomNumber(1)
                 .enabled(true)
                 .room(room)
-                .build();
-        roomJpaRepository.save(room);
-        localRoomJpaRepository.save(localRoom);
+                .build());
+    }
+    @AfterEach
+    public void clear(){
 
+        List<LocalRoom> list2 = localRoomJpaRepository.findAll();
+        list2.forEach(localRoom -> localRoomJpaRepository.delete(localRoom));
+
+        List<Room> list1 = roomJpaRepository.findAll();
+        list1.forEach(room -> roomJpaRepository.delete(room));
+
+        List<Hotel> list = hotelJpaRepository.findAll();
+        list.forEach(hotel -> hotelJpaRepository.delete(hotel));
     }
 
     @Test
