@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode
 @Entity
+@ToString
 public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
