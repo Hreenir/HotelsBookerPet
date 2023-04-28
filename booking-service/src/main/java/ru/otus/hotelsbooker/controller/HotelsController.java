@@ -3,7 +3,9 @@ package ru.otus.hotelsbooker.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.otus.hotelsbooker.service.HotelNotFoundException;
 import ru.otus.hotelsbooker.service.HotelService;
 
 @RestController
@@ -48,8 +50,13 @@ public class HotelsController {
      * @return
      */
     @PostMapping(path = "/{id}/room", consumes = "application/json")
-    public RoomDto addRoom(@RequestBody RoomDto roomDto,@PathVariable Long id){
-        return hotelsService.addRoom(roomDto, id);
+    public ResponseEntity<RoomDto> addRoom(@RequestBody RoomDto roomDto, @PathVariable Long id){
+        try {
+            RoomDto result = hotelsService.addRoom(roomDto, id);
+            return ResponseEntity.of(result);
+        } catch (HotelNotFoundException e) {
+            return ResponseEntity.notFound();
+        }
     }
 
 

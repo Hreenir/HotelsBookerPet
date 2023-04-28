@@ -101,6 +101,9 @@ public class HotelService {
 
     public RoomDto addRoom(RoomDto roomDto, Long id) {
         Hotel hotel = hotelRepository.findAllById(id);
+        if (hotel == null) {
+            throw new HotelNotFoundException("Hotel with id=" + id + " not found!");
+        }
         Room room = RoomMapper.mapToRoom(roomDto);
         room.setHotel(hotel);
         roomJpaRepository.save(room);
