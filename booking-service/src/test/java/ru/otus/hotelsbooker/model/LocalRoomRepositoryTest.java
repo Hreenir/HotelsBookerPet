@@ -14,7 +14,7 @@ import ru.otus.hotelsbooker.repository.RoomJpaRepository;
 import java.math.BigDecimal;
 import java.util.List;
 
-
+@Transactional
 @SpringBootTest
 public class LocalRoomRepositoryTest {
     @Autowired
