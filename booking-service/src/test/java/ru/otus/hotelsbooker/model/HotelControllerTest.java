@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.otus.dto.HotelDto;
+import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.repository.RolesJpaRepository;
 import ru.otus.hotelsbooker.repository.UsersJpaRepository;
 import ru.otus.hotelsbooker.service.HotelService;

@@ -1,5 +1,6 @@
 package ru.otus.hotelsbooker.service;
 
+import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.model.Room;
 
 public class RoomMapper {

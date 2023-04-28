@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.otus.dto.HotelDto;
+import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.Room;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;

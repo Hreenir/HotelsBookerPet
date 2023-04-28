@@ -56,7 +56,6 @@
         <dependency>
             <groupId>ru.otus</groupId>
             <artifactId>core-library</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>
