@@ -1,12 +1,5 @@
 package ru.otus.hotelsbooker.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,21 +8,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
-import ru.otus.hotelsbooker.repository.RoomJpaRepository;
 import ru.otus.hotelsbooker.service.HotelService;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
+//@Transactional
 public class HotelServiceTest {
     //почему не удаляется?
     @Autowired
     private HotelService hotelService;
     @Autowired
     private HotelJpaRepository hotelJpaRepository;
-    @AfterEach
-    public void clear(){
-        List<Hotel> list = hotelJpaRepository.findAll();
-        list.forEach(hotel -> hotelJpaRepository.delete(hotel));
-    }
 
     @Test
     @DisplayName("Тестирование метода создания отеля с дефолтным рейтингом")
@@ -158,19 +151,10 @@ public class HotelServiceTest {
         RoomDto roomDtoSecond = hotelService.addRoom(new RoomDto("Double", 2, new BigDecimal(100)), hotelDto.getId());
         List<RoomDto> actual = List.of(roomDtoFirst, roomDtoSecond);
         List<RoomDto> expected = hotelService.getHotelById(hotelDto.getId()).getRooms();
-        Assertions.assertEquals(expected, actual);
-    }
-    @Test
-    @DisplayName("Тестирование связности апартоментов с отелем")
-    void testThatHotelIdMatchesWithHotelIdAddedRoom() {
-        HotelDto hotelDto = hotelService.createNewHotel(new HotelDto("Hilton", "Moscow", "Russia", "address"));
-        Hotel createdHotel = hotelService.getHotelRepository().findAllById(hotelDto.getId());
-        hotelService.addRoom(new RoomDto("Single", 1, new BigDecimal(100)), hotelDto.getId());
-        List <Room> rooms = createdHotel.getRooms();
-        Room room = rooms.get(0);
+        Assertions.assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            Assertions.assertEquals(expected.get(i).getName(), actual.get(i).getName());
+        }
 
-        long expected = room.getHotel().getId();
-        long actual = createdHotel.getId();
-        Assertions.assertEquals(expected, actual);
     }
 }

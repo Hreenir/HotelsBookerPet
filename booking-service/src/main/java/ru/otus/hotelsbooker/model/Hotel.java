@@ -27,7 +27,7 @@ public class Hotel {
     private String address;
     @OneToMany
     @JoinColumn(name = "hotel")
-    private List<Room> rooms = new ArrayList<>();
+    private List<Room> rooms;
 
 
 }

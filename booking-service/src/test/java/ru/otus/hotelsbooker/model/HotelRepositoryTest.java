@@ -6,23 +6,49 @@ import org.junit.jupiter.api.Assertions;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import ru.otus.dto.HotelDto;
+import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
+import ru.otus.hotelsbooker.repository.RoomJpaRepository;
+import ru.otus.hotelsbooker.service.HotelService;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional
-@Deprecated
 class HotelRepositoryTest {
     @Autowired
     private HotelJpaRepository hotelJpaRepository;
-    @AfterEach
-    public void clear(){
-        List<Hotel> list = hotelJpaRepository.findAll();
-        list.forEach(hotel -> hotelJpaRepository.delete(hotel));
+
+    @Autowired
+    private HotelService hotelService;
+
+    @Mock
+    private RoomJpaRepository roomJpaRepository;
+
+    @Test
+    @DisplayName("Тестирование связности апартоментов с отелем")
+    void testThatHotelIdMatchesWithHotelIdAddedRoom() {
+        Hotel hotel = hotelJpaRepository.save(Hotel.builder()
+                .name("Hilton")
+                .city("Moscow")
+                .country("Russia")
+                .address("address").build());
+        Hotel createdHotel = hotelJpaRepository.findAllById(hotel.getId());
+
+        hotelService.addRoom(new RoomDto("Single", 1, new BigDecimal(100)), hotel.getId());
+        List <Room> rooms = createdHotel.getRooms();
+        Room room = rooms.get(0);
+
+        long expected = room.getHotel().getId();
+        long actual = createdHotel.getId();
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
