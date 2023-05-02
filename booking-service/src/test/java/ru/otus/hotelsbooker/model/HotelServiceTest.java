@@ -29,10 +29,10 @@ public class HotelServiceTest {
     @Autowired
     private HotelJpaRepository hotelJpaRepository;
 
-//    @AfterEach
-//    public void after() {
-//        hotelService.clearAll();
-//    }
+    @AfterEach
+    public void after() {
+        hotelService.clearAll();
+    }
 
     @Test
     @DisplayName("Тестирование метода создания отеля с дефолтным рейтингом")
@@ -44,7 +44,6 @@ public class HotelServiceTest {
                 .address("Красная площадь д.1")
                 .build());
         assertEquals(8.0, hotelDto.getRating());
-        hotelService.clearAll();
     }
 
     @Test
@@ -58,7 +57,6 @@ public class HotelServiceTest {
                 .build());
         HotelDto savedDto = hotelService.getHotelById(hotelDto.getId());
         assertEquals(hotelDto, savedDto);
-        hotelService.clearAll();
     }
 
   @Test
@@ -73,8 +71,6 @@ public class HotelServiceTest {
     HotelDto savedDto = hotelService.getHotelById(updateDto.getId());
 
     assertEquals(updateDto, savedDto);
-      hotelService.clearAll();
-
   }
 
 
@@ -116,7 +112,6 @@ public class HotelServiceTest {
                 hotel1,
                 hotel3);
         assertEquals(expected, actual);
-        hotelService.clearAll();
     }
 
     @Test
@@ -155,7 +150,6 @@ public class HotelServiceTest {
                 hotel3,
                 hotel4);
         assertEquals(expected, actual);
-        hotelService.clearAll();
     }
 
     @Test
@@ -170,7 +164,5 @@ public class HotelServiceTest {
         for (int i = 0; i < expected.size(); i++) {
             Assertions.assertEquals(expected.get(i).getName(), actual.get(i).getName());
         }
-        hotelService.clearAll();
-
     }
 }
