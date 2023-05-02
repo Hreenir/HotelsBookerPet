@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @Transactional
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 class HotelRepositoryTest {
     @Autowired
     private HotelJpaRepository hotelJpaRepository;

@@ -4,8 +4,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
@@ -19,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class HotelServiceTest {
     //почему не удаляется?
     @Autowired
@@ -26,10 +29,10 @@ public class HotelServiceTest {
     @Autowired
     private HotelJpaRepository hotelJpaRepository;
 
-    @AfterEach
-    public void after() {
-        hotelService.clearAll();
-    }
+//    @AfterEach
+//    public void after() {
+//        hotelService.clearAll();
+//    }
 
     @Test
     @DisplayName("Тестирование метода создания отеля с дефолтным рейтингом")
@@ -41,6 +44,7 @@ public class HotelServiceTest {
                 .address("Красная площадь д.1")
                 .build());
         assertEquals(8.0, hotelDto.getRating());
+        hotelService.clearAll();
     }
 
     @Test
@@ -54,6 +58,7 @@ public class HotelServiceTest {
                 .build());
         HotelDto savedDto = hotelService.getHotelById(hotelDto.getId());
         assertEquals(hotelDto, savedDto);
+        hotelService.clearAll();
     }
 
   @Test
@@ -68,6 +73,7 @@ public class HotelServiceTest {
     HotelDto savedDto = hotelService.getHotelById(updateDto.getId());
 
     assertEquals(updateDto, savedDto);
+      hotelService.clearAll();
 
   }
 
@@ -110,6 +116,7 @@ public class HotelServiceTest {
                 hotel1,
                 hotel3);
         assertEquals(expected, actual);
+        hotelService.clearAll();
     }
 
     @Test
@@ -148,6 +155,7 @@ public class HotelServiceTest {
                 hotel3,
                 hotel4);
         assertEquals(expected, actual);
+        hotelService.clearAll();
     }
 
     @Test
@@ -162,6 +170,7 @@ public class HotelServiceTest {
         for (int i = 0; i < expected.size(); i++) {
             Assertions.assertEquals(expected.get(i).getName(), actual.get(i).getName());
         }
+        hotelService.clearAll();
 
     }
 }
