@@ -73,11 +73,6 @@ public class HotelServiceTest {
     assertEquals(updateDto, savedDto);
   }
 
-
-
-
-
-
     @Test
     @DisplayName("Тестирование метода поиск отелей по городу")
     void testThatFindAllWithGivenCityGetsOnlyHotelInTheCity() {

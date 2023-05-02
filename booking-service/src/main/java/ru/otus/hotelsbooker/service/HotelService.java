@@ -14,6 +14,7 @@ import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.Room;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
+import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
 import ru.otus.hotelsbooker.repository.RoomJpaRepository;
 
 /**
@@ -28,11 +29,13 @@ public class HotelService {
     private final static double DEFAULT_RATING_FOR_NEW_HOTEL = 8.0;
     private final HotelJpaRepository hotelRepository;
     private final RoomJpaRepository roomJpaRepository;
+    private final LocalRoomJpaRepository localRoomJpaRepository;
 
     @Autowired
-    public HotelService(HotelJpaRepository hotelRepository, RoomJpaRepository roomJpaRepository) {
+    public HotelService(HotelJpaRepository hotelRepository, RoomJpaRepository roomJpaRepository, LocalRoomJpaRepository localRoomJpaRepository) {
         this.hotelRepository = hotelRepository;
         this.roomJpaRepository = roomJpaRepository;
+        this.localRoomJpaRepository = localRoomJpaRepository;
     }
 
 
@@ -116,6 +119,11 @@ public class HotelService {
         hotel.getRooms().add(room);
         return RoomMapper.mapToRoomDto(room);
 
+    }
+    public void disableLocalRoom(long localRoomId){
+        if (localRoomJpaRepository.findLocalRoomById(localRoomId) != null) {
+            localRoomJpaRepository.disableLocalRoom(localRoomId);
+        }
     }
 
     public void clearAll() {
