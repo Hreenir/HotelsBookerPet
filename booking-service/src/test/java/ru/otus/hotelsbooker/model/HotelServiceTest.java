@@ -1,10 +1,12 @@
 package ru.otus.hotelsbooker.model;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
@@ -16,13 +18,18 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-//@Transactional
+@Transactional
 public class HotelServiceTest {
     //почему не удаляется?
     @Autowired
     private HotelService hotelService;
     @Autowired
     private HotelJpaRepository hotelJpaRepository;
+
+    @AfterEach
+    public void after() {
+        hotelService.clearAll();
+    }
 
     @Test
     @DisplayName("Тестирование метода создания отеля с дефолтным рейтингом")

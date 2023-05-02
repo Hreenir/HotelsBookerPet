@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.repository.RolesJpaRepository;
@@ -97,7 +98,7 @@ public class HotelControllerTest {
         ResponseEntity<HotelDto> hotelDtoResponseEntity = restTemplate
                 .postForEntity("http://localhost:" + port + "/hotel", entity, HotelDto.class);
 
-        Assertions.assertEquals(hotelDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(200));
+        Assertions.assertEquals(HttpStatusCode.valueOf(200), hotelDtoResponseEntity.getStatusCode());
         HotelDto body = hotelDtoResponseEntity.getBody();
         Assertions.assertEquals(hotel.getName(), body.getName());
         Assertions.assertEquals(hotel.getCity(), body.getCity());
