@@ -188,13 +188,15 @@ public class HotelControllerTest {
         Long id = hotelDto.getId();
         // способ 2
         HttpEntity<String> entity = new HttpEntity<>(roomJson, headers);
-        ResponseEntity<RoomDto> roomDtoResponseEntity = restTemplate
-                .postForEntity("http://localhost:" + port + "/hotel/132/room", entity, RoomDto.class);
+        ResponseEntity<String> roomDtoResponseEntity = restTemplate
+                .postForEntity("http://localhost:" + port + "/hotel/132/room", entity, String.class);
 
-        Assertions.assertEquals(roomDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(500));
-        RoomDto body = roomDtoResponseEntity.getBody();
-        Assertions.assertEquals(null, body.getName());
-        Assertions.assertEquals(0, body.getCapacity());
-        Assertions.assertEquals(null, body.getPriceByDay());
+        Assertions.assertNotNull(roomDtoResponseEntity);
+        Assertions.assertEquals("Hotel with id=132 not found!", roomDtoResponseEntity.getBody());
+//        Assertions.assertEquals(roomDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(500));
+//        RoomDto body = roomDtoResponseEntity.getBody();
+//        Assertions.assertEquals(null, body.getName());
+//        Assertions.assertEquals(0, body.getCapacity());
+//        Assertions.assertEquals(null, body.getPriceByDay());
     }
 }

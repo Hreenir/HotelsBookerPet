@@ -109,6 +109,9 @@ public class HotelService {
         Room room = RoomMapper.mapToRoom(roomDto);
         room.setHotel(hotel);
         roomJpaRepository.save(room);
+        if (hotel.getRooms() == null) {
+            hotel.setRooms(new ArrayList<>());
+        }
         hotel.getRooms().add(room);
         return RoomMapper.mapToRoomDto(room);
 
