@@ -11,7 +11,8 @@
 	<modules>
 		<module>booking-service</module>
 		<module>telegram-bot</module>
-	</modules>
+        <module>core-library</module>
+    </modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -20,4 +21,13 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>ru.otus</groupId>
+				<artifactId>core-library</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

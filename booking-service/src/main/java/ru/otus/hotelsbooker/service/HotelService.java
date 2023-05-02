@@ -4,12 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.otus.hotelsbooker.dto.HotelDto;
-import ru.otus.hotelsbooker.dto.RoomDto;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import ru.otus.dto.HotelDto;
+import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.Room;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
@@ -22,7 +23,7 @@ import ru.otus.hotelsbooker.repository.RoomJpaRepository;
  */
 @Service
 @Getter
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 public class HotelService {
 
     private final static double DEFAULT_RATING_FOR_NEW_HOTEL = 8.0;
@@ -105,11 +106,16 @@ public class HotelService {
     }
 
     public RoomDto addRoom(RoomDto roomDto, Long id) {
-
         Hotel hotel = hotelRepository.findAllById(id);
+        if (hotel == null) {
+            throw new HotelNotFoundException("Hotel with id=" + id + " not found!");
+        }
         Room room = RoomMapper.mapToRoom(roomDto);
         room.setHotel(hotel);
         roomJpaRepository.save(room);
+        if (hotel.getRooms() == null) {
+            hotel.setRooms(new ArrayList<>());
+        }
         hotel.getRooms().add(room);
         return RoomMapper.mapToRoomDto(room);
 
@@ -118,5 +124,10 @@ public class HotelService {
         if (localRoomJpaRepository.findLocalRoomById(localRoomId) != null) {
             localRoomJpaRepository.disableLocalRoom(localRoomId);
         }
+    }
+
+    public void clearAll() {
+        List<Hotel> list = hotelRepository.findAll();
+        list.forEach(hotel -> hotelRepository.delete(hotel));
     }
 }

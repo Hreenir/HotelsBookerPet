@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.otus.hotelsbooker.dto.HotelDto;
+import ru.otus.dto.HotelDto;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
 import ru.otus.hotelsbooker.repository.RoomJpaRepository;
