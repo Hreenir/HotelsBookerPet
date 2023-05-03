@@ -4,10 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import ru.otus.dto.HotelDto;
+import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.dto.HotelDto;
 import ru.otus.hotelsbooker.dto.RoomDto;
 import ru.otus.hotelsbooker.mapper.HotelMapper;
@@ -23,7 +26,7 @@ import ru.otus.hotelsbooker.repository.RoomJpaRepository;
  */
 @Service
 @Getter
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 public class HotelService {
 
     private final static double DEFAULT_RATING_FOR_NEW_HOTEL = 8.0;
@@ -40,6 +43,7 @@ public class HotelService {
         this.roomService = roomService;
     }
 
+
     public List<Room> findFreeRooms(Hotel hotel, LocalDate arrivalDate, LocalDate departureDate) {
         // поиск свободных номер по датам
         return null;
@@ -51,6 +55,7 @@ public class HotelService {
                 .map(hotel -> HotelMapper.mapToDto(hotel))
                 .toList();
     }
+
 
     public HotelDto getHotelById(long id) {
         Hotel hotel = hotelRepository.findAllById(id);
@@ -99,4 +104,29 @@ public class HotelService {
 
     }
 
+    public RoomDto addRoom(RoomDto roomDto, Long id) {
+        Hotel hotel = hotelRepository.findAllById(id);
+        if (hotel == null) {
+            throw new HotelNotFoundException("Hotel with id=" + id + " not found!");
+        }
+        Room room = RoomMapper.mapToRoom(roomDto);
+        room.setHotel(hotel);
+        roomJpaRepository.save(room);
+        if (hotel.getRooms() == null) {
+            hotel.setRooms(new ArrayList<>());
+        }
+        hotel.getRooms().add(room);
+        return RoomMapper.mapToRoomDto(room);
+
+    }
+    public void disableLocalRoom(long localRoomId){
+        if (localRoomJpaRepository.findLocalRoomById(localRoomId) != null) {
+            localRoomJpaRepository.disableLocalRoom(localRoomId);
+        }
+    }
+
+    public void clearAll() {
+        List<Hotel> list = hotelRepository.findAll();
+        list.forEach(hotel -> hotelRepository.delete(hotel));
+    }
 }

@@ -1,4 +1,4 @@
-package ru.otus.hotelsbooker.dto;
+package ru.otus.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,13 @@
-package ru.otus.hotelsbooker.dto;
+package ru.otus.dto;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
@@ -10,6 +17,7 @@ import java.math.BigDecimal;
 @Setter
 @EqualsAndHashCode
 @Builder
+@ToString
 public class RoomDto {
     @Setter(AccessLevel.NONE)
     private Long id;

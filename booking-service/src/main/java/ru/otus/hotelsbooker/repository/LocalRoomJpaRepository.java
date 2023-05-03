@@ -13,12 +13,13 @@ import java.util.Set;
 
 public interface LocalRoomJpaRepository extends JpaRepository<LocalRoom, Long> {
     @Modifying(clearAutomatically = true)
-    @Query(nativeQuery = true, value =
-            "update local_rooms \n" +
+    @Query(value =
+                    "update LocalRoom \n" +
                     "set enabled = false\n" +
                     "where id = :localRoomId")
     public void disableLocalRoom(@Param("localRoomId") long localRoomId);
 
+    LocalRoom findLocalRoomById(long id);
 
 
 }
