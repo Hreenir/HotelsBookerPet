@@ -10,14 +10,17 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.otus.hotelsbooker.dto.HotelDto;
-import ru.otus.hotelsbooker.dto.RoomDto;
+import ru.otus.dto.HotelDto;
+import ru.otus.dto.RoomDto;
+import ru.otus.hotelsbooker.repository.HotelJpaRepository;
 import ru.otus.hotelsbooker.repository.RolesJpaRepository;
+import ru.otus.hotelsbooker.repository.RoomJpaRepository;
 import ru.otus.hotelsbooker.repository.UsersJpaRepository;
 import ru.otus.hotelsbooker.service.HotelService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,6 +43,11 @@ public class RoomControllerTest {
     private RolesJpaRepository rolesJpaRepository;
     @Autowired
     private UsersJpaRepository usersJpaRepository;
+    @Autowired
+    private RoomJpaRepository roomJpaRepository;
+    @Autowired
+    private HotelJpaRepository hotelJpaRepository;
+    private final int NOT_EXISTING_ROOM_ID = 132;
     @BeforeEach
     public void prepare(){
         Role roleUser = Role.builder()
@@ -79,7 +87,7 @@ public class RoomControllerTest {
         Long id = hotelDto.getId();
         // способ 2
         MvcResult mvcResult = mockMvc.perform(
-                        post("/room/" + id)
+                        post("/room/hotel/" + id)
                                 .headers(headers)
                                 .content(roomJson.getBytes()))
                 .andDo(print())
@@ -90,6 +98,16 @@ public class RoomControllerTest {
         Assertions.assertEquals(roomDto.getName(), body2.getName());
         Assertions.assertEquals(roomDto.getCapacity(), body2.getCapacity());
         Assertions.assertEquals(roomDto.getPriceByDay(), body2.getPriceByDay());
+//1
+        Room room = roomJpaRepository.findRoomById(roomDto.getId());
+        Assertions.assertEquals(room.getName(), roomDto.getName());
+        Assertions.assertEquals(room.getCapacity(), roomDto.getCapacity());
+//2 в Hotel добавил @OneToMany(fetch= FetchType.EAGER), иначе сталкивался в ошибкой ленивой инициализации
+        Hotel hotel = hotelJpaRepository.findAllById(hotelDto.getId());
+        Room findedRoom = hotel.getRooms().get(0);
+        Assertions.assertEquals(findedRoom.getId(), roomDto.getId());
+        Assertions.assertEquals(findedRoom.getName(), roomDto.getName());
+        Assertions.assertEquals(findedRoom.getCapacity(), roomDto.getCapacity());
     }
 
     @Test
@@ -110,13 +128,16 @@ public class RoomControllerTest {
         Long id = hotelDto.getId();
         // способ 2
         HttpEntity<String> entity = new HttpEntity<>(roomJson, headers);
-        ResponseEntity<RoomDto> roomDtoResponseEntity = restTemplate
-                .postForEntity("http://localhost:" + port + "/room/132", entity, RoomDto.class);
+        ResponseEntity<String> roomDtoResponseEntity = restTemplate
+                .postForEntity("http://localhost:" + port + "/room/hotel/" + NOT_EXISTING_ROOM_ID, entity, String.class);
 
-        Assertions.assertEquals(roomDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(500));
-        RoomDto body = roomDtoResponseEntity.getBody();
-        Assertions.assertEquals(null, body.getName());
-        Assertions.assertEquals(0, body.getCapacity());
-        Assertions.assertEquals(null, body.getPriceByDay());
+        Assertions.assertNotNull(roomDtoResponseEntity);
+        Assertions.assertEquals("Hotel with id=" + NOT_EXISTING_ROOM_ID +" not found!", roomDtoResponseEntity.getBody());
+//        Assertions.assertEquals(roomDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(500));
+//        RoomDto body = roomDtoResponseEntity.getBody();
+//        Assertions.assertEquals(null, body.getName());
+//        Assertions.assertEquals(0, body.getCapacity());
+//        Assertions.assertEquals(null, body.getPriceByDay());
     }
 }
+

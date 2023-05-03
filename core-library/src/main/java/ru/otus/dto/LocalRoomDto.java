@@ -1,7 +1,6 @@
-package ru.otus.hotelsbooker.dto;
+package ru.otus.dto;
 
 import lombok.*;
-import ru.otus.hotelsbooker.model.Room;
 
 @NoArgsConstructor
 @AllArgsConstructor

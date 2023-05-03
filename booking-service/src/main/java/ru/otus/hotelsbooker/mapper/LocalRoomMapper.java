@@ -1,6 +1,6 @@
 package ru.otus.hotelsbooker.mapper;
 
-import ru.otus.hotelsbooker.dto.LocalRoomDto;
+import ru.otus.dto.LocalRoomDto;
 import ru.otus.hotelsbooker.model.LocalRoom;
 
 public class LocalRoomMapper {

@@ -4,8 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.otus.hotelsbooker.dto.LocalRoomDto;
-import ru.otus.hotelsbooker.dto.RoomDto;
+import ru.otus.dto.LocalRoomDto;
+import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.mapper.LocalRoomMapper;
 import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.model.Hotel;
@@ -14,6 +14,8 @@ import ru.otus.hotelsbooker.model.Room;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
 import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
 import ru.otus.hotelsbooker.repository.RoomJpaRepository;
+
+import java.util.ArrayList;
 
 @Service
 @Getter
@@ -30,11 +32,17 @@ public class RoomService {
         this.hotelRepository = hotelRepository;
     }
 
-    public RoomDto addRoom(RoomDto roomDto, long id) {
-        Hotel hotel = hotelRepository.findAllById(id);
+    public RoomDto addRoom(RoomDto roomDto, long hotelId) {
+        Hotel hotel = hotelRepository.findAllById(hotelId);
+        if (hotel == null) {
+            throw new HotelNotFoundException("Hotel with id=" + hotelId + " not found!");
+        }
         Room room = RoomMapper.mapToRoom(roomDto);
         room.setHotel(hotel);
         roomJpaRepository.save(room);
+        if (hotel.getRooms() == null) {
+            hotel.setRooms(new ArrayList<>());
+        }
         hotel.getRooms().add(room);
         return RoomMapper.mapToRoomDto(room);
     }
@@ -43,7 +51,7 @@ public class RoomService {
         localRoomJpaRepository.disableLocalRoom(localRoomId);
     }
     public LocalRoomDto addLocalRoom(LocalRoomDto localRoomDto, long roomId){
-        Room room = roomJpaRepository.findById(roomId);
+        Room room = roomJpaRepository.findRoomById(roomId);
 
         LocalRoom localRoom = LocalRoomMapper.mapToLocalRoom(localRoomDto);
         localRoom.setRoom(room);
