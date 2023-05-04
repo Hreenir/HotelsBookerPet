@@ -25,7 +25,7 @@ public class Hotel {
     private String country;
     private double rating;
     private String address;
-    @OneToMany(fetch= FetchType.EAGER)
+    @OneToMany
     @JoinColumn(name = "hotel")
     private List<Room> rooms;
 

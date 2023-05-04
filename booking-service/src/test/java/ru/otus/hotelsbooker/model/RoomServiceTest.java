@@ -29,8 +29,8 @@ public class RoomServiceTest {
         HotelDto hotelDto = hotelService.createNewHotel(new HotelDto("Hilton", "Moscow", "Russia", "address"));
         RoomDto roomDtoFirst = roomService.addRoom(new RoomDto(1L,"Single", 1, new BigDecimal(100)), hotelDto.getId());
         RoomDto roomDtoSecond = roomService.addRoom(new RoomDto(2L,"Double", 2, new BigDecimal(100)), hotelDto.getId());
-        List<RoomDto> actual = List.of(roomDtoFirst, roomDtoSecond);
-        List<RoomDto> expected = hotelService.getHotelById(hotelDto.getId()).getRooms();
+        List<RoomDto> expected = List.of(roomDtoFirst, roomDtoSecond);
+        List<RoomDto> actual = hotelService.getHotelById(hotelDto.getId()).getRooms();
         Assertions.assertEquals(expected, actual);
     }
     @Test

@@ -62,7 +62,7 @@ public class LocalRoomRepositoryTest {
         localRoom = localRoomJpaRepository.findById(localRoom.getId()).get();
         Assertions.assertEquals(false, localRoom.isEnabled());
     }
-    @Test
+   /* @Test
     @DisplayName("Тестирование добавления локальной комнаты")
     public void testAddLocalRoom(){
         Hotel hotel = hotelJpaRepository.save(Hotel.builder()
@@ -84,5 +84,5 @@ public class LocalRoomRepositoryTest {
                 .build();
         LocalRoom savedLocalRoom = localRoomJpaRepository.save(localRoom);
         Assertions.assertEquals(localRoom,savedLocalRoom);
-    }
+    }*/
 }

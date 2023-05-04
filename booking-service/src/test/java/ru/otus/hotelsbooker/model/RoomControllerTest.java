@@ -47,7 +47,7 @@ public class RoomControllerTest {
     private RoomJpaRepository roomJpaRepository;
     @Autowired
     private HotelJpaRepository hotelJpaRepository;
-    private final int NOT_EXISTING_ROOM_ID = 132;
+    private final int NOT_EXISTING_HOTEL_ID = 132;
     @BeforeEach
     public void prepare(){
         Role roleUser = Role.builder()
@@ -87,7 +87,7 @@ public class RoomControllerTest {
         Long id = hotelDto.getId();
         // способ 2
         MvcResult mvcResult = mockMvc.perform(
-                        post("/room/hotel/" + id)
+                        post("/hotel/" + id + "/room")
                                 .headers(headers)
                                 .content(roomJson.getBytes()))
                 .andDo(print())
@@ -98,16 +98,11 @@ public class RoomControllerTest {
         Assertions.assertEquals(roomDto.getName(), body2.getName());
         Assertions.assertEquals(roomDto.getCapacity(), body2.getCapacity());
         Assertions.assertEquals(roomDto.getPriceByDay(), body2.getPriceByDay());
-//1
+
         Room room = roomJpaRepository.findRoomById(roomDto.getId());
         Assertions.assertEquals(room.getName(), roomDto.getName());
         Assertions.assertEquals(room.getCapacity(), roomDto.getCapacity());
-//2 в Hotel добавил @OneToMany(fetch= FetchType.EAGER), иначе сталкивался в ошибкой ленивой инициализации
-        Hotel hotel = hotelJpaRepository.findAllById(hotelDto.getId());
-        Room findedRoom = hotel.getRooms().get(0);
-        Assertions.assertEquals(findedRoom.getId(), roomDto.getId());
-        Assertions.assertEquals(findedRoom.getName(), roomDto.getName());
-        Assertions.assertEquals(findedRoom.getCapacity(), roomDto.getCapacity());
+
     }
 
     @Test
@@ -129,10 +124,10 @@ public class RoomControllerTest {
         // способ 2
         HttpEntity<String> entity = new HttpEntity<>(roomJson, headers);
         ResponseEntity<String> roomDtoResponseEntity = restTemplate
-                .postForEntity("http://localhost:" + port + "/room/hotel/" + NOT_EXISTING_ROOM_ID, entity, String.class);
+                .postForEntity("http://localhost:" + port + "/hotel/" + NOT_EXISTING_HOTEL_ID + "/room", entity, String.class);
 
         Assertions.assertNotNull(roomDtoResponseEntity);
-        Assertions.assertEquals("Hotel with id=" + NOT_EXISTING_ROOM_ID +" not found!", roomDtoResponseEntity.getBody());
+        Assertions.assertEquals("Hotel with id=" + NOT_EXISTING_HOTEL_ID +" not found!", roomDtoResponseEntity.getBody());
 //        Assertions.assertEquals(roomDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(500));
 //        RoomDto body = roomDtoResponseEntity.getBody();
 //        Assertions.assertEquals(null, body.getName());

@@ -11,23 +11,23 @@ import ru.otus.hotelsbooker.service.RoomService;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/room")
+@RequestMapping("/hotel/{hotelId}/room")
 public class RoomsController {
     @Autowired
     private RoomService roomService;
 
     /**
-     * POST localhost:8881/room/hotel/{id}
+     * POST localhost:8881/hotel/{hotelId}/room
      * * body {}
      *
      * @param roomDto
-     * @param id
+     * @param hotelId
      * @return
      */
-    @PostMapping(path = "/hotel/{id}", consumes = "application/json")
-    public ResponseEntity addRoom(@RequestBody RoomDto roomDto, @PathVariable Long id) {
+    @PostMapping(path = "", consumes = "application/json")
+    public ResponseEntity addRoom(@RequestBody RoomDto roomDto, @PathVariable Long hotelId) {
         try {
-            RoomDto result = roomService.addRoom(roomDto, id);
+            RoomDto result = roomService.addRoom(roomDto, hotelId);
             return ResponseEntity.of(Optional.of(result));
         } catch (HotelNotFoundException e) {
             return ResponseEntity.of(Optional.of(e.getMessage()));
@@ -35,25 +35,25 @@ public class RoomsController {
     }
 
     /**
-     * POST localhost:8881/room/{id}/localroom
+     * POST localhost:8881/hotel/{hotelId}/room/{roomId}/localroom
      * body {}
      *
      * @param localRoomDto
      * @return
      */
-    @PostMapping(path = "/{id}/localroom", consumes = "application/json", produces = "application/json")
-    public LocalRoomDto addLocalRoom(@RequestBody LocalRoomDto localRoomDto, @PathVariable Long id) {
-        return roomService.addLocalRoom(localRoomDto, id);
+    @PostMapping(path = "/{roomId}/localroom", consumes = "application/json", produces = "application/json")
+    public LocalRoomDto addLocalRoom(@RequestBody LocalRoomDto localRoomDto, @PathVariable Long roomId) {
+        return roomService.addLocalRoom(localRoomDto, roomId);
     }
 
     /**
-     * PUT localhost:8881/room/localroom/{id}
+     * PUT localhost:8881/hotel/{hotelId}/room/{id}/localroom
      *
-     * @param id
+     * @param localRoomId
      */
 
-    @PutMapping(path = "/localroom/{id}")
-    public void disableLocalRoom(@PathVariable Long id) {
-        roomService.disableLocalRoom(id);
+    @PutMapping(path = "/{roomId}/localroom/{localRoomId}/disable")
+    public void disableLocalRoom(@PathVariable Long localRoomId) {
+        roomService.disableLocalRoom(localRoomId);
     }
 }
