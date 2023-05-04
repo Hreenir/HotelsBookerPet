@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
+import ru.otus.hotelsbooker.mapper.HotelMapper;
+import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.Room;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
@@ -30,12 +32,14 @@ public class HotelService {
     private final HotelJpaRepository hotelRepository;
     private final RoomJpaRepository roomJpaRepository;
     private final LocalRoomJpaRepository localRoomJpaRepository;
+    private final RoomService roomService;
 
     @Autowired
-    public HotelService(HotelJpaRepository hotelRepository, RoomJpaRepository roomJpaRepository, LocalRoomJpaRepository localRoomJpaRepository) {
+    public HotelService(HotelJpaRepository hotelRepository, RoomJpaRepository roomJpaRepository, LocalRoomJpaRepository localRoomJpaRepository, RoomService roomService) {
         this.hotelRepository = hotelRepository;
         this.roomJpaRepository = roomJpaRepository;
         this.localRoomJpaRepository = localRoomJpaRepository;
+        this.roomService = roomService;
     }
 
 
@@ -57,11 +61,6 @@ public class HotelService {
         return HotelMapper.mapToDto(hotel);
     }
 
-    // DTO->BL (мы пишем)->DTO
-    // createHotel -> createNewHotel
-    // createHotel -> newHotel
-    // createHotel -> createHotel
-
     public HotelDto createNewHotel(HotelDto hotelDto) {
 
         Hotel hotel = Hotel.builder()
@@ -74,10 +73,9 @@ public class HotelService {
                 .build();
 
         Hotel createdHotel = hotelRepository.save(hotel);
-
-
         return HotelMapper.mapToDto(createdHotel);
     }
+
     public void deleteHotel(Long id) {
         hotelRepository.deleteById(id);
     }

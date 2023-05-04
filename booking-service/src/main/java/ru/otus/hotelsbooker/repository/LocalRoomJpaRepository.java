@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.LocalRoom;
 import ru.otus.hotelsbooker.model.Role;
+import ru.otus.hotelsbooker.model.Room;
 
 import java.util.Set;
 
@@ -19,5 +20,6 @@ public interface LocalRoomJpaRepository extends JpaRepository<LocalRoom, Long> {
     public void disableLocalRoom(@Param("localRoomId") long localRoomId);
 
     LocalRoom findLocalRoomById(long id);
+
 
 }

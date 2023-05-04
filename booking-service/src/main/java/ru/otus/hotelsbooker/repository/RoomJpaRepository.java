@@ -7,4 +7,6 @@ import ru.otus.hotelsbooker.model.Room;
 public interface RoomJpaRepository extends JpaRepository<Room, Long>  {
     @Override
     Room save(Room entity);
+    Room findRoomById(long id);
+
 }

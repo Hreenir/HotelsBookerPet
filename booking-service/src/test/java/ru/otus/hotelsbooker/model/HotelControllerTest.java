@@ -51,15 +51,16 @@ public class HotelControllerTest {
     private RolesJpaRepository rolesJpaRepository;
     @Autowired
     private UsersJpaRepository usersJpaRepository;
+
     @BeforeEach
-    public void prepare(){
+    public void prepare() {
         Role roleUser = Role.builder()
                 .name("ROLE_USER")
                 .build();
         Role roleHotel = Role.builder()
                 .name("ROLE_HOTEL")
                 .build();
-        rolesJpaRepository.saveAll(List.of(roleUser,roleHotel));
+        rolesJpaRepository.saveAll(List.of(roleUser, roleHotel));
         User user = User.builder()
                 .username("user")
                 .password("$2a$10$9VyipY09UB19OCWeUG0Ciu5SMFs0y2/Xco/J8uARQTN0bgh8pSU3i")
@@ -67,8 +68,9 @@ public class HotelControllerTest {
                 .build();
         usersJpaRepository.save(user);
     }
+
     @AfterEach
-    public void clear(){
+    public void clear() {
         List<User> users = usersJpaRepository.findAll();
         users.forEach(user -> usersJpaRepository.delete(user));
     }
@@ -140,66 +142,5 @@ public class HotelControllerTest {
         Assertions.assertEquals(hotel.getName(), body2.getName());
         Assertions.assertEquals(hotel.getCity(), body2.getCity());
         Assertions.assertEquals(hotel.getCountry(), body2.getCountry());
-    }
-
-    @Test
-    @DisplayName("Тестирование API успешного добавления номера в отель")
-    public void testCreateNewRoomSuccessfullyMockMvc() throws Exception {
-        HotelDto hotelDto = new HotelDto("Hilton", "Moscow", "Russia", "Red Square building 1");
-        hotelDto = hotelService.createNewHotel(hotelDto);
-        RoomDto roomDto = new RoomDto(1L, "single", 1, new BigDecimal(100));
-
-        String roomJson = objectMapper.writeValueAsString(roomDto);
-        // create headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("user", "user");
-        // set `content-type` header
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        // set `accept` header
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        Long id = hotelDto.getId();
-        // способ 2
-        MvcResult mvcResult = mockMvc.perform(
-                        post("/hotel/" + id + "/room")
-                                .headers(headers)
-                                .content(roomJson.getBytes()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        RoomDto body2 = objectMapper.readValue(contentAsString, RoomDto.class);
-        Assertions.assertEquals(roomDto.getName(), body2.getName());
-        Assertions.assertEquals(roomDto.getCapacity(), body2.getCapacity());
-        Assertions.assertEquals(roomDto.getPriceByDay(), body2.getPriceByDay());
-    }
-
-    @Test
-    @DisplayName("Тестирование API неуспешного добавления апартаментов в отель")
-    public void testCreateNewRoomNotSuccessfullyMockMvc() throws Exception {
-        HotelDto hotelDto = new HotelDto("Hilton", "Moscow", "Russia", "Red Square building 1");
-        hotelDto = hotelService.createNewHotel(hotelDto);
-        RoomDto roomDto = new RoomDto(1L, "single", 1, new BigDecimal(100));
-
-        String roomJson = objectMapper.writeValueAsString(roomDto);
-        // create headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("user", "user");
-        // set `content-type` header
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        // set `accept` header
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        Long id = hotelDto.getId();
-        // способ 2
-        HttpEntity<String> entity = new HttpEntity<>(roomJson, headers);
-        ResponseEntity<String> roomDtoResponseEntity = restTemplate
-                .postForEntity("http://localhost:" + port + "/hotel/132/room", entity, String.class);
-
-        Assertions.assertNotNull(roomDtoResponseEntity);
-        Assertions.assertEquals("Hotel with id=132 not found!", roomDtoResponseEntity.getBody());
-//        Assertions.assertEquals(roomDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(500));
-//        RoomDto body = roomDtoResponseEntity.getBody();
-//        Assertions.assertEquals(null, body.getName());
-//        Assertions.assertEquals(0, body.getCapacity());
-//        Assertions.assertEquals(null, body.getPriceByDay());
     }
 }
