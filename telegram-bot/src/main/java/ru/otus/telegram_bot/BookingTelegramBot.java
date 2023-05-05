@@ -17,6 +17,7 @@ import ru.otus.telegram_bot.client.HotelClient;
 import ru.otus.telegram_bot.config.BotConfigurationProperties;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -25,14 +26,19 @@ public class BookingTelegramBot  extends TelegramLongPollingBot {
     private final BotConfigurationProperties botConfigurationProperties;
     private final HotelClient hotelClient;
     private final RestTemplate restTemplate = new RestTemplate();
+    private final Map<String, CommandStrategy<?>> strategyMap;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    public BookingTelegramBot(BotConfigurationProperties botConfigurationProperties, HotelClient hotelClient) {
+    public BookingTelegramBot(
+            Map<String, CommandStrategy> strategyMap,
+            BotConfigurationProperties botConfigurationProperties,
+            HotelClient hotelClient) {
         super(botConfigurationProperties.getToken());
         this.botConfigurationProperties = botConfigurationProperties;
         this.hotelClient = hotelClient;
+        this.strategyMap = strategyMap;
     }
 
     @Override
@@ -48,21 +54,11 @@ public class BookingTelegramBot  extends TelegramLongPollingBot {
                     update.getMessage()
                             .getText()
                             .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
-            switch (command) {
-                case "start":
-                    callback(chatId, username, "COMMAND LIST");
-                    break;
-            }
+            CommandStrategy<?> strategy = strategyMap.get(command.replace("/", ""));
+            var result = strategy.execute(messageText);
+            String hotelsJson = objectMapper.writeValueAsString(result);
+            callback(chatId, username, hotelsJson);
         }
-        String city = "Moscow";
-        // /search city=Moscow
-        // switch-case: "search": hotelBokkerCLient.search(city=Moscow)
-        //ResponseEntity<List> forEntity = restTemplate.getForEntity("http://localhost:8081/hotel?city=" + city, List.class);
-        List<HotelDto> allHotels = hotelClient.getAllHotels(city);
-        // GET localhost:8881/hotel?city=Moscow
-        // List<Hotel> hotels
-        String hotelsJson = objectMapper.writeValueAsString(allHotels);
-        callback(chatId, username, hotelsJson);
     }
 
     private void callback(long chatId, String userName, String messageText) {

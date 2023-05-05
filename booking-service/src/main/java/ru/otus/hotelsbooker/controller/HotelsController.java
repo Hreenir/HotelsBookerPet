@@ -81,18 +81,4 @@ public class HotelsController {
     return hotelsService.createNewHotel(hotel);
   }
 
-  /**
-   * PuT localhost:8881/hotel/{id}
-   * body {}
-   * @param hotel
-   * @return
-   */
-
-  @PutMapping(consumes = "application/json", produces = "application/json")
-  public HotelDto updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel) {
-
-      return hotelsService.updateHotel(id, hotel);
-
-  }
-
 }

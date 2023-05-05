@@ -14,7 +14,7 @@ import ru.otus.dto.RoomDto;
 
 import java.util.List;
 
-@FeignClient(name = "hotel-client")
+@FeignClient(url="localhost:8881/hotel", name = "hotel-client", configuration = FeignBasicAuthInterceptor.class)
 public interface HotelClient {
     /**
      * GET localhost:8881/hotel?city=something
@@ -60,15 +60,4 @@ public interface HotelClient {
      */
     @PostMapping(consumes = "application/json", produces = "application/json")
     HotelDto createHotel(@RequestBody HotelDto hotel);
-
-    /**
-     * PuT localhost:8881/hotel/{id}
-     * body {}
-     * @param hotel
-     * @return
-     */
-
-    @PutMapping(consumes = "application/json", produces = "application/json")
-    HotelDto updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel);
-
 }
