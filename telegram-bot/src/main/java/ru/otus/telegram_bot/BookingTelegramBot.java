@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -11,22 +12,27 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.otus.dto.HotelDto;
+import ru.otus.telegram_bot.client.HotelClient;
 import ru.otus.telegram_bot.config.BotConfigurationProperties;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
 @Slf4j
 public class BookingTelegramBot  extends TelegramLongPollingBot {
     private final BotConfigurationProperties botConfigurationProperties;
+    private final HotelClient hotelClient;
     private final RestTemplate restTemplate = new RestTemplate();
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    public BookingTelegramBot(BotConfigurationProperties botConfigurationProperties) {
+    public BookingTelegramBot(BotConfigurationProperties botConfigurationProperties, HotelClient hotelClient) {
         super(botConfigurationProperties.getToken());
         this.botConfigurationProperties = botConfigurationProperties;
+        this.hotelClient = hotelClient;
     }
 
     @Override
@@ -48,14 +54,15 @@ public class BookingTelegramBot  extends TelegramLongPollingBot {
                     break;
             }
         }
-            String city = "Moscow";
+        String city = "Moscow";
         // /search city=Moscow
         // switch-case: "search": hotelBokkerCLient.search(city=Moscow)
         //ResponseEntity<List> forEntity = restTemplate.getForEntity("http://localhost:8081/hotel?city=" + city, List.class);
+        List<HotelDto> allHotels = hotelClient.getAllHotels(city);
         // GET localhost:8881/hotel?city=Moscow
         // List<Hotel> hotels
-        //String valueAsString = objectMapper.writeValueAsString("COMMAND LIST");
-        //pingPongBot(chatId, username, "COMMAND LIST");
+        String hotelsJson = objectMapper.writeValueAsString(allHotels);
+        callback(chatId, username, hotelsJson);
     }
 
     private void callback(long chatId, String userName, String messageText) {
