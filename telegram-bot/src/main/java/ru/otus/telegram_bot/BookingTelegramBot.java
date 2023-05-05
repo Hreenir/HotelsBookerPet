@@ -1,6 +1,7 @@
 package ru.otus.telegram_bot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,17 @@ public class BookingTelegramBot  extends TelegramLongPollingBot {
 
     @Autowired
     public BookingTelegramBot(
-            Map<String, CommandStrategy> strategyMap,
+            Map<String, CommandStrategy<?>> strategyMap,
             BotConfigurationProperties botConfigurationProperties,
             HotelClient hotelClient) {
         super(botConfigurationProperties.getToken());
         this.botConfigurationProperties = botConfigurationProperties;
         this.hotelClient = hotelClient;
         this.strategyMap = strategyMap;
+    }
+    @PostConstruct
+    public void init() {
+        strategyMap.put("search", new CommandSearchHotelStrategy(hotelClient, objectMapper));
     }
 
     @Override
@@ -55,7 +60,8 @@ public class BookingTelegramBot  extends TelegramLongPollingBot {
                             .getText()
                             .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
             CommandStrategy<?> strategy = strategyMap.get(command.replace("/", ""));
-            var result = strategy.execute(messageText);
+            String string = messageText.substring(commandEntity.get().getLength());
+            var result = strategy.execute(string);
             String hotelsJson = objectMapper.writeValueAsString(result);
             callback(chatId, username, hotelsJson);
         }
