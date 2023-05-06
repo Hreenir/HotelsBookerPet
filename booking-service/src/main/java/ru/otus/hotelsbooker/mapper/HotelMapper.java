@@ -1,4 +1,4 @@
-package ru.otus.hotelsbooker.service;
+package ru.otus.hotelsbooker.mapper;
 
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;

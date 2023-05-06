@@ -30,4 +30,5 @@ public class RoomDto {
         this.capacity = capacity;
         this.priceByDay = priceByDay;
     }
+
 }
