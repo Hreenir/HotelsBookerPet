@@ -37,4 +37,19 @@ public class TgUserService {
                 .role(roleDto)
                 .build();
     }
+    public TgUserDto getUserById(long tgUserId){
+        TgUser tgUser = tgUserJpaRepository.findTgUserById(tgUserId);
+        if (tgUser == null) {
+            throw new HotelNotFoundException("tgUser with id=" + tgUser + " not found!");
+        }
+        RoleDto roleDto = RoleDto.builder()
+                .id(tgUser.getRole().getId())
+                .name(tgUser.getRole().getName())
+                .build();
+        return TgUserDto.builder()
+                .id(tgUser.getId())
+                .role(roleDto)
+                .build();
+
+    }
 }

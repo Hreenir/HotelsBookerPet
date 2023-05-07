@@ -28,4 +28,9 @@ public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto
         }
         return null;
     }
+
+    @Override
+    public List<HotelDto> execute(long tgUserId, long roleId) {
+        return null;
+    }
 }
