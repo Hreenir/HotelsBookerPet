@@ -25,6 +25,9 @@ public class RegistrationService {
         hotelRole = rolesJpaRepository.save(Role.builder()
                 .name("ROLE_HOTEL")
                 .build());
+        rolesJpaRepository.save(Role.builder()
+                .name("ROLE_VISITOR")
+                .build());
         register("user", "user");
     }
 

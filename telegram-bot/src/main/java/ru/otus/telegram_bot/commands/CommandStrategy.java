@@ -1,4 +1,4 @@
-package ru.otus.telegram_bot;
+package ru.otus.telegram_bot.commands;
 
 public interface CommandStrategy<T> {
     T execute(String messageText);
