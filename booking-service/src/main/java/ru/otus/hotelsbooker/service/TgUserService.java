@@ -32,8 +32,6 @@ public class TgUserService {
                 .id(tgUser.getRole().getId())
                 .name(tgUser.getRole().getName())
                 .build();
-
-
         return TgUserDto.builder()
                 .id(tgUser.getId())
                 .role(roleDto)
