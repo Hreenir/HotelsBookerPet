@@ -1,6 +1,5 @@
 package ru.otus.telegram_bot.commands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -8,10 +7,10 @@ import ru.otus.dto.RoleDto;
 import ru.otus.dto.TgUserDto;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 
-@Qualifier("setrolehotel")
+@Qualifier("setrole")
 @Component
 @RequiredArgsConstructor
-public class CommandSetRoleHotelStrategy implements CommandStrategy<TgUserDto> {
+public class CommandSetRoleStrategy implements CommandStrategy<TgUserDto> {
     private final AuthenticationClient authenticationClient;
     @Override
     public TgUserDto execute(String messageText) {
@@ -29,4 +28,6 @@ public class CommandSetRoleHotelStrategy implements CommandStrategy<TgUserDto> {
                 .build();
         return authenticationClient.setRole(tgUserDto);
     }
+
+
 }

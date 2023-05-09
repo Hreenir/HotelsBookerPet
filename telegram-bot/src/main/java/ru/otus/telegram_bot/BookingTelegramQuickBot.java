@@ -15,10 +15,12 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.otus.telegram_bot.buttons.Buttons;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 import ru.otus.telegram_bot.commands.*;
+import ru.otus.telegram_bot.commands.repository.CommandStrategyRepository;
 import ru.otus.telegram_bot.config.BotConfigurationProperties;
 
 import java.util.Optional;
@@ -49,7 +51,6 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
         this.authenticationClient = authenticationClient;
         this.commandStrategyRepository = commandStrategyRepository;
     }
-
 
     @Override
     @SneakyThrows
@@ -91,29 +92,61 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                 strategy = CommandStrategyRepository.getStrategyMap().get(command.replace("/", ""));
             }
         }
+
         switch (command) {
             case "/search":
-                var jsonText = strategy.execute(messageText.substring(commandEntity.get().getLength()));
+                 var jsonText = strategy.execute(messageText.substring(commandEntity.get().getLength()));
                 try {
                     String hotelsJson = objectMapper.writeValueAsString(jsonText);
-                    callback(chatId, hotelsJson);
+                    callBack(chatId, hotelsJson);
                 } catch (JsonProcessingException e){
                     e.printStackTrace();
                 }
                 break;
             case "/setrolehotel":
                 strategy.execute(chatId, ROLE_HOTEL_ID);
+                callBack(chatId,BotAnswers.getHOTEL_COMMANDS());
                 break;
             case "/setrolevisitor":
                 strategy.execute(chatId, ROLE_VISITOR_ID);
+                callBack(chatId,BotAnswers.getVISITOR_COMMANDS());
                 break;
+            case "/addhotel":
+                jsonText = strategy.execute(messageText.substring(commandEntity.get().getLength()));
+                try {
+                    String hotelsJson = objectMapper.writeValueAsString(jsonText);
+                    callBack(chatId, hotelsJson);
+                } catch (JsonProcessingException e){
+                    e.printStackTrace();
+                }
+            case "/updatehotel":
+                jsonText = strategy.execute(messageText.substring(commandEntity.get().getLength()));
+                try {
+                    String hotelsJson = objectMapper.writeValueAsString(jsonText);
+                    callBack(chatId, hotelsJson);
+                } catch (JsonProcessingException e){
+                    e.printStackTrace();
+                }
         }
     }
 
-    private void callback(long chatId, String messageText) {
+    private void callBack(long chatId, String messageText) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(messageText);
+
+        try {
+            execute(message);
+            log.info("Reply sent");
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
+    private void callBackWihButtons(long chatId, String messageText, InlineKeyboardMarkup markup) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(messageText);
+        message.setReplyMarkup(markup);
 
         try {
             execute(message);
@@ -138,12 +171,12 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
     }
 
     private void setRole(long chatId) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText("Please, select a role.");
-        sendMessage.setReplyMarkup(Buttons.showSelectRoleButtons());
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText("Please, select a role.");
+        message.setReplyMarkup(Buttons.showSelectRoleButtons());
         try {
-            execute(sendMessage);
+            execute(message);
             log.info("Reply sent");
         } catch (TelegramApiException e) {
             log.error(e.getMessage());

@@ -62,4 +62,6 @@ public interface HotelClient {
      */
     @PostMapping(consumes = "application/json", produces = "application/json")
     HotelDto createHotel(@RequestBody HotelDto hotel);
+    @PutMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    HotelDto updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel);
 }

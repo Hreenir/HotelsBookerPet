@@ -6,31 +6,28 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.otus.dto.HotelDto;
-import ru.otus.dto.SearchDto;
 import ru.otus.telegram_bot.client.HotelClient;
 
-import java.util.List;
 
-@Qualifier("search")
+@Qualifier("addhotel")
 @Component
 @RequiredArgsConstructor
-public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto>> {
+public class CommandAddHotelStrategy implements CommandStrategy<HotelDto>{
     private final HotelClient hotelClient;
     private final ObjectMapper objectMapper;
-
     @Override
-    public List<HotelDto> execute(String messageText) {
+    public HotelDto execute(String messageText) {
         try {
-            SearchDto searchDto = objectMapper.readValue(messageText, SearchDto.class);
-            return hotelClient.getAllHotels(searchDto.getCity());
-        } catch (JsonProcessingException e){
+            HotelDto hotelDto = objectMapper.readValue(messageText, HotelDto.class);
+            return hotelClient.createHotel(hotelDto);
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public List<HotelDto> execute(long tgUserId, long roleId) {
+    public HotelDto execute(long tgUserId, long roleId) {
         return null;
     }
 

@@ -10,29 +10,28 @@ import ru.otus.dto.SearchDto;
 import ru.otus.telegram_bot.client.HotelClient;
 
 import java.util.List;
-
-@Qualifier("search")
+@Qualifier("updatehotel")
 @Component
 @RequiredArgsConstructor
-public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto>> {
+public class CommandUpdateHotelStrategy implements CommandStrategy<HotelDto>{
     private final HotelClient hotelClient;
     private final ObjectMapper objectMapper;
 
+
+
     @Override
-    public List<HotelDto> execute(String messageText) {
+    public HotelDto execute(long tgUserId, long roleId) {
+        return null;
+    }
+
+    @Override
+    public HotelDto execute(String messageText) {
         try {
-            SearchDto searchDto = objectMapper.readValue(messageText, SearchDto.class);
-            return hotelClient.getAllHotels(searchDto.getCity());
+            HotelDto hotelDto = objectMapper.readValue(messageText, HotelDto.class);
+            return hotelClient.updateHotel(hotelDto.getId(), hotelDto);
         } catch (JsonProcessingException e){
             e.printStackTrace();
         }
         return null;
     }
-
-    @Override
-    public List<HotelDto> execute(long tgUserId, long roleId) {
-        return null;
-    }
-
-
 }
