@@ -35,7 +35,7 @@ public interface HotelClient {
      * @return
      */
     @GetMapping("/{id}")
-    public HotelDto getHotelById(@PathVariable Long id);
+    HotelDto getHotelById(@PathVariable Long id);
 
 
     /**

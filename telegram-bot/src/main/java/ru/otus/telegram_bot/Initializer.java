@@ -14,7 +14,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Component
 public class Initializer {
     @Autowired
-    BookingTelegramBot bot;
+    BookingTelegramQuickBot bot;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {

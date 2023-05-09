@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.otus.dto.RoomDto;
 import ru.otus.dto.TgUserDto;
 import ru.otus.hotelsbooker.service.HotelNotFoundException;
+import ru.otus.hotelsbooker.service.TgUserNotFoundException;
 import ru.otus.hotelsbooker.service.TgUserService;
 
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class TgUserController {
         try {
             TgUserDto result = tgUsersService.getUserById(id);
             return ResponseEntity.of(Optional.of(result));
-        } catch (HotelNotFoundException e) {
+        } catch (TgUserNotFoundException e) {
             return ResponseEntity.of(Optional.of(e.getMessage()));
         }
     }
