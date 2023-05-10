@@ -25,6 +25,16 @@ public class CommandUpdateHotelStrategy implements CommandStrategy<HotelDto>{
     }
 
     @Override
+    public HotelDto execute(String messageText, long hotelId) {
+        return null;
+    }
+
+    @Override
+    public HotelDto execute(long Id) {
+        return null;
+    }
+
+    @Override
     public HotelDto execute(String messageText) {
         try {
             HotelDto hotelDto = objectMapper.readValue(messageText, HotelDto.class);

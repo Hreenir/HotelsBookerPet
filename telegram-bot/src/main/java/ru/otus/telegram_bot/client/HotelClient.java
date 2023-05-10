@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.dto.HotelDto;
+import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
 
 import java.util.List;
@@ -47,11 +48,11 @@ public interface HotelClient {
      * @return
      */
     @PostMapping(path = "/{id}/room", consumes = "application/json")
-    ResponseEntity addRoom(@RequestBody RoomDto roomDto, @PathVariable Long id);
+    RoomDto addRoom(@RequestBody RoomDto roomDto, @PathVariable Long id);
 
 
-    @DeleteMapping(path = "/localroom/{id}")
-    void disableLocalRoom(@PathVariable Long id);
+    @PutMapping(path = "/0/room/0/localroom/{localRoomId}/disable")
+    void disableLocalRoom(@PathVariable Long localRoomId);
 
     /**
      * POST localhost:8881/hotel
@@ -64,4 +65,6 @@ public interface HotelClient {
     HotelDto createHotel(@RequestBody HotelDto hotel);
     @PutMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     HotelDto updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel);
+    @PostMapping(path = "/0/room/{roomId}/localroom", consumes = "application/json", produces = "application/json")
+     LocalRoomDto addLocalRoom(@RequestBody LocalRoomDto localRoomDto, @PathVariable Long roomId);
 }

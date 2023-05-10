@@ -2,6 +2,7 @@ package ru.otus.telegram_bot;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import feign.codec.DecodeException;
 import jakarta.validation.constraints.NotNull;
 import lombok.SneakyThrows;
@@ -17,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.otus.dto.TgUserDto;
 import ru.otus.telegram_bot.buttons.Buttons;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 import ru.otus.telegram_bot.commands.*;
@@ -24,6 +26,8 @@ import ru.otus.telegram_bot.commands.repository.CommandStrategyRepository;
 import ru.otus.telegram_bot.config.BotConfigurationProperties;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Component
@@ -62,7 +66,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
         if (update.hasMessage()) {
             receivedMessage = update.getMessage().getText();
             chatId = update.getMessage().getChatId();
-            if (!hasRole(chatId)) {
+            if (hasRole(chatId) == 0) {
                 setRole(chatId);
             } else botAnswerUtils(message, receivedMessage, chatId);
 
@@ -73,15 +77,14 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
         }
     }
 
-    private void botAnswerUtils(Message message, String messageText, Long chatId)  {
+    private void botAnswerUtils(Message message, String messageText, Long chatId) {
         String command = "";
         Optional<MessageEntity> commandEntity = Optional.empty();
         CommandStrategy<?> strategy = null;
         if (message == null) {
             strategy = CommandStrategyRepository.getStrategyMap().get(messageText.replace("/", ""));
             command = messageText;
-        }
-        else {
+        } else {
             commandEntity = message.getEntities()
                     .stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
             if (commandEntity.isPresent()) {
@@ -92,41 +95,76 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                 strategy = CommandStrategyRepository.getStrategyMap().get(command.replace("/", ""));
             }
         }
-
+        Object json;
         switch (command) {
-            case "/search":
-                 var jsonText = strategy.execute(messageText.substring(commandEntity.get().getLength()));
-                try {
-                    String hotelsJson = objectMapper.writeValueAsString(jsonText);
-                    callBack(chatId, hotelsJson);
-                } catch (JsonProcessingException e){
-                    e.printStackTrace();
+            case "/searchbycity":
+                if (hasRole(chatId) == 2) {
+                    json = strategy.execute(messageText.substring(commandEntity.get().getLength()));
+                    try {
+                        String hotelsJson = objectMapper.writeValueAsString(json);
+                        callBack(chatId, hotelsJson);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case "/setrolehotel":
                 strategy.execute(chatId, ROLE_HOTEL_ID);
-                callBack(chatId,BotAnswers.getHOTEL_COMMANDS());
+                callBack(chatId, BotAnswer.getHOTEL_COMMANDS());
                 break;
             case "/setrolevisitor":
                 strategy.execute(chatId, ROLE_VISITOR_ID);
-                callBack(chatId,BotAnswers.getVISITOR_COMMANDS());
+                callBack(chatId, BotAnswer.getVISITOR_COMMANDS());
                 break;
-            case "/addhotel":
-                jsonText = strategy.execute(messageText.substring(commandEntity.get().getLength()));
-                try {
-                    String hotelsJson = objectMapper.writeValueAsString(jsonText);
-                    callBack(chatId, hotelsJson);
-                } catch (JsonProcessingException e){
-                    e.printStackTrace();
+            case "/addhotel", "/updatehotel":
+                if (hasRole(chatId) == 1) {
+                    json = strategy.execute(messageText.substring(commandEntity.get().getLength()));
+                    try {
+                        String hotelsJson = objectMapper.writeValueAsString(json);
+                        callBack(chatId, "OK " + hotelsJson);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
-            case "/updatehotel":
-                jsonText = strategy.execute(messageText.substring(commandEntity.get().getLength()));
-                try {
-                    String hotelsJson = objectMapper.writeValueAsString(jsonText);
-                    callBack(chatId, hotelsJson);
-                } catch (JsonProcessingException e){
-                    e.printStackTrace();
+                break;
+            case "/addroom":
+                if (hasRole(chatId) == 1) {
+                    String hotelId = findIdInString(messageText, chatId);
+                    if (hotelId != null) {
+                        try {
+                            json = strategy.execute(messageText.substring(commandEntity.get().getLength() + hotelId.length() + 3), Long.parseLong(hotelId));
+                            String hotelsJson = objectMapper.writeValueAsString(json);
+                            if (json == null) {
+                                callBack(chatId, "Hotel with id " + hotelId + " not found");
+                            } else callBack(chatId, "OK " + hotelsJson);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
+                break;
+            case "/addlocalroom":
+                if (hasRole(chatId) == 1) {
+                    String roomId = findIdInString(messageText, chatId);
+                    if (roomId != null) {
+                        try {
+                            json = strategy.execute(messageText.substring(commandEntity.get().getLength() + roomId.length() + 3), Long.parseLong(roomId));
+                            String hotelsJson = objectMapper.writeValueAsString(json);
+                            if (json == null) {
+                                callBack(chatId, "Room with id " + roomId + " not found");
+                            } else callBack(chatId, "OK " + hotelsJson);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                break;
+            case "/disablelocalroom":
+                if (hasRole(chatId) == 1) {
+                    String localRoomId = findIdInString(messageText, chatId);
+                    strategy.execute(Integer.parseInt(localRoomId));
+                }
+
         }
     }
 
@@ -142,6 +180,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
             log.error(e.getMessage());
         }
     }
+
     private void callBackWihButtons(long chatId, String messageText, InlineKeyboardMarkup markup) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
@@ -161,12 +200,12 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
         return botConfigurationProperties.getName();
     }
 
-    private boolean hasRole(long id) {
+    private long hasRole(long id) {
         try {
-            authenticationClient.findTgUser(id);
-            return true;
-        } catch (DecodeException e){
-            return false;
+            TgUserDto tgUserDto = authenticationClient.findTgUser(id);
+            return tgUserDto.getRole().getId();
+        } catch (FeignException e) {
+            return 0;
         }
     }
 
@@ -180,6 +219,18 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
             log.info("Reply sent");
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
+        }
+    }
+
+    private String findIdInString(String messageText, long chatId) {
+        try {
+            Pattern pattern = Pattern.compile("[(](.*?)[)]");
+            Matcher matcher = pattern.matcher(messageText);
+            matcher.find();
+            return matcher.group(1);
+        } catch (IllegalStateException e) {
+            callBack(chatId, "incorrect input, try again.");
+            return null;
         }
     }
 }

@@ -29,5 +29,15 @@ public class CommandSetRoleStrategy implements CommandStrategy<TgUserDto> {
         return authenticationClient.setRole(tgUserDto);
     }
 
+    @Override
+    public TgUserDto execute(String messageText, long hotelId) {
+        return null;
+    }
+
+    @Override
+    public TgUserDto execute(long Id) {
+        return null;
+    }
+
 
 }

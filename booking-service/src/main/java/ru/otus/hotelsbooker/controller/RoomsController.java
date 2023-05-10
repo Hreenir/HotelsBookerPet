@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.service.HotelNotFoundException;
+import ru.otus.hotelsbooker.service.RoomNotFoundException;
 import ru.otus.hotelsbooker.service.RoomService;
 
 import java.util.Optional;
@@ -42,8 +43,13 @@ public class RoomsController {
      * @return
      */
     @PostMapping(path = "/{roomId}/localroom", consumes = "application/json", produces = "application/json")
-    public LocalRoomDto addLocalRoom(@RequestBody LocalRoomDto localRoomDto, @PathVariable Long roomId) {
-        return roomService.addLocalRoom(localRoomDto, roomId);
+    public ResponseEntity addLocalRoom(@RequestBody LocalRoomDto localRoomDto, @PathVariable Long roomId) {
+        try {
+            LocalRoomDto result = roomService.addLocalRoom(localRoomDto, roomId);
+            return ResponseEntity.of(Optional.of(result));
+        } catch (RoomNotFoundException e) {
+            return ResponseEntity.of(Optional.of(e.getMessage()));
+        }
     }
 
     /**

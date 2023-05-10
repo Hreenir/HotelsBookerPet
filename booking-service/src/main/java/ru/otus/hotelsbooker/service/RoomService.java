@@ -52,6 +52,9 @@ public class RoomService {
     }
     public LocalRoomDto addLocalRoom(LocalRoomDto localRoomDto, long roomId){
         Room room = roomJpaRepository.findRoomById(roomId);
+        if (room == null) {
+            throw new RoomNotFoundException("Room with id=" + roomId + " not found!");
+        }
 
         LocalRoom localRoom = LocalRoomMapper.mapToLocalRoom(localRoomDto);
         localRoom.setRoom(room);

@@ -31,5 +31,15 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto>{
         return null;
     }
 
+    @Override
+    public HotelDto execute(String messageText, long hotelId) {
+        return null;
+    }
+
+    @Override
+    public HotelDto execute(long Id) {
+        return null;
+    }
+
 
 }

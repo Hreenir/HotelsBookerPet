@@ -24,11 +24,14 @@ public class CommandStrategyRepository {
     }
     @PostConstruct
     public void init() {
-        strategyMap.put("search", new CommandSearchHotelStrategy(hotelClient, objectMapper));
+        strategyMap.put("searchbycity", new CommandSearchHotelStrategy(hotelClient, objectMapper));
         strategyMap.put("setrolehotel", new CommandSetRoleStrategy(authenticationClient));
         strategyMap.put("setrolevisitor", new CommandSetRoleStrategy(authenticationClient));
         strategyMap.put("addhotel", new CommandAddHotelStrategy(hotelClient, objectMapper));
         strategyMap.put("updatehotel", new CommandUpdateHotelStrategy(hotelClient, objectMapper));
+        strategyMap.put("addroom", new CommandAddRoomStrategy(hotelClient, objectMapper));
+        strategyMap.put("addlocalroom", new CommandAddLocalRoomStrategy(hotelClient, objectMapper));
+        strategyMap.put("disablelocalroom", new CommandDisableLocalRoomStrategy(hotelClient));
     }
 
     public static Map<String, CommandStrategy<?>> getStrategyMap() {
