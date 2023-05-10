@@ -3,7 +3,6 @@ package ru.otus.telegram_bot;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
-import feign.codec.DecodeException;
 import jakarta.validation.constraints.NotNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,7 @@ import ru.otus.dto.TgUserDto;
 import ru.otus.telegram_bot.buttons.Buttons;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 import ru.otus.telegram_bot.commands.*;
-import ru.otus.telegram_bot.commands.repository.CommandStrategyRepository;
+import ru.otus.telegram_bot.repository.CommandStrategyRepository;
 import ru.otus.telegram_bot.config.BotConfigurationProperties;
 
 import java.util.Optional;
@@ -162,7 +161,9 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
             case "/disablelocalroom":
                 if (hasRole(chatId) == 1) {
                     String localRoomId = findIdInString(messageText, chatId);
-                    strategy.execute(Integer.parseInt(localRoomId));
+                    if (localRoomId != null) {
+                        strategy.execute(Integer.parseInt(localRoomId));
+                    }
                 }
 
         }
@@ -210,16 +211,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
     }
 
     private void setRole(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Please, select a role.");
-        message.setReplyMarkup(Buttons.showSelectRoleButtons());
-        try {
-            execute(message);
-            log.info("Reply sent");
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
-        }
+        callBackWihButtons(chatId, "Please, select a role.", Buttons.showSelectRoleButtons());
     }
 
     private String findIdInString(String messageText, long chatId) {

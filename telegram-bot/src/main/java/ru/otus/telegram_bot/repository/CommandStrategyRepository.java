@@ -1,4 +1,4 @@
-package ru.otus.telegram_bot.commands.repository;
+package ru.otus.telegram_bot.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
