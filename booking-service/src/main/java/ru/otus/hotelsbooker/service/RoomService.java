@@ -1,13 +1,11 @@
 package ru.otus.hotelsbooker.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
-import ru.otus.hotelsbooker.mapper.HotelMapper;
 import ru.otus.hotelsbooker.mapper.LocalRoomMapper;
 import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.model.Hotel;
@@ -18,27 +16,20 @@ import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
 import ru.otus.hotelsbooker.repository.RoomJpaRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Getter
 @Transactional
 public class RoomService {
-    private final LocalRoomJpaRepository localRoomJpaRepository;
-    private final RoomJpaRepository roomJpaRepository;
-    private final HotelJpaRepository hotelRepository;
+    private LocalRoomJpaRepository localRoomJpaRepository;
+    private RoomJpaRepository roomJpaRepository;
+    private HotelJpaRepository hotelRepository;
 
     @Autowired
     public RoomService(LocalRoomJpaRepository localRoomJpaRepository, RoomJpaRepository roomJpaRepository, HotelJpaRepository hotelRepository) {
         this.localRoomJpaRepository = localRoomJpaRepository;
         this.roomJpaRepository = roomJpaRepository;
         this.hotelRepository = hotelRepository;
-    }
-
-    public List<RoomDto> getHotelById(Long hotelId) {
-        Hotel hotel = hotelRepository.findById(hotelId)
-                .orElseThrow(() -> new EntityNotFoundException("Hotel not found with id: " + hotelId));
-        return HotelMapper.mapToDto(hotel).getRooms();
     }
 
     public RoomDto addRoom(RoomDto roomDto, long hotelId) {
@@ -53,26 +44,6 @@ public class RoomService {
             hotel.setRooms(new ArrayList<>());
         }
         hotel.getRooms().add(room);
-        return RoomMapper.mapToRoomDto(room);
-    }
-
-    public RoomDto getRoomById(Long roomId) {
-        Room room = roomJpaRepository.findById(roomId).orElseThrow(() -> new EntityNotFoundException("Room not found with id: " + roomId));
-        return RoomMapper.mapToRoomDto(room);
-    }
-
-    public RoomDto createNewRoom(RoomDto roomDto) {
-            Room room = RoomMapper.mapToRoom(roomDto);
-            roomJpaRepository.save(room);
-            return RoomMapper.mapToRoomDto(room);
-        }
-    public RoomDto updateRoom(Long roomId, RoomDto roomDto) {
-        Room room = roomJpaRepository.findById(roomId)
-                .orElseThrow(() -> new EntityNotFoundException("Room not found with id: " + roomId));
-        room.setName(roomDto.getName());
-        room.setCapacity(roomDto.getCapacity());
-        room.setPriceByDay(roomDto.getPriceByDay());
-        roomJpaRepository.save(room);
         return RoomMapper.mapToRoomDto(room);
     }
 
