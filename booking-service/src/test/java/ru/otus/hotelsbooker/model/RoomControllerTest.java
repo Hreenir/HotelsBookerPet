@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-public class RoomsControllerTest {
+public class RoomControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
