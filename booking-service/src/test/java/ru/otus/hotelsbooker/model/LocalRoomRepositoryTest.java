@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import ru.otus.hotelsbooker.repository.HotelJpaRepository;
 import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Transactional
 @SpringBootTest
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class LocalRoomRepositoryTest {
     @Autowired
     private LocalRoomJpaRepository localRoomJpaRepository;
