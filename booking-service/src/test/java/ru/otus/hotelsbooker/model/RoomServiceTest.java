@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.service.HotelService;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class RoomServiceTest {
     @Autowired
     private HotelService hotelService;
