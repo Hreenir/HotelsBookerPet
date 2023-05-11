@@ -1,10 +1,15 @@
 package ru.otus.telegram_bot.commands;
 
+import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.otus.telegram_bot.client.HotelClient;
-@Qualifier("/disablelocalroom")
+
+import java.util.function.BiConsumer;
+
+@Named("/disablelocalroom")
 @Component
 @RequiredArgsConstructor
 public class CommandDisableLocalRoomStrategy implements CommandStrategy{
@@ -27,6 +32,11 @@ public class CommandDisableLocalRoomStrategy implements CommandStrategy{
     @Override
     public Object execute(long LocalRoomId) {
         hotelClient.disableLocalRoom(LocalRoomId);
+        return null;
+    }
+
+    @Override
+    public Object execute(String messageText, Message message, BiConsumer callBack) {
         return null;
     }
 }

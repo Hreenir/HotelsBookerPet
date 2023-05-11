@@ -2,14 +2,18 @@ package ru.otus.telegram_bot.commands;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.otus.dto.HotelDto;
 import ru.otus.telegram_bot.client.HotelClient;
 
+import java.util.function.BiConsumer;
 
-@Qualifier("addhotel")
+
+@Named("/addhotel")
 @Component
 @RequiredArgsConstructor
 public class CommandAddHotelStrategy implements CommandStrategy<HotelDto>{
@@ -38,6 +42,11 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto>{
 
     @Override
     public HotelDto execute(long Id) {
+        return null;
+    }
+
+    @Override
+    public HotelDto execute(String messageText, Message message, BiConsumer<Long, String> callBack) {
         return null;
     }
 

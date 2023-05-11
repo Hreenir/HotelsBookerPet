@@ -91,7 +91,8 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                         message
                                 .getText()
                                 .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
-                strategy = CommandStrategyRepository.getStrategyMap().get(command.replace("/", ""));
+                strategy = CommandStrategyRepository.getStrategyMap().get(command);
+                strategy.execute(String.valueOf(chatId), message, this::callBack);
             }
         }
         Object json;
@@ -126,22 +127,22 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                     }
                 }
                 break;
-            case "/addroom":
-                if (hasRole(chatId) == 1) {
-                    String hotelId = findIdInString(messageText, chatId);
-                    if (hotelId != null) {
-                        try {
-                            json = strategy.execute(messageText.substring(commandEntity.get().getLength() + hotelId.length() + 3), Long.parseLong(hotelId));
-                            String hotelsJson = objectMapper.writeValueAsString(json);
-                            if (json == null) {
-                                callBack(chatId, "Hotel with id " + hotelId + " not found");
-                            } else callBack(chatId, "OK " + hotelsJson);
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                break;
+           //case "/addroom":
+           //    if (hasRole(chatId) == 1) {
+           //        String hotelId = findIdInString(messageText, chatId);
+           //        if (hotelId != null) {
+           //            try {
+           //                json = strategy.execute(messageText.substring(commandEntity.get().getLength() + hotelId.length() + 3), Long.parseLong(hotelId));
+           //                String hotelsJson = objectMapper.writeValueAsString(json);
+           //                if (json == null) {
+           //                    callBack(chatId, "Hotel with id " + hotelId + " not found");
+           //                } else callBack(chatId, "OK " + hotelsJson);
+           //            } catch (JsonProcessingException e) {
+           //                e.printStackTrace();
+           //            }
+           //        }
+           //    }
+           //     break;
             case "/addlocalroom":
                 if (hasRole(chatId) == 1) {
                     String roomId = findIdInString(messageText, chatId);

@@ -1,13 +1,17 @@
 package ru.otus.telegram_bot.commands;
 
+import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.otus.dto.RoleDto;
 import ru.otus.dto.TgUserDto;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 
-@Qualifier("setrole")
+import java.util.function.BiConsumer;
+
+@Named("/setrolehotel")
 @Component
 @RequiredArgsConstructor
 public class CommandSetRoleStrategy implements CommandStrategy<TgUserDto> {
@@ -36,6 +40,11 @@ public class CommandSetRoleStrategy implements CommandStrategy<TgUserDto> {
 
     @Override
     public TgUserDto execute(long Id) {
+        return null;
+    }
+
+    @Override
+    public TgUserDto execute(String messageText, Message message, BiConsumer<Long, String> callBack) {
         return null;
     }
 
