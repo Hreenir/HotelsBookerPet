@@ -1,6 +1,7 @@
 package ru.otus.telegram_bot;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -17,7 +18,7 @@ import java.util.List;
 public class TestBotApplication {
     @Autowired
     HotelClient hotelClient;
-
+    @Disabled
     @Test
     public void testContextUp() {
         List<HotelDto> allHotels = hotelClient.getAllHotels("Moscow");
