@@ -7,18 +7,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import ru.otus.dto.HotelDto;
+import ru.otus.telegram_bot.BotAnswer;
+import ru.otus.telegram_bot.RoleAuthenticator;
 import ru.otus.telegram_bot.client.HotelClient;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
+
+import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL_ID;
 
 
 @Named("/addhotel")
 @Component
 @RequiredArgsConstructor
-public class CommandAddHotelStrategy implements CommandStrategy<HotelDto>{
+public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
     private final HotelClient hotelClient;
     private final ObjectMapper objectMapper;
+    private final RoleAuthenticator roleAuthenticator;
+
     @Override
     public HotelDto execute(String messageText) {
         try {
@@ -46,7 +54,18 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto>{
     }
 
     @Override
-    public HotelDto execute(String messageText, Message message, BiConsumer<Long, String> callBack) {
+    public HotelDto execute(String messageText, long chatId, Optional<MessageEntity> commandEntity, BiConsumer<Long, String> callBack) {
+        if (roleAuthenticator.hasRole(chatId) == ROLE_HOTEL_ID) {
+            String json = messageText.substring(commandEntity.get().getLength());
+            try {
+                HotelDto hotelDto = objectMapper.readValue(json, HotelDto.class);
+                HotelDto result =  hotelClient.createHotel(hotelDto);
+                String hotelJson = objectMapper.writeValueAsString(result);
+                callBack.accept(chatId, "OK " + hotelJson);
+            } catch (JsonProcessingException e) {
+                callBack.accept(chatId, BotAnswer.getINCORRECT_INPUT());
+            }
+        } else callBack.accept(chatId, BotAnswer.getINCORRECT_INPUT());
         return null;
     }
 

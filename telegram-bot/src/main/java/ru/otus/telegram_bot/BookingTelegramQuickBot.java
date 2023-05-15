@@ -35,8 +35,8 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
     private final BotConfigurationProperties botConfigurationProperties;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AuthenticationClient authenticationClient;
-    private static final long ROLE_HOTEL_ID = 1L;
-    private static final long ROLE_VISITOR_ID = 2L;
+
+
     private final CommandStrategyRepository commandStrategyRepository;
 
     @Autowired
@@ -92,7 +92,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                                 .getText()
                                 .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
                 strategy = CommandStrategyRepository.getStrategyMap().get(command);
-                strategy.execute(String.valueOf(chatId), message, this::callBack);
+                strategy.execute(messageText, chatId, commandEntity, this::callBack);
             }
         }
         Object json;
@@ -108,41 +108,41 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                     }
                 }
                 break;
-            case "/setrolehotel":
-                strategy.execute(chatId, ROLE_HOTEL_ID);
-                callBack(chatId, BotAnswer.getHOTEL_COMMANDS());
-                break;
-            case "/setrolevisitor":
-                strategy.execute(chatId, ROLE_VISITOR_ID);
-                callBack(chatId, BotAnswer.getVISITOR_COMMANDS());
-                break;
-            case "/addhotel", "/updatehotel":
-                if (hasRole(chatId) == 1) {
-                    json = strategy.execute(messageText.substring(commandEntity.get().getLength()));
-                    try {
-                        String hotelsJson = objectMapper.writeValueAsString(json);
-                        callBack(chatId, "OK " + hotelsJson);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-           //case "/addroom":
-           //    if (hasRole(chatId) == 1) {
-           //        String hotelId = findIdInString(messageText, chatId);
-           //        if (hotelId != null) {
-           //            try {
-           //                json = strategy.execute(messageText.substring(commandEntity.get().getLength() + hotelId.length() + 3), Long.parseLong(hotelId));
-           //                String hotelsJson = objectMapper.writeValueAsString(json);
-           //                if (json == null) {
-           //                    callBack(chatId, "Hotel with id " + hotelId + " not found");
-           //                } else callBack(chatId, "OK " + hotelsJson);
-           //            } catch (JsonProcessingException e) {
-           //                e.printStackTrace();
-           //            }
-           //        }
-           //    }
+           //case "/setrolehotel":
+           //    strategy.execute(chatId, ROLE_HOTEL_ID);
+           //    callBack(chatId, BotAnswer.getHOTEL_COMMANDS());
+           //    break;
+           // case "/setrolevisitor":
+           //     strategy.execute(chatId, ROLE_VISITOR_ID);
+           //     callBack(chatId, BotAnswer.getVISITOR_COMMANDS());
            //     break;
+            //case "/addhotel", "/updatehotel":
+            //    if (hasRole(chatId) == 1) {
+            //        json = strategy.execute(messageText.substring(commandEntity.get().getLength()));
+            //        try {
+            //            String hotelsJson = objectMapper.writeValueAsString(json);
+            //            callBack(chatId, "OK " + hotelsJson);
+            //        } catch (JsonProcessingException e) {
+            //            e.printStackTrace();
+            //        }
+            //    }
+            //    break;
+            //case "/addroom":
+            //    if (hasRole(chatId) == 1) {
+            //        String hotelId = findIdInString(messageText, chatId);
+            //        if (hotelId != null) {
+            //            try {
+            //                json = strategy.execute(messageText.substring(commandEntity.get().getLength() + hotelId.length() + 3), Long.parseLong(hotelId));
+            //                String hotelsJson = objectMapper.writeValueAsString(json);
+            //                if (json == null) {
+            //                    callBack(chatId, "Hotel with id " + hotelId + " not found");
+            //                } else callBack(chatId, "OK " + hotelsJson);
+            //            } catch (JsonProcessingException e) {
+            //                e.printStackTrace();
+            //            }
+            //        }
+            //    }
+            //     break;
             case "/addlocalroom":
                 if (hasRole(chatId) == 1) {
                     String roomId = findIdInString(messageText, chatId);

@@ -8,11 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
 import ru.otus.dto.SearchDto;
 import ru.otus.telegram_bot.client.HotelClient;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 @Named("/addlocalroom")
@@ -49,7 +51,8 @@ public class CommandAddLocalRoomStrategy implements CommandStrategy <LocalRoomDt
     }
 
     @Override
-    public LocalRoomDto execute(String messageText, Message message, BiConsumer<Long, String> callBack) {
+    public LocalRoomDto execute(String messageText, long chatId, Optional<MessageEntity> commandEntity, BiConsumer<Long, String> callBack) {
         return null;
     }
+
 }

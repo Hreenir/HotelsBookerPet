@@ -8,14 +8,20 @@ import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import ru.otus.dto.RoomDto;
 import ru.otus.dto.TgUserDto;
+import ru.otus.telegram_bot.BotAnswer;
+import ru.otus.telegram_bot.RoleAuthenticator;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 import ru.otus.telegram_bot.client.HotelClient;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL_ID;
 
 @Named("/addroom")
 @Component
@@ -23,7 +29,7 @@ import java.util.regex.Pattern;
 public class CommandAddRoomStrategy implements CommandStrategy<RoomDto> {
     private final HotelClient hotelClient;
     private final ObjectMapper objectMapper;
-    private final AuthenticationClient authenticationClient;
+    private final RoleAuthenticator roleAuthenticator;
 
     @Override
     public RoomDto execute(String messageText) {
@@ -41,24 +47,22 @@ public class CommandAddRoomStrategy implements CommandStrategy<RoomDto> {
     }
 
     @Override
-    public RoomDto execute(String messageText, Message message, BiConsumer<Long, String> callBack) {
-        Long chatId = message.getChatId();
-        if (hasRole(chatId) == 1) {
-            String hotelId = findIdInString(messageText, chatId);
-            if (hotelId != null) {
+    public RoomDto execute(String messageText, long chatId, Optional<MessageEntity> commandEntity, BiConsumer<Long, String> callBack) {
 
+        if (roleAuthenticator.hasRole(chatId) == ROLE_HOTEL_ID) {
+            String hotelId = findIdInString(messageText, chatId, callBack);
+            if (hotelId != null) {
                 try {
-                    RoomDto roomDto = objectMapper.readValue(messageText, RoomDto.class);
+                    String jsonText = messageText.substring(commandEntity.get().getLength() + hotelId.length() + 3);
+                    RoomDto roomDto = objectMapper.readValue(jsonText, RoomDto.class);
                     var json = hotelClient.addRoom(roomDto, Long.valueOf(hotelId));
-                    String hotelsJson = objectMapper.writeValueAsString(json);
-                    if (json == null) {
-                        callBack.accept(chatId, "Hotel with id " + hotelId + " not found");
-                    } else callBack.accept(chatId, "OK " + hotelsJson);
+                    String roomJson = objectMapper.writeValueAsString(json);
+                    callBack.accept(chatId, "OK " + roomJson);
                 } catch (DecodeException | JsonProcessingException e) {
-                    e.printStackTrace();
+                    callBack.accept(chatId, "Hotel with id " + hotelId + " not found.");
                 }
             }
-        }
+        } else callBack.accept(chatId, BotAnswer.getINCORRECT_INPUT());
         return null;
     }
 
@@ -68,23 +72,15 @@ public class CommandAddRoomStrategy implements CommandStrategy<RoomDto> {
         return null;
     }
 
-    private long hasRole(long id) {
-        try {
-            TgUserDto tgUserDto = authenticationClient.findTgUser(id);
-            return tgUserDto.getRole().getId();
-        } catch (FeignException e) {
-            return 0;
-        }
-    }
 
-    private String findIdInString(String messageText, long chatId) {
+    private String findIdInString(String messageText, Long chatId, BiConsumer<Long, String> callBack) {
         try {
             Pattern pattern = Pattern.compile("[(](.*?)[)]");
             Matcher matcher = pattern.matcher(messageText);
             matcher.find();
             return matcher.group(1);
         } catch (IllegalStateException e) {
-            //callBack(chatId, "incorrect input, try again.");
+            callBack.accept(chatId, BotAnswer.getINCORRECT_INPUT());
             return null;
         }
     }

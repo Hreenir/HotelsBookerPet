@@ -19,5 +19,7 @@ public class BotAnswer {
                     You can use commands:
                     /searchbycity {SearchDto}
                     """;
-
+    @Getter
+    private final static String INCORRECT_INPUT =
+            "Incorrect input, try again.";
 }

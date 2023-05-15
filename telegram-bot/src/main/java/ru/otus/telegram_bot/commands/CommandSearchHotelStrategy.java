@@ -7,11 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.SearchDto;
 import ru.otus.telegram_bot.client.HotelClient;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 @Named("/searchbycity")
@@ -48,9 +50,7 @@ public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto
     }
 
     @Override
-    public List<HotelDto> execute(String messageText, Message message, BiConsumer<Long, String> callBack) {
+    public List<HotelDto> execute(String messageText, long chatId, Optional<MessageEntity> commandEntity, BiConsumer<Long, String> callBack) {
         return null;
     }
-
-
 }

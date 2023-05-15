@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.otus.telegram_bot.client.HotelClient;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 @Named("/disablelocalroom")
@@ -36,7 +37,7 @@ public class CommandDisableLocalRoomStrategy implements CommandStrategy{
     }
 
     @Override
-    public Object execute(String messageText, Message message, BiConsumer callBack) {
+    public Object execute(String messageText, long chatId, Optional commandEntity, BiConsumer callBack) {
         return null;
     }
 }
