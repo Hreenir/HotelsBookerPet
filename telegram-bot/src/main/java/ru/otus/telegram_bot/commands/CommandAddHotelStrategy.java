@@ -10,12 +10,14 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import ru.otus.dto.HotelDto;
 import ru.otus.telegram_bot.BotAnswer;
+import ru.otus.telegram_bot.Parser;
 import ru.otus.telegram_bot.RoleAuthenticator;
 import ru.otus.telegram_bot.client.HotelClient;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
 import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL_ID;
 
 
@@ -26,6 +28,7 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
     private final HotelClient hotelClient;
     private final ObjectMapper objectMapper;
     private final RoleAuthenticator roleAuthenticator;
+    private final Parser parser;
 
     @Override
     public HotelDto execute(String messageText) {
@@ -56,16 +59,16 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
     @Override
     public HotelDto execute(String messageText, long chatId, Optional<MessageEntity> commandEntity, BiConsumer<Long, String> callBack) {
         if (roleAuthenticator.hasRole(chatId) == ROLE_HOTEL_ID) {
-            String json = messageText.substring(commandEntity.get().getLength());
+            String json = parser.findIdInString(messageText, chatId, callBack);
             try {
                 HotelDto hotelDto = objectMapper.readValue(json, HotelDto.class);
                 HotelDto result =  hotelClient.createHotel(hotelDto);
                 String hotelJson = objectMapper.writeValueAsString(result);
                 callBack.accept(chatId, "OK " + hotelJson);
             } catch (JsonProcessingException e) {
-                callBack.accept(chatId, BotAnswer.getINCORRECT_INPUT());
+                callBack.accept(chatId, INCORRECT_INPUT);
             }
-        } else callBack.accept(chatId, BotAnswer.getINCORRECT_INPUT());
+        } else callBack.accept(chatId, INCORRECT_INPUT);
         return null;
     }
 

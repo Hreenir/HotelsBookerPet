@@ -1,7 +1,6 @@
 package ru.otus.telegram_bot;
 
 import feign.FeignException;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.TgUserDto;

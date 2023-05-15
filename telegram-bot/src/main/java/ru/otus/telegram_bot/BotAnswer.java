@@ -8,7 +8,7 @@ public class BotAnswer {
             """
                     You can use commands:
                     /addhotel {hotelDto}
-                    /updatehotel {hotelDto}
+                    /updatehotel (hotelId) {hotelDto}
                     /addroom (hotelId) {roomDto}
                     /addlocalroom (roomId) {localRoomDto}
                     /disablelocalroom (localRoomDtoId)
@@ -19,7 +19,7 @@ public class BotAnswer {
                     You can use commands:
                     /searchbycity {SearchDto}
                     """;
-    @Getter
-    private final static String INCORRECT_INPUT =
+
+    public final static String INCORRECT_INPUT =
             "Incorrect input, try again.";
 }
