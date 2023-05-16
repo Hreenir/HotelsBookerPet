@@ -14,7 +14,7 @@ import ru.otus.hotelsbooker.repository.TgUserJpaRepository;
 @Getter
 @Transactional
 public class TgUserService {
-    private TgUserJpaRepository tgUserJpaRepository;
+    private final TgUserJpaRepository tgUserJpaRepository;
     @Autowired
     public TgUserService(TgUserJpaRepository tgUserJpaRepository){
         this.tgUserJpaRepository = tgUserJpaRepository;
