@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.RoleDto;
 import ru.otus.dto.TgUserDto;
+import ru.otus.hotelsbooker.exception.HotelNotFoundException;
 import ru.otus.hotelsbooker.model.Role;
 import ru.otus.hotelsbooker.model.TgUser;
 import ru.otus.hotelsbooker.repository.TgUserJpaRepository;

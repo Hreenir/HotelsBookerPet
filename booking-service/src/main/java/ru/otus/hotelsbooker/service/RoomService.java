@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
+import ru.otus.hotelsbooker.exception.HotelNotFoundException;
+import ru.otus.hotelsbooker.exception.LocalRoomNotFoundException;
+import ru.otus.hotelsbooker.exception.RoomNotFoundException;
 import ru.otus.hotelsbooker.mapper.LocalRoomMapper;
 import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.model.Hotel;
@@ -47,8 +50,13 @@ public class RoomService {
         return RoomMapper.mapToRoomDto(room);
     }
 
-    public void disableLocalRoom(long localRoomId) {
+    public LocalRoomDto disableLocalRoom(long localRoomId) {
         localRoomJpaRepository.disableLocalRoom(localRoomId);
+        LocalRoom localRoom = localRoomJpaRepository.findLocalRoomById(localRoomId);
+        if (localRoom == null) {
+            throw new LocalRoomNotFoundException("LocalRoom with id=" + localRoomId + " not found!");
+        }
+        return LocalRoomMapper.mapToLocalRoomDto(localRoom);
     }
     public LocalRoomDto addLocalRoom(LocalRoomDto localRoomDto, long roomId){
         Room room = roomJpaRepository.findRoomById(roomId);

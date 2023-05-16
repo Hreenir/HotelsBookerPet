@@ -52,7 +52,7 @@ public interface HotelClient {
 
 
     @PutMapping(path = "/0/room/0/localroom/{localRoomId}/disable")
-    void disableLocalRoom(@PathVariable Long localRoomId);
+    LocalRoomDto disableLocalRoom(@PathVariable Long localRoomId);
 
     /**
      * POST localhost:8881/hotel

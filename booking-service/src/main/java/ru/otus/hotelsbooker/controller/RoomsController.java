@@ -5,8 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
-import ru.otus.hotelsbooker.service.HotelNotFoundException;
-import ru.otus.hotelsbooker.service.RoomNotFoundException;
+import ru.otus.hotelsbooker.exception.HotelNotFoundException;
+import ru.otus.hotelsbooker.exception.LocalRoomNotFoundException;
+import ru.otus.hotelsbooker.exception.RoomNotFoundException;
 import ru.otus.hotelsbooker.service.RoomService;
 
 import java.util.Optional;
@@ -59,7 +60,12 @@ public class RoomsController {
      */
 
     @PutMapping(path = "/{roomId}/localroom/{localRoomId}/disable")
-    public void disableLocalRoom(@PathVariable Long localRoomId) {
-        roomService.disableLocalRoom(localRoomId);
+    public ResponseEntity disableLocalRoom(@PathVariable Long localRoomId) {
+        try {
+            LocalRoomDto result = roomService.disableLocalRoom(localRoomId);
+            return ResponseEntity.of(Optional.of(result));
+        } catch (LocalRoomNotFoundException e) {
+            return ResponseEntity.of(Optional.of(e.getMessage()));
+        }
     }
 }

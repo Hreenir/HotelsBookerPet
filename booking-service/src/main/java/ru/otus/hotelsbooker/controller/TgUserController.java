@@ -3,10 +3,8 @@ package ru.otus.hotelsbooker.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.dto.RoomDto;
 import ru.otus.dto.TgUserDto;
-import ru.otus.hotelsbooker.service.HotelNotFoundException;
-import ru.otus.hotelsbooker.service.TgUserNotFoundException;
+import ru.otus.hotelsbooker.exception.TgUserNotFoundException;
 import ru.otus.hotelsbooker.service.TgUserService;
 
 import java.util.Optional;

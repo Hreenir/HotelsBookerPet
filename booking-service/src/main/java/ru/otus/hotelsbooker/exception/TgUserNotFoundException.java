@@ -1,4 +1,4 @@
-package ru.otus.hotelsbooker.service;
+package ru.otus.hotelsbooker.exception;
 
 public class TgUserNotFoundException extends RuntimeException {
     public TgUserNotFoundException(String message) {

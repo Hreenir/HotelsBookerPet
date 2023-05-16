@@ -1,4 +1,4 @@
-package ru.otus.telegram_bot;
+package ru.otus.telegram_bot.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.LongPollingBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.otus.telegram_bot.BookingTelegramQuickBot;
 
 @Slf4j
 @Component

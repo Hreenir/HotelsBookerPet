@@ -20,7 +20,6 @@ import java.util.function.BiConsumer;
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
 import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL_ID;
 
-
 @Named("/addhotel")
 @Component
 @RequiredArgsConstructor
@@ -31,46 +30,24 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
     private final Parser parser;
 
     @Override
-    public HotelDto execute(String messageText) {
+    public HotelDto execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
+        if (roleAuthenticator.hasRole(chatId) != ROLE_HOTEL_ID) {
+            callBack.accept(chatId, INCORRECT_INPUT);
+            return null;
+        }
+        String jsonText = parser.findJsonInString(messageText);
+        if (jsonText == null) {
+            callBack.accept(chatId, INCORRECT_INPUT);
+            return null;
+        }
         try {
-            HotelDto hotelDto = objectMapper.readValue(messageText, HotelDto.class);
-            return hotelClient.createHotel(hotelDto);
+            HotelDto hotelDto = objectMapper.readValue(jsonText, HotelDto.class);
+            HotelDto result = hotelClient.createHotel(hotelDto);
+            String hotelJson = objectMapper.writeValueAsString(result);
+            callBack.accept(chatId, "OK " + hotelJson);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            callBack.accept(chatId, INCORRECT_INPUT);
         }
         return null;
     }
-
-    @Override
-    public HotelDto execute(long tgUserId, long roleId) {
-        return null;
-    }
-
-    @Override
-    public HotelDto execute(String messageText, long hotelId) {
-        return null;
-    }
-
-    @Override
-    public HotelDto execute(long Id) {
-        return null;
-    }
-
-    @Override
-    public HotelDto execute(String messageText, long chatId, Optional<MessageEntity> commandEntity, BiConsumer<Long, String> callBack) {
-        if (roleAuthenticator.hasRole(chatId) == ROLE_HOTEL_ID) {
-            String json = parser.findIdInString(messageText, chatId, callBack);
-            try {
-                HotelDto hotelDto = objectMapper.readValue(json, HotelDto.class);
-                HotelDto result =  hotelClient.createHotel(hotelDto);
-                String hotelJson = objectMapper.writeValueAsString(result);
-                callBack.accept(chatId, "OK " + hotelJson);
-            } catch (JsonProcessingException e) {
-                callBack.accept(chatId, INCORRECT_INPUT);
-            }
-        } else callBack.accept(chatId, INCORRECT_INPUT);
-        return null;
-    }
-
-
 }

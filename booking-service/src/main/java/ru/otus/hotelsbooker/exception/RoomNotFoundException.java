@@ -1,4 +1,4 @@
-package ru.otus.hotelsbooker.service;
+package ru.otus.hotelsbooker.exception;
 
 public class RoomNotFoundException extends RuntimeException {
     public RoomNotFoundException(String message) {
