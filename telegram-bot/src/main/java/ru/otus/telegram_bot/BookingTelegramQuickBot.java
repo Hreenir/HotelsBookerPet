@@ -52,11 +52,12 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
     @Override
     @SneakyThrows
     public void onUpdateReceived(@NotNull Update update) {
-        Long chatId = update.getMessage().getChatId();
+        Long chatId;
         Message message = update.getMessage();
         String receivedMessage;
 
         if (update.hasMessage()) {
+            chatId = update.getMessage().getChatId();
             receivedMessage = update.getMessage().getText();
             if (hasRole(chatId) == NO_ROLE) {
                 setRole(chatId);
