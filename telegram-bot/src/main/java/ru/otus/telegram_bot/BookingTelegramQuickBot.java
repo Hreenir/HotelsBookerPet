@@ -28,6 +28,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static ru.otus.telegram_bot.RoleAuthenticator.NO_ROLE;
+
 
 @Component
 @Slf4j
@@ -50,31 +52,23 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
     @Override
     @SneakyThrows
     public void onUpdateReceived(@NotNull Update update) {
-        Long chatId;
+        Long chatId = update.getMessage().getChatId();
         Message message = update.getMessage();
         String receivedMessage;
 
         if (update.hasMessage()) {
             receivedMessage = update.getMessage().getText();
-            chatId = update.getMessage().getChatId();
-            if (hasRole(chatId) == 0) {
+            if (hasRole(chatId) == NO_ROLE) {
                 setRole(chatId);
-            } else botAnswerUtils(message, receivedMessage, chatId);
+            } else botAnswerUtilsForText(message, receivedMessage, chatId);
 
         } else if (update.hasCallbackQuery()) {
             chatId = update.getCallbackQuery().getMessage().getChatId();
             receivedMessage = update.getCallbackQuery().getData();
-            botAnswerUtils(message, receivedMessage, chatId);
+            botAnswerUtilsForButton(receivedMessage, chatId);
         }
     }
-
-    private void botAnswerUtils(Message message, String messageText, Long chatId) {
-        CommandStrategy<?> strategy;
-        if (message == null) {
-            strategy = CommandStrategyRepository.getStrategyMap().get(messageText);
-            strategy.execute(messageText, chatId, this::callBack);
-            return;
-        }
+    private void botAnswerUtilsForText(Message message, String messageText, Long chatId) {
         Optional<MessageEntity> commandEntity = message.getEntities()
                 .stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
         if (commandEntity.isPresent()) {
@@ -82,10 +76,14 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                     message
                             .getText()
                             .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
-            strategy = CommandStrategyRepository.getStrategyMap().get(command);
+            CommandStrategy<?> strategy = CommandStrategyRepository.getStrategyMap().get(command);
             strategy.execute(messageText, chatId, this::callBack);
         }
+    }
 
+    private void botAnswerUtilsForButton(String messageText, Long chatId) {
+        CommandStrategy<?> strategy = CommandStrategyRepository.getStrategyMap().get(messageText);
+            strategy.execute(messageText, chatId, this::callBack);
     }
 
     private void callBack(long chatId, String messageText) {

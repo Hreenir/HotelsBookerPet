@@ -10,6 +10,7 @@ import ru.otus.telegram_bot.client.AuthenticationClient;
 public class RoleAuthenticator {
     public static final long ROLE_HOTEL_ID = 1L;
     public static final long ROLE_VISITOR_ID = 2L;
+    public static final long NO_ROLE = 0L;
 
     private final AuthenticationClient authenticationClient;
     public long hasRole(long id) {
