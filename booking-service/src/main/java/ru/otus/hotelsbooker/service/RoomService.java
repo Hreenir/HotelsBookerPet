@@ -16,14 +16,17 @@ import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
 import ru.otus.hotelsbooker.repository.RoomJpaRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Getter
 @Transactional
 public class RoomService {
-    private LocalRoomJpaRepository localRoomJpaRepository;
-    private RoomJpaRepository roomJpaRepository;
-    private HotelJpaRepository hotelRepository;
+    private final LocalRoomJpaRepository localRoomJpaRepository;
+    private final RoomJpaRepository roomJpaRepository;
+    private final HotelJpaRepository hotelRepository;
 
     @Autowired
     public RoomService(LocalRoomJpaRepository localRoomJpaRepository, RoomJpaRepository roomJpaRepository, HotelJpaRepository hotelRepository) {
@@ -65,5 +68,15 @@ public class RoomService {
                 .room(roomDto)
                 .build();
     }
+    public List<LocalRoomDto> getAllLocalRooms(long roomId){
+        Room room = roomJpaRepository.findRoomById(roomId);
+        if (room == null){
+            throw new
+        }
+        List<LocalRoom> localRooms = room.getRooms();
+        return localRooms.stream()
+                .map(LocalRoomMapper::mapToLocalRoomDto)
+                .toList();
 
+    }
 }

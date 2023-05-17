@@ -8,6 +8,7 @@ import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.service.HotelNotFoundException;
 import ru.otus.hotelsbooker.service.RoomService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -55,5 +56,10 @@ public class RoomsController {
     @PutMapping(path = "/{roomId}/localroom/{localRoomId}/disable")
     public void disableLocalRoom(@PathVariable Long localRoomId) {
         roomService.disableLocalRoom(localRoomId);
+    }
+
+    @GetMapping(path = "/{roomId}/localroom", produces = "application/json")
+    public List<LocalRoomDto> getAllLocalRooms (@PathVariable Long roomId){
+        return roomService.getAllLocalRooms(roomId);
     }
 }
