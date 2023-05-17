@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
+import ru.otus.hotelsbooker.exception.HotelNotFoundException;
 import ru.otus.hotelsbooker.mapper.HotelMapper;
 import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.model.Hotel;
