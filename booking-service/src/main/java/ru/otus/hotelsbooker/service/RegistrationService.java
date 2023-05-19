@@ -22,15 +22,17 @@ public class RegistrationService {
 
     @PostConstruct
     public void init() {
+        if (rolesJpaRepository.getRolesByUserId(1L) == null) {
             hotelRole = rolesJpaRepository.save(Role.builder()
-                    .id(1L)
                     .name("ROLE_HOTEL")
                     .build());
             register("user", "user");
+        }
+        if (rolesJpaRepository.getRolesByUserId(2L) == null){
             rolesJpaRepository.save(Role.builder()
-                    .id(2L)
                     .name("ROLE_VISITOR")
                     .build());
+        }
     }
 
     public void register(String username, String password) {
