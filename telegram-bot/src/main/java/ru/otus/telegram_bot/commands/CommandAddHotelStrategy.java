@@ -4,21 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import ru.otus.dto.HotelDto;
-import ru.otus.telegram_bot.BotAnswer;
 import ru.otus.telegram_bot.Parser;
 import ru.otus.telegram_bot.RoleAuthenticator;
 import ru.otus.telegram_bot.client.HotelClient;
 
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
-import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL_ID;
+import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
 
 @Named("/addhotel")
 @Component
@@ -31,7 +27,7 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
 
     @Override
     public HotelDto execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
-        if (roleAuthenticator.hasRole(chatId) != ROLE_HOTEL_ID) {
+        if (!Objects.equals(roleAuthenticator.hasRole(chatId), ROLE_HOTEL)) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }

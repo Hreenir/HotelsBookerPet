@@ -9,6 +9,7 @@ import ru.otus.hotelsbooker.model.User;
 import ru.otus.hotelsbooker.repository.RolesJpaRepository;
 import ru.otus.hotelsbooker.repository.UsersJpaRepository;
 
+import java.util.Collections;
 import java.util.Set;
 
 @Service
@@ -18,17 +19,15 @@ public class RegistrationService {
     private final UsersJpaRepository usersJpaRepository;
     private final RolesJpaRepository rolesJpaRepository;
 
-    private Role hotelRole;
-
     @PostConstruct
     public void init() {
-        if (rolesJpaRepository.getRolesByUserId(1L) == null) {
-        hotelRole = rolesJpaRepository.save(Role.builder()
+        if (rolesJpaRepository.getIdByRoleName("ROLE_HOTEL") == null) {
+        rolesJpaRepository.save(Role.builder()
                 .name("ROLE_HOTEL")
                 .build());
         register("user", "user");
         }
-        if (rolesJpaRepository.getRolesByUserId(2L) == null){
+        if (rolesJpaRepository.getIdByRoleName("ROLE_VISITOR") == null){
             rolesJpaRepository.save(Role.builder()
                     .name("ROLE_VISITOR")
                     .build());
@@ -42,7 +41,7 @@ public class RegistrationService {
                     .username("user")
                     .password(encodedPassword)
                     .enabled(true)
-                    .roles(Set.of(hotelRole))
+                    .roles(Set.of(rolesJpaRepository.getIdByRoleName("ROLE_HOTEL")))
                     .build());
         }
     }

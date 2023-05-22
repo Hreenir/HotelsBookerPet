@@ -5,10 +5,11 @@ import ru.otus.hotelsbooker.model.TgUser;
 
 public class TgUserMapper {
     public static TgUser mapToTgUser(TgUserDto tgUserDto) {
-        return TgUser.builder()
+        TgUser tgUser = TgUser.builder()
                 .id(tgUserDto.getId())
                 .role(RoleMapper.mapToRole(tgUserDto.getRole()))
                 .build();
+        return tgUser;
     }
 
     public static TgUserDto mapToTgUserDto(TgUser tgUser) {

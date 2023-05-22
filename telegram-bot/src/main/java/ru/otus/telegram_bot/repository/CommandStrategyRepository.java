@@ -17,7 +17,7 @@ public class CommandStrategyRepository {
         CommandStrategyRepository.strategyMap = strategyMap;
     }
 
-    public static Map<String, CommandStrategy<?>> getStrategyMap() {
-        return strategyMap;
+    public static CommandStrategy<?> getStrategy(String command) {
+        return strategyMap.get(command);
     }
 }

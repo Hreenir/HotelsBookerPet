@@ -6,7 +6,6 @@ import feign.codec.DecodeException;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.SearchDto;
 import ru.otus.telegram_bot.Parser;
@@ -14,11 +13,12 @@ import ru.otus.telegram_bot.RoleAuthenticator;
 import ru.otus.telegram_bot.client.HotelClient;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
-import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_VISITOR_ID;
+import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
+import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_VISITOR;
 
 @Named("/searchbycity")
 @Component
@@ -31,7 +31,7 @@ public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto
 
     @Override
     public List<HotelDto> execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
-        if (roleAuthenticator.hasRole(chatId) != ROLE_VISITOR_ID) {
+        if (!Objects.equals(roleAuthenticator.hasRole(chatId), ROLE_VISITOR)) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }
