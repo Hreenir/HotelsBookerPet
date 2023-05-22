@@ -2,6 +2,7 @@ package ru.otus.hotelsbooker.service;
 
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.LocalRoomDto;
@@ -23,17 +24,11 @@ import java.util.List;
 @Service
 @Getter
 @Transactional
+@RequiredArgsConstructor
 public class RoomService {
     private final LocalRoomJpaRepository localRoomJpaRepository;
     private final RoomJpaRepository roomJpaRepository;
     private final HotelJpaRepository hotelRepository;
-
-    @Autowired
-    public RoomService(LocalRoomJpaRepository localRoomJpaRepository, RoomJpaRepository roomJpaRepository, HotelJpaRepository hotelRepository) {
-        this.localRoomJpaRepository = localRoomJpaRepository;
-        this.roomJpaRepository = roomJpaRepository;
-        this.hotelRepository = hotelRepository;
-    }
 
     public RoomDto addRoom(RoomDto roomDto, long hotelId) {
         Hotel hotel = hotelRepository.findAllById(hotelId);

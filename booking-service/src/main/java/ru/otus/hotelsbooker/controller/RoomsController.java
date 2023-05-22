@@ -64,9 +64,9 @@ public class RoomsController {
     public ResponseEntity getAllLocalRooms (@PathVariable Long roomId) {
         try {
             List<LocalRoomDto> result = roomService.getAllLocalRooms(roomId);
-            return ResponseEntity.of(Optional.of(result));
+            return ResponseEntity.ok(result);
         } catch (LocalRoomNotFoundException e) {
-            return ResponseEntity.of(Optional.of(e.getMessage()));
+            return ResponseEntity.notFound().build();
         }
     }
 }
