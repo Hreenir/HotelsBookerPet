@@ -2,10 +2,13 @@ package ru.otus.hotelsbooker.service;
 
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
+import ru.otus.hotelsbooker.exception.HotelNotFoundException;
+import ru.otus.hotelsbooker.exception.LocalRoomNotFoundException;
 import ru.otus.hotelsbooker.exception.HotelNotFoundException;
 import ru.otus.hotelsbooker.exception.LocalRoomNotFoundException;
 import ru.otus.hotelsbooker.exception.RoomNotFoundException;
@@ -19,21 +22,16 @@ import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
 import ru.otus.hotelsbooker.repository.RoomJpaRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Getter
 @Transactional
+@RequiredArgsConstructor
 public class RoomService {
-    private LocalRoomJpaRepository localRoomJpaRepository;
-    private RoomJpaRepository roomJpaRepository;
-    private HotelJpaRepository hotelRepository;
-
-    @Autowired
-    public RoomService(LocalRoomJpaRepository localRoomJpaRepository, RoomJpaRepository roomJpaRepository, HotelJpaRepository hotelRepository) {
-        this.localRoomJpaRepository = localRoomJpaRepository;
-        this.roomJpaRepository = roomJpaRepository;
-        this.hotelRepository = hotelRepository;
-    }
+    private final LocalRoomJpaRepository localRoomJpaRepository;
+    private final RoomJpaRepository roomJpaRepository;
+    private final HotelJpaRepository hotelRepository;
 
     public RoomDto addRoom(RoomDto roomDto, long hotelId) {
         Hotel hotel = hotelRepository.findAllById(hotelId);
@@ -76,5 +74,15 @@ public class RoomService {
                 .room(roomDto)
                 .build();
     }
+    public List<LocalRoomDto> getAllLocalRooms(long roomId){
+        Room room = roomJpaRepository.findRoomById(roomId);
+        if (room == null){
+            throw new LocalRoomNotFoundException("Room with id=" + roomId + " not found!");
+        }
+        List<LocalRoom> localRooms = room.getRooms();
+        return localRooms.stream()
+                .map(LocalRoomMapper::mapToLocalRoomDto)
+                .toList();
 
+    }
 }
