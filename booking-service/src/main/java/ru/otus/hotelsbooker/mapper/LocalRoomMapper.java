@@ -10,4 +10,12 @@ public class LocalRoomMapper {
                 .enabled(localRoomDto.isEnabled())
                 .build();
     }
+    public static LocalRoomDto mapToLocalRoomDto(LocalRoom localRoom) {
+        return  LocalRoomDto.builder()
+                .id(localRoom.getId())
+                .roomNumber(localRoom.getRoomNumber())
+                .enabled(localRoom.isEnabled())
+                .room(RoomMapper.mapToRoomDto(localRoom.getRoom()))
+                .build();
+    }
 }
