@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.hotelsbooker.exception.LocalRoomNotFoundException;
+import ru.otus.hotelsbooker.exception.RoomNotFoundException;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.LocalRoom;
 import ru.otus.hotelsbooker.model.Room;
@@ -49,8 +50,8 @@ public class RoomServiceUnitTest {
         roomJpaRepository.findRoomById(roomId);
         try {
             underTest.getAllLocalRooms(roomId);
-        } catch (LocalRoomNotFoundException thrown) {
-            assertNotEquals("", thrown.getMessage());
+        } catch (RoomNotFoundException thrown) {
+            assertEquals("Room with id=1 not found!", thrown.getMessage());
         }
     }
 }
