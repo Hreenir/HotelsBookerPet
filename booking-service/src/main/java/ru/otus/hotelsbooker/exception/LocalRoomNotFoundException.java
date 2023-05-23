@@ -5,4 +5,3 @@ public class LocalRoomNotFoundException extends RuntimeException {
         super(message);
     }
 }
-

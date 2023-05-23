@@ -9,6 +9,9 @@ import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.exception.HotelNotFoundException;
 import ru.otus.hotelsbooker.exception.LocalRoomNotFoundException;
+import ru.otus.hotelsbooker.exception.HotelNotFoundException;
+import ru.otus.hotelsbooker.exception.LocalRoomNotFoundException;
+import ru.otus.hotelsbooker.exception.RoomNotFoundException;
 import ru.otus.hotelsbooker.mapper.LocalRoomMapper;
 import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.model.Hotel;
@@ -45,11 +48,19 @@ public class RoomService {
         return RoomMapper.mapToRoomDto(room);
     }
 
-    public void disableLocalRoom(long localRoomId) {
+    public LocalRoomDto disableLocalRoom(long localRoomId) {
         localRoomJpaRepository.disableLocalRoom(localRoomId);
+        LocalRoom localRoom = localRoomJpaRepository.findLocalRoomById(localRoomId);
+        if (localRoom == null) {
+            throw new LocalRoomNotFoundException("LocalRoom with id=" + localRoomId + " not found!");
+        }
+        return LocalRoomMapper.mapToLocalRoomDto(localRoom);
     }
     public LocalRoomDto addLocalRoom(LocalRoomDto localRoomDto, long roomId){
         Room room = roomJpaRepository.findRoomById(roomId);
+        if (room == null) {
+            throw new RoomNotFoundException("Room with id=" + roomId + " not found!");
+        }
 
         LocalRoom localRoom = LocalRoomMapper.mapToLocalRoom(localRoomDto);
         localRoom.setRoom(room);
@@ -66,7 +77,7 @@ public class RoomService {
     public List<LocalRoomDto> getAllLocalRooms(long roomId){
         Room room = roomJpaRepository.findRoomById(roomId);
         if (room == null){
-            throw new LocalRoomNotFoundException("Room with id=" + roomId + " not found!");
+            throw new RoomNotFoundException("Room with id=" + roomId + " not found!");
         }
         List<LocalRoom> localRooms = room.getRooms();
         return localRooms.stream()

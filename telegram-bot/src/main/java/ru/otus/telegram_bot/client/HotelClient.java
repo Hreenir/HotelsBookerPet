@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.dto.HotelDto;
+import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
 
 import java.util.List;
 
-@FeignClient(name = "hotel-client")
+@FeignClient(url = "localhost:8881/hotel", name = "hotel-client", configuration = FeignBasicAuthInterceptor.class)
 public interface HotelClient {
     /**
      * GET localhost:8881/hotel?city=something
@@ -35,40 +36,35 @@ public interface HotelClient {
      * @return
      */
     @GetMapping("/{id}")
-    public HotelDto getHotelById(@PathVariable Long id) ;
+    HotelDto getHotelById(@PathVariable Long id);
 
 
     /**
      * POST localhost:8881/hotel/{id}/room
      * * body {}
+     *
      * @param roomDto
      * @param id
      * @return
      */
     @PostMapping(path = "/{id}/room", consumes = "application/json")
-    ResponseEntity addRoom(@RequestBody RoomDto roomDto, @PathVariable Long id);
+    RoomDto addRoom(@RequestBody RoomDto roomDto, @PathVariable Long id);
 
 
-    @DeleteMapping(path = "/localroom/{id}")
-    void disableLocalRoom(@PathVariable Long id);
+    @PutMapping(path = "/0/room/0/localroom/{localRoomId}/disable")
+    LocalRoomDto disableLocalRoom(@PathVariable Long localRoomId);
 
     /**
      * POST localhost:8881/hotel
      * body {}
+     *
      * @param hotel
      * @return
      */
     @PostMapping(consumes = "application/json", produces = "application/json")
     HotelDto createHotel(@RequestBody HotelDto hotel);
-
-    /**
-     * PuT localhost:8881/hotel/{id}
-     * body {}
-     * @param hotel
-     * @return
-     */
-
-    @PutMapping(consumes = "application/json", produces = "application/json")
+    @PutMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     HotelDto updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel);
-
+    @PostMapping(path = "/0/room/{roomId}/localroom", consumes = "application/json", produces = "application/json")
+     LocalRoomDto addLocalRoom(@RequestBody LocalRoomDto localRoomDto, @PathVariable Long roomId);
 }

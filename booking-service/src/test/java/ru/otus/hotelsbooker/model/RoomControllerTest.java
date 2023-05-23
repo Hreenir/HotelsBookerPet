@@ -52,6 +52,7 @@ public class RoomControllerTest {
     private final int NOT_EXISTING_HOTEL_ID = 132;
     @BeforeEach
     public void prepare(){
+        clear();
         Role roleUser = Role.builder()
                 .name("ROLE_USER")
                 .build();

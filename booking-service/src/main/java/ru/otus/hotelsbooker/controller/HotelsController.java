@@ -3,8 +3,11 @@ package ru.otus.hotelsbooker.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.dto.HotelDto;
+import ru.otus.hotelsbooker.exception.HotelNotFoundException;
 import ru.otus.hotelsbooker.service.HotelService;
 
 @RestController
@@ -21,8 +24,8 @@ public class HotelsController {
      * @return
      */
     @GetMapping
-    public List<HotelDto> getAllHotels(@RequestParam(name = "city", required = false) String city) {
-        return hotelsService.findAll(city);
+    public ResponseEntity getAllHotels(@RequestParam(name = "city", required = false) String city) {
+        return ResponseEntity.ok(hotelsService.findAll(city));
     }
 
     /**
@@ -34,19 +37,24 @@ public class HotelsController {
      * @return
      */
     @GetMapping("/{id}")
-    public HotelDto getHotelById(@PathVariable Long id) {
-        return hotelsService.getHotelById(id);
+    public ResponseEntity getHotelById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(hotelsService.getHotelById(id));
+        } catch (HotelNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 
     /**
      * POST localhost:8881/hotel
      * * body {}
+     *
      * @return
      */
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public HotelDto createHotel(@RequestBody HotelDto hotel) {
-        return hotelsService.createNewHotel(hotel);
+    public ResponseEntity createHotel(@RequestBody HotelDto hotel) {
+        return ResponseEntity.ok(hotelsService.createNewHotel(hotel));
     }
 
     /**
@@ -57,7 +65,11 @@ public class HotelsController {
      * @return
      */
     @PutMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
-    public HotelDto updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel) {
-        return hotelsService.updateHotel(id, hotel);
+    public ResponseEntity updateHotel(@PathVariable Long id, @RequestBody HotelDto hotel) {
+        try {
+            return ResponseEntity.ok(hotelsService.updateHotel(id, hotel));
+        } catch (HotelNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

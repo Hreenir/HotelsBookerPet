@@ -54,6 +54,7 @@ public class HotelControllerTest {
 
     @BeforeEach
     public void prepare() {
+        clear();
         Role roleUser = Role.builder()
                 .name("ROLE_USER")
                 .build();
