@@ -1,6 +1,7 @@
 package ru.otus.hotelsbooker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.dto.TgUserDto;
@@ -16,16 +17,15 @@ public class TgUserController {
     private TgUserService tgUsersService;
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public TgUserDto setRole(@RequestBody TgUserDto tgUserDto){
-        return tgUsersService.createTgUser(tgUserDto);
+    public ResponseEntity setRole(@RequestBody TgUserDto tgUserDto){
+        return ResponseEntity.ok(tgUsersService.createTgUser(tgUserDto));
     }
     @GetMapping("/{id}")
     public ResponseEntity findTgUser(@PathVariable Long id){
         try {
-            TgUserDto result = tgUsersService.getUserById(id);
-            return ResponseEntity.of(Optional.of(result));
+            return ResponseEntity.ok(tgUsersService.getUserById(id));
         } catch (TgUserNotFoundException e) {
-            return ResponseEntity.of(Optional.of(e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

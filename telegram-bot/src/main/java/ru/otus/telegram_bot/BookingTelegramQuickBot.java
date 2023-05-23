@@ -1,6 +1,5 @@
 package ru.otus.telegram_bot;
 
-import feign.FeignException;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.otus.dto.TgUserDto;
 import ru.otus.telegram_bot.buttons.Buttons;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 import ru.otus.telegram_bot.commands.*;
@@ -23,7 +21,6 @@ import ru.otus.telegram_bot.config.BotConfigurationProperties;
 
 import java.util.Optional;
 
-import static ru.otus.telegram_bot.RoleAuthenticator.NO_ROLE;
 
 
 @Component
@@ -52,7 +49,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
         if (update.hasMessage()) {
             chatId = update.getMessage().getChatId();
             receivedMessage = update.getMessage().getText();
-            if (roleAuthenticator.hasRole(chatId).equals(NO_ROLE)) {
+            if (roleAuthenticator.getRoleByUserId(chatId) == null) {
                 setRole(chatId);
             } else botAnswerUtilsForText(message, receivedMessage, chatId);
 
@@ -88,7 +85,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
 
         try {
             execute(message);
-            log.info("Reply sent");
+            log.info("Reply sent UserId = " + chatId);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
@@ -101,7 +98,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                 .replyMarkup(markup).build();
         try {
             execute(message);
-            log.info("Reply sent");
+            log.info("Reply sent UserId = " + chatId);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }

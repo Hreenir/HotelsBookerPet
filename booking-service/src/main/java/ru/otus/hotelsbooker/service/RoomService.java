@@ -77,7 +77,7 @@ public class RoomService {
     public List<LocalRoomDto> getAllLocalRooms(long roomId){
         Room room = roomJpaRepository.findRoomById(roomId);
         if (room == null){
-            throw new LocalRoomNotFoundException("Room with id=" + roomId + " not found!");
+            throw new RoomNotFoundException("Room with id=" + roomId + " not found!");
         }
         List<LocalRoom> localRooms = room.getRooms();
         return localRooms.stream()

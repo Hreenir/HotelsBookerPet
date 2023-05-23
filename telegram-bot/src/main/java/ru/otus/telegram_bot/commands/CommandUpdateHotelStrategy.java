@@ -2,6 +2,7 @@ package ru.otus.telegram_bot.commands;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import feign.codec.DecodeException;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class CommandUpdateHotelStrategy implements CommandStrategy<HotelDto> {
 
     @Override
     public HotelDto execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
-        if (!Objects.equals(roleAuthenticator.hasRole(chatId), ROLE_HOTEL)) {
+        if (roleAuthenticator.getRoleByUserId(chatId) == null) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }
@@ -47,7 +48,7 @@ public class CommandUpdateHotelStrategy implements CommandStrategy<HotelDto> {
             HotelDto result = hotelClient.updateHotel(Long.valueOf(hotelId), hotelDto);
             String hotelJson = objectMapper.writeValueAsString(result);
             callBack.accept(chatId, "OK " + hotelJson);
-        } catch (JsonProcessingException | DecodeException e) {
+        } catch (JsonProcessingException | FeignException e) {
             callBack.accept(chatId, INCORRECT_INPUT);
         }
         return null;

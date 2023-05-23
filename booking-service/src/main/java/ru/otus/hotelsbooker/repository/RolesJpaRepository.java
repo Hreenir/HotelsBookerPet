@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.otus.hotelsbooker.model.Role;
 
-import java.util.List;
 import java.util.Set;
 
 public interface RolesJpaRepository extends JpaRepository<Role, Long> {
@@ -18,5 +17,5 @@ public interface RolesJpaRepository extends JpaRepository<Role, Long> {
     @Query(nativeQuery = true, value =
             "SELECT * from roles\n" +
                     "where name = :roleName")
-    Role getIdByRoleName(@Param("roleName") String roleName);
+    Role getRoleByName(@Param("roleName") String roleName);
 }

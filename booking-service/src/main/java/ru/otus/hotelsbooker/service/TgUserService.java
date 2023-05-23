@@ -1,9 +1,7 @@
 package ru.otus.hotelsbooker.service;
 
 import jakarta.transaction.Transactional;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.TgUserDto;
 import ru.otus.hotelsbooker.exception.HotelNotFoundException;
@@ -21,7 +19,7 @@ public class TgUserService {
     public TgUserDto createTgUser(TgUserDto tgUserDto ){
         TgUser tgUser = TgUserMapper.mapToTgUser(tgUserDto);
         String roleName = tgUserDto.getRole().getName();
-        tgUser.setRole(rolesJpaRepository.getIdByRoleName(roleName));
+        tgUser.setRole(rolesJpaRepository.getRoleByName(roleName));
         TgUser savedTgUser = tgUserJpaRepository.save(tgUser);
         return TgUserMapper.mapToTgUserDto(savedTgUser);
     }

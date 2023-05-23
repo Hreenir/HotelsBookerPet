@@ -1,10 +1,9 @@
 package ru.otus.telegram_bot.commands;
 
-import feign.codec.DecodeException;
+import feign.FeignException;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.otus.dto.LocalRoomDto;
 import ru.otus.telegram_bot.Parser;
 import ru.otus.telegram_bot.RoleAuthenticator;
 import ru.otus.telegram_bot.client.HotelClient;
@@ -25,7 +24,7 @@ public class CommandDisableLocalRoomStrategy implements CommandStrategy<Object> 
 
     @Override
     public Object execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
-        if (!Objects.equals(roleAuthenticator.hasRole(chatId), ROLE_HOTEL)) {
+        if (roleAuthenticator.getRoleByUserId(chatId) == null) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }
@@ -35,9 +34,9 @@ public class CommandDisableLocalRoomStrategy implements CommandStrategy<Object> 
             return null;
         }
         try {
-            LocalRoomDto result = hotelClient.disableLocalRoom(Long.valueOf(localRoomId));
+            hotelClient.disableLocalRoom(Long.valueOf(localRoomId));
             callBack.accept(chatId, "Local room with id " + localRoomId + " was disabled.");
-        } catch (DecodeException e) {
+        } catch (FeignException e) {
             callBack.accept(chatId, "LocalRoom with id=" + localRoomId + " not found!");
             return null;
         }

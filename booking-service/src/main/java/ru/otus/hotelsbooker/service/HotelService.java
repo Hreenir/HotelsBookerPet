@@ -59,6 +59,9 @@ public class HotelService {
 
     public HotelDto getHotelById(long id) {
         Hotel hotel = hotelRepository.findAllById(id);
+        if (hotel == null) {
+            throw new HotelNotFoundException("Hotel with id=" + id + " not found!");
+        }
         return HotelMapper.mapToDto(hotel);
     }
 
@@ -84,6 +87,9 @@ public class HotelService {
     public HotelDto updateHotel(Long id, HotelDto hotelDto) {
 
         Hotel hotel = hotelRepository.findAllById(id);
+        if (hotel == null) {
+            throw new HotelNotFoundException("Hotel with id=" + id + " not found!");
+        }
 
         if (hotelDto.getName() != null) {
             hotel.setName(hotelDto.getName());

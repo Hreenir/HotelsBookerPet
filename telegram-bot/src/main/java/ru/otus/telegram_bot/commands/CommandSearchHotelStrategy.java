@@ -2,6 +2,7 @@ package ru.otus.telegram_bot.commands;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import feign.codec.DecodeException;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
-import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
 import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_VISITOR;
 
 @Named("/searchbycity")
@@ -31,7 +31,7 @@ public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto
 
     @Override
     public List<HotelDto> execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
-        if (!Objects.equals(roleAuthenticator.hasRole(chatId), ROLE_VISITOR)) {
+        if (roleAuthenticator.getRoleByUserId(chatId) == null) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }
@@ -45,7 +45,7 @@ public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto
             List<HotelDto> result = hotelClient.getAllHotels(searchDto.getCity());
             String hotelsJson = objectMapper.writeValueAsString(result);
             callBack.accept(chatId, hotelsJson);
-        } catch (JsonProcessingException | DecodeException e) {
+        } catch (JsonProcessingException | FeignException e) {
             callBack.accept(chatId, INCORRECT_INPUT);
         }
         return null;

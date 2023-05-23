@@ -27,7 +27,7 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
 
     @Override
     public HotelDto execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
-        if (!Objects.equals(roleAuthenticator.hasRole(chatId), ROLE_HOTEL)) {
+        if (roleAuthenticator.getRoleByUserId(chatId) == null) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }
