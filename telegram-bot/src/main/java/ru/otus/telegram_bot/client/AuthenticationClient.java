@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.otus.dto.TgUserDto;
 
-@FeignClient(url="localhost:8881/tguser", name = "Authentication-client", configuration = FeignBasicAuthInterceptor.class)
+@FeignClient(url="127.0.0.1:8881/tguser", name = "Authentication-client", configuration = FeignBasicAuthInterceptor.class)
 public interface AuthenticationClient {
     @PostMapping(consumes = "application/json", produces = "application/json")
     TgUserDto setRole(@RequestBody TgUserDto tgUserDto);
