@@ -6,9 +6,7 @@ services:
       context: .
       dockerfile: booking-service\Dockerfile
     ports:
-      - "8881:8881"
-    networks:
-      - host
+    - "8881:8881"
 
 
   telegram-bot:
@@ -20,11 +18,7 @@ services:
       dockerfile: telegram-bot\Dockerfile
     ports:
       - "8182:8182"
-    networks:
-      - host
-networks:
-  host:
-    driver: bridge
+
 
 
 

@@ -13,4 +13,8 @@ public interface RolesJpaRepository extends JpaRepository<Role, Long> {
             "join roles r on users_to_roles.role_id = r.id\n" +
             "where user_id = :userId")
     public Set<Role> getRolesByUserId(@Param("userId")Long userId);
+    @Query(nativeQuery = true, value =
+            "SELECT * from roles\n" +
+                    "where name = :roleName")
+    Role getRoleByName(@Param("roleName") String roleName);
 }
