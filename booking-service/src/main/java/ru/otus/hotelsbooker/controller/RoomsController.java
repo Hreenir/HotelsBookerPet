@@ -1,6 +1,7 @@
 package ru.otus.hotelsbooker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.dto.LocalRoomDto;
@@ -10,6 +11,7 @@ import ru.otus.hotelsbooker.exception.LocalRoomNotFoundException;
 import ru.otus.hotelsbooker.exception.RoomNotFoundException;
 import ru.otus.hotelsbooker.service.RoomService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -29,10 +31,9 @@ public class RoomsController {
     @PostMapping(path = "", consumes = "application/json")
     public ResponseEntity addRoom(@RequestBody RoomDto roomDto, @PathVariable Long hotelId) {
         try {
-            RoomDto result = roomService.addRoom(roomDto, hotelId);
-            return ResponseEntity.of(Optional.of(result));
+            return ResponseEntity.ok(roomService.addRoom(roomDto, hotelId));
         } catch (HotelNotFoundException e) {
-            return ResponseEntity.of(Optional.of(e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -46,10 +47,9 @@ public class RoomsController {
     @PostMapping(path = "/{roomId}/localroom", consumes = "application/json", produces = "application/json")
     public ResponseEntity addLocalRoom(@RequestBody LocalRoomDto localRoomDto, @PathVariable Long roomId) {
         try {
-            LocalRoomDto result = roomService.addLocalRoom(localRoomDto, roomId);
-            return ResponseEntity.of(Optional.of(result));
+            return ResponseEntity.ok(roomService.addLocalRoom(localRoomDto, roomId));
         } catch (RoomNotFoundException e) {
-            return ResponseEntity.of(Optional.of(e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -62,10 +62,18 @@ public class RoomsController {
     @PutMapping(path = "/{roomId}/localroom/{localRoomId}/disable")
     public ResponseEntity disableLocalRoom(@PathVariable Long localRoomId) {
         try {
-            LocalRoomDto result = roomService.disableLocalRoom(localRoomId);
-            return ResponseEntity.of(Optional.of(result));
+            return ResponseEntity.ok(roomService.disableLocalRoom(localRoomId));
         } catch (LocalRoomNotFoundException e) {
-            return ResponseEntity.of(Optional.of(e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(path = "/{roomId}/localroom", produces = "application/json")
+    public ResponseEntity getAllLocalRooms (@PathVariable Long roomId) {
+        try {
+            return ResponseEntity.ok(roomService.getAllLocalRooms(roomId));
+        } catch (RoomNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

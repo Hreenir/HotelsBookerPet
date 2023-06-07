@@ -1,10 +1,6 @@
 package ru.otus.telegram_bot;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.FeignException;
 import jakarta.validation.constraints.NotNull;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.otus.dto.TgUserDto;
 import ru.otus.telegram_bot.buttons.Buttons;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 import ru.otus.telegram_bot.commands.*;
@@ -25,32 +20,27 @@ import ru.otus.telegram_bot.repository.CommandStrategyRepository;
 import ru.otus.telegram_bot.config.BotConfigurationProperties;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static ru.otus.telegram_bot.RoleAuthenticator.NO_ROLE;
 
 
 @Component
 @Slf4j
 public class BookingTelegramQuickBot extends TelegramLongPollingBot implements QuickBotCommands {
     private final BotConfigurationProperties botConfigurationProperties;
-    private final AuthenticationClient authenticationClient;
+    private final RoleAuthenticator roleAuthenticator;
 
     @Autowired
-    public BookingTelegramQuickBot(BotConfigurationProperties botConfigurationProperties, AuthenticationClient authenticationClient) {
+    public BookingTelegramQuickBot(BotConfigurationProperties botConfigurationProperties, AuthenticationClient authenticationClient, RoleAuthenticator roleAuthenticator) {
         super(botConfigurationProperties.getToken());
         this.botConfigurationProperties = botConfigurationProperties;
+        this.roleAuthenticator = roleAuthenticator;
         try {
             this.execute(new SetMyCommands(LIST_OF_COMMANDS, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
-        this.authenticationClient = authenticationClient;
     }
 
-    @Override
-    @SneakyThrows
     public void onUpdateReceived(@NotNull Update update) {
         Long chatId;
         Message message = update.getMessage();
@@ -59,7 +49,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
         if (update.hasMessage()) {
             chatId = update.getMessage().getChatId();
             receivedMessage = update.getMessage().getText();
-            if (hasRole(chatId) == NO_ROLE) {
+            if (roleAuthenticator.getRoleByUserId(chatId) == null) {
                 setRole(chatId);
             } else botAnswerUtilsForText(message, receivedMessage, chatId);
 
@@ -69,6 +59,7 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
             botAnswerUtilsForButton(receivedMessage, chatId);
         }
     }
+
     private void botAnswerUtilsForText(Message message, String messageText, Long chatId) {
         Optional<MessageEntity> commandEntity = message.getEntities()
                 .stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
@@ -77,14 +68,14 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
                     message
                             .getText()
                             .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
-            CommandStrategy<?> strategy = CommandStrategyRepository.getStrategyMap().get(command);
+            CommandStrategy<?> strategy = CommandStrategyRepository.getStrategy(command);
             strategy.execute(messageText, chatId, this::callBack);
         }
     }
 
     private void botAnswerUtilsForButton(String messageText, Long chatId) {
-        CommandStrategy<?> strategy = CommandStrategyRepository.getStrategyMap().get(messageText);
-            strategy.execute(messageText, chatId, this::callBack);
+        CommandStrategy<?> strategy = CommandStrategyRepository.getStrategy(messageText);
+        strategy.execute(messageText, chatId, this::callBack);
     }
 
     private void callBack(long chatId, String messageText) {
@@ -94,38 +85,27 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
 
         try {
             execute(message);
-            log.info("Reply sent");
+            log.info("Reply sent UserId = " + chatId);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
     }
 
     private void callBackWihButtons(long chatId, String messageText, InlineKeyboardMarkup markup) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(messageText);
-        message.setReplyMarkup(markup);
-
+        SendMessage message = SendMessage.builder()
+                .chatId(chatId)
+                .text(messageText)
+                .replyMarkup(markup).build();
         try {
             execute(message);
-            log.info("Reply sent");
+            log.info("Reply sent UserId = " + chatId);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
     }
 
-    @Override
     public String getBotUsername() {
         return botConfigurationProperties.getName();
-    }
-
-    private long hasRole(long id) {
-        try {
-            TgUserDto tgUserDto = authenticationClient.findTgUser(id);
-            return tgUserDto.getRole().getId();
-        } catch (FeignException e) {
-            return 0;
-        }
     }
 
     private void setRole(long chatId) {

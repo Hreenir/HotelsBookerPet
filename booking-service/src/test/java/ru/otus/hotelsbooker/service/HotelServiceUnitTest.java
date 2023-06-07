@@ -30,7 +30,7 @@ class HotelServiceUnitTest {
     private HotelService underTest;
 
     private final Hotel hotel1 = new Hotel(1L, "Some", "Rostov", "Russia", 1.0, "some address",
-        List.of());
+            List.of());
 
     @Test
     void findAll_when_noCity() {

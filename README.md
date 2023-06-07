@@ -10,6 +10,7 @@
 ## Артефакты
 
 [System Design](https://drive.google.com/file/d/1IW97g0MwaemNCmsamIA3MzLtAbG9uwL9/view?usp=sharing)
+![image](https://github.com/Java-Java-Bootcamp/HotelsBooker-2023-02/assets/1213656/1d256155-2fcb-4d85-a1e9-5b93f7a8a449)
 
 
 ## REST

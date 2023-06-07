@@ -18,15 +18,13 @@ public class RegistrationService {
     private final UsersJpaRepository usersJpaRepository;
     private final RolesJpaRepository rolesJpaRepository;
 
-    private Role hotelRole;
-
     @PostConstruct
     public void init() {
         if (rolesJpaRepository.getRoleByName("ROLE_HOTEL") == null) {
-            rolesJpaRepository.save(Role.builder()
-                    .name("ROLE_HOTEL")
-                    .build());
-            register("user", "user");
+        rolesJpaRepository.save(Role.builder()
+                .name("ROLE_HOTEL")
+                .build());
+        register("user", "user");
         }
         if (rolesJpaRepository.getRoleByName("ROLE_VISITOR") == null){
             rolesJpaRepository.save(Role.builder()
@@ -42,7 +40,7 @@ public class RegistrationService {
                     .username("user")
                     .password(encodedPassword)
                     .enabled(true)
-                    .roles(Set.of(hotelRole))
+                    .roles(Set.of(rolesJpaRepository.getRoleByName("ROLE_HOTEL")))
                     .build());
         }
     }
