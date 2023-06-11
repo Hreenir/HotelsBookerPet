@@ -2,11 +2,13 @@ version: '3.8'
 services:
   booking-service:
     image: booking-service:0.0.1
+    environment:
+      BOOKING_CLIENT_PORT: 8881
     build:
       context: .
       dockerfile: booking-service\Dockerfile
     ports:
-    - "8881:8881"
+      - "8881:8881"
 
 
   telegram-bot:
@@ -17,24 +19,9 @@ services:
       context: .
       dockerfile: telegram-bot\Dockerfile
     ports:
-      - "8182:8182"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      - "8080:8080"
+    environment:
+      TELEGRAM_BOT_BOOKING_CONNECT: booking-service:8881
 
 #  db:
 #    image: postgres:14.1-alpine

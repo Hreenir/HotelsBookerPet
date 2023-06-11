@@ -22,3 +22,11 @@ DELETE - удалить то, что создано в сервисе (отел�
 
 swagger - http://localhost:8881/swagger-ui/index.html
 base in memory - http://localhost:8881/h2-console/
+
+Для локального запуска в клиентах бота изменить аннотацию:
+Для запуска контейнеров -
+url = "booking-service:8881/hotel"
+url = "booking-service:8881/tguser"
+Для запуска в IDEA -
+url = "localhost:8881/hotel"
+url = "localhost:8881/tguser"
