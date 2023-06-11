@@ -1,14 +1,36 @@
-
 version: '3.8'
 services:
-  db:
-    image: postgres:14.1-alpine
-    restart: always
+  booking-service:
+    image: booking-service:0.0.1
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      BOOKING_CLIENT_PORT: 8881
+    build:
+      context: .
+      dockerfile: booking-service\Dockerfile
     ports:
-      - '5434:5432'
+      - "8881:8881"
+
+
+  telegram-bot:
+    image: telegram-bot:0.0.1
+    depends_on:
+      - booking-service
+    build:
+      context: .
+      dockerfile: telegram-bot\Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      TELEGRAM_BOT_BOOKING_CONNECT: booking-service:8881
+
+#  db:
+#    image: postgres:14.1-alpine
+#    restart: always
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+#    ports:
+#      - '5434:5432'
 #    volumes:
 #      - db:/var/lib/postgresql/data
 #volumes:

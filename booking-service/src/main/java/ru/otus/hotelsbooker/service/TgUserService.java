@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.TgUserDto;
 import ru.otus.hotelsbooker.exception.HotelNotFoundException;
+import ru.otus.hotelsbooker.exception.TgUserNotFoundException;
 import ru.otus.hotelsbooker.mapper.TgUserMapper;
 import ru.otus.hotelsbooker.model.TgUser;
 import ru.otus.hotelsbooker.repository.RolesJpaRepository;
@@ -26,7 +27,7 @@ public class TgUserService {
     public TgUserDto getUserById(long tgUserId){
         TgUser tgUser = tgUserJpaRepository.findTgUserById(tgUserId);
         if (tgUser == null) {
-            throw new HotelNotFoundException("tgUser with id=" + tgUserId + " not found!");
+            throw new TgUserNotFoundException("tgUser with id=" + tgUserId + " not found!");
         }
         return TgUserMapper.mapToTgUserDto(tgUser);
 

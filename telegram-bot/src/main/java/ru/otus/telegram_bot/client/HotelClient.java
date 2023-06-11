@@ -15,7 +15,7 @@ import ru.otus.dto.RoomDto;
 
 import java.util.List;
 
-@FeignClient(url = "localhost:8881/hotel", name = "hotel-client", configuration = FeignBasicAuthInterceptor.class)
+@FeignClient(url = "booking-service:8881/hotel", name = "hotel-client", configuration = FeignBasicAuthInterceptor.class)
 public interface HotelClient {
     /**
      * GET localhost:8881/hotel?city=something

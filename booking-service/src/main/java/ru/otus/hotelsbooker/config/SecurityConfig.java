@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -38,7 +39,9 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
+
+        return (web) -> web.ignoring().requestMatchers(
+                        (new AntPathRequestMatcher("/h2-console/**")));
     }
 
     @Autowired
@@ -47,9 +50,9 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsJpaManager)
                 .passwordEncoder(passwordEncoder);
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
-
         return new BCryptPasswordEncoder();
     }
 }

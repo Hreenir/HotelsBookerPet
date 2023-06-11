@@ -19,3 +19,14 @@ GET - прочитать, получить данные из сервиса
 POST - создать что-то новое в сервисе (отель, комнату и т.д.)
 PUT - обновить ранее созданное в сервисе (отель, комнату и т.д.)
 DELETE - удалить то, что создано в сервисе (отель, комнату и т.д.)
+
+swagger - http://localhost:8881/swagger-ui/index.html
+base in memory - http://localhost:8881/h2-console/
+
+Для локального запуска в клиентах бота изменить аннотацию:
+Для запуска контейнеров -
+url = "booking-service:8881/hotel"
+url = "booking-service:8881/tguser"
+Для запуска в IDEA -
+url = "localhost:8881/hotel"
+url = "localhost:8881/tguser"

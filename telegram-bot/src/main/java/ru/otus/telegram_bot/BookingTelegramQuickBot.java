@@ -22,7 +22,6 @@ import ru.otus.telegram_bot.config.BotConfigurationProperties;
 import java.util.Optional;
 
 
-
 @Component
 @Slf4j
 public class BookingTelegramQuickBot extends TelegramLongPollingBot implements QuickBotCommands {
@@ -61,15 +60,19 @@ public class BookingTelegramQuickBot extends TelegramLongPollingBot implements Q
     }
 
     private void botAnswerUtilsForText(Message message, String messageText, Long chatId) {
-        Optional<MessageEntity> commandEntity = message.getEntities()
-                .stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
-        if (commandEntity.isPresent()) {
-            String command =
-                    message
-                            .getText()
-                            .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
-            CommandStrategy<?> strategy = CommandStrategyRepository.getStrategy(command);
-            strategy.execute(messageText, chatId, this::callBack);
+        try {
+            Optional<MessageEntity> commandEntity = message.getEntities()
+                    .stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
+            if (commandEntity.isPresent()) {
+                String command =
+                        message
+                                .getText()
+                                .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
+                CommandStrategy<?> strategy = CommandStrategyRepository.getStrategy(command);
+                strategy.execute(messageText, chatId, this::callBack);
+            }
+        } catch (NullPointerException e) {
+            callBack(chatId, BotAnswer.INCORRECT_INPUT);
         }
     }
 
