@@ -7,11 +7,10 @@ import ru.otus.hotelsbooker.model.Room;
 
 public class RoleMapper {
     public static Role mapToRole(RoleDto roleDto) {
-        Role role = Role.builder()
+        return Role.builder()
                 .id(roleDto.getId())
                 .name(roleDto.getName())
                 .build();
-        return role;
     }
 
     public static RoleDto mapToRoleDto(Role role) {

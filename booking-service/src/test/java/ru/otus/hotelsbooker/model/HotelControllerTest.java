@@ -15,14 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
-import ru.otus.hotelsbooker.repository.RolesJpaRepository;
-import ru.otus.hotelsbooker.repository.UsersJpaRepository;
+import ru.otus.hotelsbooker.repository.RolesRepository;
+import ru.otus.hotelsbooker.repository.UsersRepository;
 import ru.otus.hotelsbooker.service.HotelService;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -48,9 +46,9 @@ public class HotelControllerTest {
     @Autowired
     private HotelService hotelService;
     @Autowired
-    private RolesJpaRepository rolesJpaRepository;
+    private RolesRepository rolesRepository;
     @Autowired
-    private UsersJpaRepository usersJpaRepository;
+    private UsersRepository usersRepository;
 
     @BeforeEach
     public void prepare() {
@@ -61,19 +59,19 @@ public class HotelControllerTest {
         Role roleHotel = Role.builder()
                 .name("ROLE_HOTEL")
                 .build();
-        rolesJpaRepository.saveAll(List.of(roleUser, roleHotel));
+        rolesRepository.saveAll(List.of(roleUser, roleHotel));
         User user = User.builder()
                 .username("user")
                 .password("$2a$10$9VyipY09UB19OCWeUG0Ciu5SMFs0y2/Xco/J8uARQTN0bgh8pSU3i")
                 .roles(Set.of(roleUser, roleHotel))
                 .build();
-        usersJpaRepository.save(user);
+        usersRepository.save(user);
     }
 
     @AfterEach
     public void clear() {
-        List<User> users = usersJpaRepository.findAll();
-        users.forEach(user -> usersJpaRepository.delete(user));
+        List<User> users = usersRepository.findAll();
+        users.forEach(user -> usersRepository.delete(user));
     }
 
     /**

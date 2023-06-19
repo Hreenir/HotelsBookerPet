@@ -4,14 +4,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
-import ru.otus.hotelsbooker.repository.HotelJpaRepository;
+import ru.otus.hotelsbooker.repository.HotelRepository;
 import ru.otus.hotelsbooker.service.HotelService;
 
 import java.math.BigDecimal;
@@ -27,7 +26,7 @@ public class HotelServiceTest {
     @Autowired
     private HotelService hotelService;
     @Autowired
-    private HotelJpaRepository hotelJpaRepository;
+    private HotelRepository hotelRepository;
 
     @AfterEach
     public void after() {

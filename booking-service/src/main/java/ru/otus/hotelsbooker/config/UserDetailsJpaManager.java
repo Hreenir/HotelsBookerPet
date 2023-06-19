@@ -9,17 +9,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.otus.hotelsbooker.model.Role;
-import ru.otus.hotelsbooker.repository.RolesJpaRepository;
-import ru.otus.hotelsbooker.repository.UsersJpaRepository;
+import ru.otus.hotelsbooker.repository.RolesRepository;
+import ru.otus.hotelsbooker.repository.UsersRepository;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class UserDetailsJpaManager implements UserDetailsManager {
-    private final UsersJpaRepository usersJpaRepository;
-    private final RolesJpaRepository rolesJpaRepository;
+    private final UsersRepository usersRepository;
+    private final RolesRepository rolesRepository;
 
     @Override
     public void createUser(UserDetails user) {
@@ -48,17 +48,11 @@ public class UserDetailsJpaManager implements UserDetailsManager {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ru.otus.hotelsbooker.model.User user = usersJpaRepository.findByUsername(username);
-        Set<Role> roles = rolesJpaRepository.getRolesByUserId(user.getId());
+        ru.otus.hotelsbooker.model.User user = usersRepository.findByUsername(username);
+        Set<Role> roles = rolesRepository.getRolesByUserId(user.getId());
         return new User(user.getUsername(), user.getPassword(), mapRolesToGrantedAuthority(roles));
     }
     private Set<GrantedAuthority> mapRolesToGrantedAuthority(Set<Role> roles){
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        roles.forEach(role ->
-        {GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getName());
-            grantedAuthorities.add(grantedAuthority);
-        });
-
-        return grantedAuthorities;
+        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toSet());
     }
 }

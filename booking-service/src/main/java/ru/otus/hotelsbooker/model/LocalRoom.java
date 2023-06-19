@@ -13,7 +13,7 @@ import lombok.*;
 @EqualsAndHashCode
 public class LocalRoom {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Exclude
     private long id;
     private int roomNumber;

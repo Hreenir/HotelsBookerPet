@@ -27,7 +27,7 @@ public class CommandSetRoleHotelStrategy implements CommandStrategy<TgUserDto> {
                 .id(chatId)
                 .role(roleDto)
                 .build();
-        authenticationClient.setRole(tgUserDto);
+        authenticationClient.createTgUser(tgUserDto);
         callBack.accept(chatId, BotAnswer.HOTEL_COMMANDS);
         return null;
     }

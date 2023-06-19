@@ -25,23 +25,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http
-                .authorizeHttpRequests((authz) -> authz
+        return http.authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/hotel/**").hasRole("HOTEL")
                         .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults());
-        http.cors().disable().csrf().disable(); //убрать на финальном этапе
-
-        return http.build();
+                .httpBasic(withDefaults())
+                .cors().disable()
+                .csrf().disable().build();
     }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-
-        return (web) -> web.ignoring().requestMatchers(
-                        (new AntPathRequestMatcher("/h2-console/**")));
+        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
     }
 
     @Autowired

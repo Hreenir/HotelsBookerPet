@@ -6,8 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.otus.hotelsbooker.model.Role;
 import ru.otus.hotelsbooker.model.User;
-import ru.otus.hotelsbooker.repository.RolesJpaRepository;
-import ru.otus.hotelsbooker.repository.UsersJpaRepository;
+import ru.otus.hotelsbooker.repository.RolesRepository;
+import ru.otus.hotelsbooker.repository.UsersRepository;
 
 import java.util.Set;
 
@@ -15,38 +15,38 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RegistrationService {
     private final PasswordEncoder passwordEncoder;
-    private final UsersJpaRepository usersJpaRepository;
-    private final RolesJpaRepository rolesJpaRepository;
+    private final UsersRepository usersRepository;
+    private final RolesRepository rolesRepository;
 
     @PostConstruct
     public void init() {
-        if (rolesJpaRepository.getRoleByName("ROLE_HOTEL") == null) {
-        rolesJpaRepository.save(Role.builder()
+        if (rolesRepository.getRoleByName("ROLE_HOTEL") == null) {
+        rolesRepository.save(Role.builder()
                 .name("ROLE_HOTEL")
                 .build());
         register("user", "user");
         }
-        if (rolesJpaRepository.getRoleByName("ROLE_VISITOR") == null){
-            rolesJpaRepository.save(Role.builder()
+        if (rolesRepository.getRoleByName("ROLE_VISITOR") == null){
+            rolesRepository.save(Role.builder()
                     .name("ROLE_VISITOR")
                     .build());
         }
     }
 
     public void register(String username, String password) {
-        if (usersJpaRepository.findByUsername(username) == null) {
+        if (usersRepository.findByUsername(username) == null) {
             String encodedPassword = passwordEncoder.encode(password);
-            usersJpaRepository.save(User.builder()
-                    .username("user")
+            usersRepository.save(User.builder()
+                    .username(username)
                     .password(encodedPassword)
                     .enabled(true)
-                    .roles(Set.of(rolesJpaRepository.getRoleByName("ROLE_HOTEL")))
+                    .roles(Set.of(rolesRepository.getRoleByName("ROLE_HOTEL")))
                     .build());
         }
     }
 
     public void addRole(String name) {
-        rolesJpaRepository.save(Role.builder()
+        rolesRepository.save(Role.builder()
                 .name(name)
                 .build());
     }

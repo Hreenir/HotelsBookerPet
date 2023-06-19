@@ -10,7 +10,6 @@ import ru.otus.telegram_bot.client.AuthenticationClient;
 
 import java.util.function.BiConsumer;
 
-import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
 import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_VISITOR;
 
 @Named("/setrolevisitor")
@@ -28,7 +27,7 @@ public class CommandSetRoleVisitorStrategy implements CommandStrategy<TgUserDto>
                 .id(chatId)
                 .role(roleDto)
                 .build();
-        authenticationClient.setRole(tgUserDto);
+        authenticationClient.createTgUser(tgUserDto);
         callBack.accept(chatId, BotAnswer.VISITOR_COMMANDS);
         return null;
     }

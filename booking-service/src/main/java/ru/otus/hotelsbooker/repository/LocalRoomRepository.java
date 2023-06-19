@@ -4,14 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.LocalRoom;
-import ru.otus.hotelsbooker.model.Role;
-import ru.otus.hotelsbooker.model.Room;
 
-import java.util.Set;
-
-public interface LocalRoomJpaRepository extends JpaRepository<LocalRoom, Long> {
+public interface LocalRoomRepository extends JpaRepository<LocalRoom, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value =
                     "update LocalRoom \n" +

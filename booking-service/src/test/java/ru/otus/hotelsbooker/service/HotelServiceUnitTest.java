@@ -16,16 +16,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.dto.HotelDto;
 import ru.otus.hotelsbooker.model.Hotel;
-import ru.otus.hotelsbooker.repository.HotelJpaRepository;
-import ru.otus.hotelsbooker.repository.RoomJpaRepository;
+import ru.otus.hotelsbooker.repository.HotelRepository;
+import ru.otus.hotelsbooker.repository.RoomRepository;
 
 @ExtendWith(MockitoExtension.class)
 class HotelServiceUnitTest {
 
     @Mock
-    private HotelJpaRepository hotelRepository;
+    private HotelRepository hotelRepository;
     @Mock
-    private RoomJpaRepository roomJpaRepository;
+    private RoomRepository roomRepository;
     @InjectMocks
     private HotelService underTest;
 

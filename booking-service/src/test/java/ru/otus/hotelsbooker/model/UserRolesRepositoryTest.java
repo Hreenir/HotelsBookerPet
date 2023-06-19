@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.otus.hotelsbooker.repository.RolesJpaRepository;
-import ru.otus.hotelsbooker.repository.UsersJpaRepository;
+import ru.otus.hotelsbooker.repository.RolesRepository;
+import ru.otus.hotelsbooker.repository.UsersRepository;
 
 import java.util.Set;
 
@@ -15,9 +15,9 @@ import java.util.Set;
 @Transactional
 public class UserRolesRepositoryTest {
     @Autowired
-    private UsersJpaRepository usersJpaRepository;
+    private UsersRepository usersRepository;
     @Autowired
-    private RolesJpaRepository rolesJpaRepository;
+    private RolesRepository rolesRepository;
     private Role adminRole;
     private Role userRole;
     private User adminUser;
@@ -26,19 +26,19 @@ public class UserRolesRepositoryTest {
 
     @BeforeEach
     public void prepare() {
-        adminRole = rolesJpaRepository.save(Role.builder()
+        adminRole = rolesRepository.save(Role.builder()
                 .name("ROLE_ADMIN")
                 .build());
-        userRole = rolesJpaRepository.save(Role.builder()
+        userRole = rolesRepository.save(Role.builder()
                 .name("ROLE_USER")
                 .build());
-        adminUser = usersJpaRepository.save(User.builder()
+        adminUser = usersRepository.save(User.builder()
                 .username("admin")
                 .password("{noop}admin")
                 .enabled(true)
                 .roles(Set.of(adminRole, userRole))
                 .build());
-        user = usersJpaRepository.save(User.builder()
+        user = usersRepository.save(User.builder()
                 .username("user")
                 .password("{noop}user")
                 .enabled(true)
@@ -48,12 +48,12 @@ public class UserRolesRepositoryTest {
 
     @Test
     void testFIndUserAndRoles() {
-        User actual = usersJpaRepository.findByUsername(adminUser.getUsername());
+        User actual = usersRepository.findByUsername(adminUser.getUsername());
         Assertions.assertEquals(adminUser.getUsername(), actual.getUsername());
         Assertions.assertEquals(adminUser.getPassword(), actual.getPassword());
         Assertions.assertEquals(adminUser.isEnabled(), actual.isEnabled());
 
-        Set<Role> actualRoles = rolesJpaRepository.getRolesByUserId(actual.getId());
+        Set<Role> actualRoles = rolesRepository.getRolesByUserId(actual.getId());
         Assertions.assertEquals(adminUser.getRoles(), actualRoles);
     }
 }

@@ -4,32 +4,30 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.TgUserDto;
-import ru.otus.hotelsbooker.exception.HotelNotFoundException;
-import ru.otus.hotelsbooker.exception.TgUserNotFoundException;
+import ru.otus.hotelsbooker.exception.ResourceNotFoundException;
 import ru.otus.hotelsbooker.mapper.TgUserMapper;
 import ru.otus.hotelsbooker.model.TgUser;
-import ru.otus.hotelsbooker.repository.RolesJpaRepository;
-import ru.otus.hotelsbooker.repository.TgUserJpaRepository;
+import ru.otus.hotelsbooker.repository.RolesRepository;
+import ru.otus.hotelsbooker.repository.TgUserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class TgUserService {
-    private final TgUserJpaRepository tgUserJpaRepository;
-    private final RolesJpaRepository rolesJpaRepository;
+    private final TgUserRepository tgUserRepository;
+    private final RolesRepository rolesRepository;
     @Transactional
     public TgUserDto createTgUser(TgUserDto tgUserDto ){
         TgUser tgUser = TgUserMapper.mapToTgUser(tgUserDto);
         String roleName = tgUserDto.getRole().getName();
-        tgUser.setRole(rolesJpaRepository.getRoleByName(roleName));
-        TgUser savedTgUser = tgUserJpaRepository.save(tgUser);
+        tgUser.setRole(rolesRepository.getRoleByName(roleName));
+        TgUser savedTgUser = tgUserRepository.save(tgUser);
         return TgUserMapper.mapToTgUserDto(savedTgUser);
     }
-    public TgUserDto getUserById(long tgUserId){
-        TgUser tgUser = tgUserJpaRepository.findTgUserById(tgUserId);
-        if (tgUser == null) {
-            throw new TgUserNotFoundException("tgUser with id=" + tgUserId + " not found!");
+    public TgUser getUserById(long tgUserId){
+        if (!tgUserRepository.existsById(tgUserId)) {
+            throw new ResourceNotFoundException("tgUser with id=" + tgUserId + " not found!");
         }
-        return TgUserMapper.mapToTgUserDto(tgUser);
+        return tgUserRepository.findTgUserById(tgUserId);
 
     }
 }

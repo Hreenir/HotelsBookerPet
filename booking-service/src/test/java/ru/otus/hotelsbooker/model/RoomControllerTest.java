@@ -13,15 +13,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
-import ru.otus.hotelsbooker.repository.HotelJpaRepository;
-import ru.otus.hotelsbooker.repository.RolesJpaRepository;
-import ru.otus.hotelsbooker.repository.RoomJpaRepository;
-import ru.otus.hotelsbooker.repository.UsersJpaRepository;
+import ru.otus.hotelsbooker.repository.HotelRepository;
+import ru.otus.hotelsbooker.repository.RolesRepository;
+import ru.otus.hotelsbooker.repository.RoomRepository;
+import ru.otus.hotelsbooker.repository.UsersRepository;
 import ru.otus.hotelsbooker.service.HotelService;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -42,13 +41,13 @@ public class RoomControllerTest {
     @Autowired
     private HotelService hotelService;
     @Autowired
-    private RolesJpaRepository rolesJpaRepository;
+    private RolesRepository rolesRepository;
     @Autowired
-    private UsersJpaRepository usersJpaRepository;
+    private UsersRepository usersRepository;
     @Autowired
-    private RoomJpaRepository roomJpaRepository;
+    private RoomRepository roomRepository;
     @Autowired
-    private HotelJpaRepository hotelJpaRepository;
+    private HotelRepository hotelRepository;
     private final int NOT_EXISTING_HOTEL_ID = 132;
     @BeforeEach
     public void prepare(){
@@ -59,18 +58,18 @@ public class RoomControllerTest {
         Role roleHotel = Role.builder()
                 .name("ROLE_HOTEL")
                 .build();
-        rolesJpaRepository.saveAll(List.of(roleUser,roleHotel));
+        rolesRepository.saveAll(List.of(roleUser,roleHotel));
         User user = User.builder()
                 .username("user")
                 .password("$2a$10$9VyipY09UB19OCWeUG0Ciu5SMFs0y2/Xco/J8uARQTN0bgh8pSU3i")
                 .roles(Set.of(roleUser, roleHotel))
                 .build();
-        usersJpaRepository.save(user);
+        usersRepository.save(user);
     }
     @AfterEach
     public void clear(){
-        List<User> users = usersJpaRepository.findAll();
-        users.forEach(user -> usersJpaRepository.delete(user));
+        List<User> users = usersRepository.findAll();
+        users.forEach(user -> usersRepository.delete(user));
     }
     @Test
     @DisplayName("Тестирование API успешного добавления номера в отель")
@@ -102,7 +101,7 @@ public class RoomControllerTest {
         Assertions.assertEquals(roomDto.getCapacity(), body2.getCapacity());
         Assertions.assertEquals(roomDto.getPriceByDay(), body2.getPriceByDay());
 
-        Room room = roomJpaRepository.findRoomById(roomDto.getId());
+        Room room = roomRepository.findRoomById(roomDto.getId());
         Assertions.assertEquals(room.getName(), roomDto.getName());
         Assertions.assertEquals(room.getCapacity(), roomDto.getCapacity());
 

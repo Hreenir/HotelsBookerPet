@@ -1,17 +1,13 @@
 package ru.otus.hotelsbooker.model;
 
 import jakarta.transaction.Transactional;
-import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import ru.otus.hotelsbooker.repository.HotelJpaRepository;
-import ru.otus.hotelsbooker.repository.LocalRoomJpaRepository;
-import ru.otus.hotelsbooker.repository.RoomJpaRepository;
-import ru.otus.hotelsbooker.service.RoomService;
+import ru.otus.hotelsbooker.repository.HotelRepository;
+import ru.otus.hotelsbooker.repository.LocalRoomRepository;
+import ru.otus.hotelsbooker.repository.RoomRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,47 +17,47 @@ import java.util.List;
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class LocalRoomRepositoryTest {
     @Autowired
-    private LocalRoomJpaRepository localRoomJpaRepository;
+    private LocalRoomRepository localRoomRepository;
     @Autowired
-    private RoomJpaRepository roomJpaRepository;
+    private RoomRepository roomRepository;
     @Autowired
-    private HotelJpaRepository hotelJpaRepository;
+    private HotelRepository hotelRepository;
 
     @AfterEach
     public void clear(){
 
-        List<LocalRoom> list2 = localRoomJpaRepository.findAll();
-        list2.forEach(localRoom -> localRoomJpaRepository.delete(localRoom));
+        List<LocalRoom> list2 = localRoomRepository.findAll();
+        list2.forEach(localRoom -> localRoomRepository.delete(localRoom));
 
-        List<Room> list1 = roomJpaRepository.findAll();
-        list1.forEach(room -> roomJpaRepository.delete(room));
+        List<Room> list1 = roomRepository.findAll();
+        list1.forEach(room -> roomRepository.delete(room));
 
-        List<Hotel> list = hotelJpaRepository.findAll();
-        list.forEach(hotel -> hotelJpaRepository.delete(hotel));
+        List<Hotel> list = hotelRepository.findAll();
+        list.forEach(hotel -> hotelRepository.delete(hotel));
     }
 
     @Test
     @DisplayName("Тестирование изменения статуса локальной комнаты")
     public void testDisableLocalRoom() {
-        Hotel hotel = hotelJpaRepository.save(Hotel.builder()
+        Hotel hotel = hotelRepository.save(Hotel.builder()
                 .name("Hilton")
                 .city("Москва")
                 .country("Россия")
                 .address("Красная площадь д.1")
                 .build());
-        Room room = roomJpaRepository.save(Room.builder()
+        Room room = roomRepository.save(Room.builder()
                 .name("Single")
                 .capacity(1)
                 .hotel(hotel)
                 .priceByDay(new BigDecimal(1100))
                 .build());
-        LocalRoom localRoom = localRoomJpaRepository.save(LocalRoom.builder()
+        LocalRoom localRoom = localRoomRepository.save(LocalRoom.builder()
                 .roomNumber(1)
                 .enabled(true)
                 .room(room)
                 .build());
-        localRoomJpaRepository.disableLocalRoom(localRoom.getId());
-        localRoom = localRoomJpaRepository.findById(localRoom.getId()).get();
+        localRoomRepository.disableLocalRoom(localRoom.getId());
+        localRoom = localRoomRepository.findById(localRoom.getId()).get();
         Assertions.assertEquals(false, localRoom.isEnabled());
     }
    /* @Test

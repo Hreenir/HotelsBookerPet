@@ -17,7 +17,7 @@ import java.util.List;
 @ToString
 public class Hotel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Exclude
     private Long id;
     private String name;
