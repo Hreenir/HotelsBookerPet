@@ -19,7 +19,7 @@ public class BookingService {
     private final TgUserService tgUserService;
     private final BookingRepository bookingRepository;
     private final RoomService roomService;
-
+//TODO
     public List<BookingCase> search(String city, LocalDate arrivalDate, LocalDate departureDate) {
         return Collections.emptyList();
     }

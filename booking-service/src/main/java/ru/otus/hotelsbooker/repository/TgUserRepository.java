@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.hotelsbooker.model.TgUser;
 
 public interface TgUserRepository extends JpaRepository<TgUser, Long> {
-    public TgUser findTgUserById(long tgUserId);
+    TgUser findTgUserById(long tgUserId);
 }

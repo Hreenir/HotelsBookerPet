@@ -6,9 +6,6 @@ import ru.otus.hotelsbooker.model.Hotel;
 
 import java.util.List;
 
-/**
- * паттерн маппер для отеля
- */
 public class HotelMapper {
 
     public static HotelDto mapToDto(Hotel hotel) {

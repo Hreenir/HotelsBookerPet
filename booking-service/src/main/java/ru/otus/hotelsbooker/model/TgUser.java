@@ -6,13 +6,7 @@ import lombok.*;
 import java.util.Set;
 
 
-@Getter
-@Setter
-@Builder
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
+@Data
 @Entity
 @Table(name = "tgusers")
 public class TgUser {

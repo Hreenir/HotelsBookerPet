@@ -1,44 +1,26 @@
 package ru.otus.hotelsbooker.service;
 
-import java.lang.module.ResolutionException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dto.HotelDto;
-import ru.otus.dto.RoomDto;
 import ru.otus.dto.SearchDto;
 import ru.otus.hotelsbooker.exception.ResourceNotFoundException;
-import ru.otus.hotelsbooker.mapper.HotelMapper;
-import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.model.Hotel;
-import ru.otus.hotelsbooker.model.Room;
 import ru.otus.hotelsbooker.repository.HotelRepository;
-import ru.otus.hotelsbooker.repository.LocalRoomRepository;
-import ru.otus.hotelsbooker.repository.RoomRepository;
 
-/**
- * Сервис для управления отелями: позволяет создавать, получать данные отеля, искать свободные
- * комнаты
- */
+
 @Service
 @Getter
 @RequiredArgsConstructor
 public class HotelService {
     private final static double DEFAULT_RATING_FOR_NEW_HOTEL = 8.0;
     private final HotelRepository hotelRepository;
-
-    public List<Room> findFreeRooms(Hotel hotel, LocalDate arrivalDate, LocalDate departureDate) {
-        // поиск свободных номер по датам
-        return null;
-    }
 
     public List<Hotel> findAll(SearchDto searchDto) {
         return searchDto.getCity() == null ?

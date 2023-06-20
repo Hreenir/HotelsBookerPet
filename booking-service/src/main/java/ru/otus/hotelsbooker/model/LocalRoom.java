@@ -6,11 +6,7 @@ import lombok.*;
 @Entity
 @Table(name = "local_rooms")
 @Builder
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
+@Data
 public class LocalRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,11 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Entity
+@Data
 @Builder
 @Table(name = "bookings")
 public class BookingCase {

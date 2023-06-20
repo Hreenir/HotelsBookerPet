@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.hotelsbooker.model.User;
 
 public interface UsersRepository extends JpaRepository<User, Long> {
-    public User findByUsername(String login);
+    User findByUsername(String login);
 
 }

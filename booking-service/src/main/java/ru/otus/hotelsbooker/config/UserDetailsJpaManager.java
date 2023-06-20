@@ -20,32 +20,6 @@ import java.util.stream.Collectors;
 public class UserDetailsJpaManager implements UserDetailsManager {
     private final UsersRepository usersRepository;
     private final RolesRepository rolesRepository;
-
-    @Override
-    public void createUser(UserDetails user) {
-
-    }
-
-    @Override
-    public void updateUser(UserDetails user) {
-
-    }
-
-    @Override
-    public void deleteUser(String username) {
-
-    }
-
-    @Override
-    public void changePassword(String oldPassword, String newPassword) {
-
-    }
-
-    @Override
-    public boolean userExists(String username) {
-        return false;
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         ru.otus.hotelsbooker.model.User user = usersRepository.findByUsername(username);
@@ -55,4 +29,27 @@ public class UserDetailsJpaManager implements UserDetailsManager {
     private Set<GrantedAuthority> mapRolesToGrantedAuthority(Set<Role> roles){
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toSet());
     }
+
+    @Override
+    public void createUser(UserDetails user) {
+    }
+
+    @Override
+    public void updateUser(UserDetails user) {
+    }
+
+    @Override
+    public void deleteUser(String username) {
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+    }
+
+    @Override
+    public boolean userExists(String username) {
+        return false;
+    }
+
+
 }

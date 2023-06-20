@@ -6,7 +6,6 @@ import ru.otus.hotelsbooker.model.BookingCase;
 
 @Component
 public class BookingMapper {
-    // TODO Реализовать
     public CreateBookingDto bookingToCreateBookingDto(BookingCase bookingCase) {
         return CreateBookingDto.builder()
                 .tgUserId(bookingCase.getTgUser().getId())

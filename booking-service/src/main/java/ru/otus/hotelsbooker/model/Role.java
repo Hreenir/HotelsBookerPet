@@ -8,11 +8,7 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 @Builder
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
+@Data
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
