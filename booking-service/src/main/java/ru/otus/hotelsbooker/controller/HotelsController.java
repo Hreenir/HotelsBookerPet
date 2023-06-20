@@ -16,7 +16,7 @@ public class HotelsController {
     private final HotelService hotelsService;
 
     //TODO Добавить построничный вывод
-    @GetMapping
+    @PostMapping
     public List<HotelDto> getAll(@RequestBody SearchDto searchDto) {
         return hotelsService.findAll(searchDto).stream()
                 .map(HotelMapper::mapToDto)
@@ -28,7 +28,7 @@ public class HotelsController {
         return HotelMapper.mapToDto(hotelsService.getHotelById(hotelId));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public HotelDto create(@RequestBody HotelDto hotelDto) {
         return HotelMapper.mapToDto(hotelsService.createNewHotel(hotelDto));
     }

@@ -1,5 +1,6 @@
 package ru.otus.hotelsbooker.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.dto.CreateBookingDto;
@@ -23,7 +24,7 @@ public class BookingService {
     public List<BookingCase> search(String city, LocalDate arrivalDate, LocalDate departureDate) {
         return Collections.emptyList();
     }
-
+    @Transactional
     public BookingCase createBooking(CreateBookingDto createBookingDto) {
         TgUser tgUser = tgUserService.getUserById(createBookingDto.getTgUserId());
         LocalRoom localRoom = roomService.findLocalRoomById(createBookingDto.getLocalRoomId());

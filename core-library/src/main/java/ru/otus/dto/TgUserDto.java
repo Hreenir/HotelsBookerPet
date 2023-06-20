@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class TgUserDto {
-    private long id;
+    private Long id;
     private RoleDto role;
 
 }

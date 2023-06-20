@@ -21,7 +21,7 @@ import ru.otus.hotelsbooker.repository.HotelRepository;
 public class HotelService {
     private final static double DEFAULT_RATING_FOR_NEW_HOTEL = 8.0;
     private final HotelRepository hotelRepository;
-
+    //TODO сделать поиск отелей по всем параметрам searchDto
     public List<Hotel> findAll(SearchDto searchDto) {
         return searchDto.getCity() == null ?
                 hotelRepository.findAll() : hotelRepository.findAllByCityIgnoreCase(searchDto.getCity());

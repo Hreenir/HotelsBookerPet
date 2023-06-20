@@ -1,4 +1,4 @@
-package ru.otus.telegram_bot.commands;
+package ru.otus.telegram_bot.buttons;
 
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 

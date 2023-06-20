@@ -15,6 +15,7 @@ import ru.otus.telegram_bot.client.HotelClient;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import static ru.otus.telegram_bot.BotAnswer.INCORRECT_HOTEL_ID;
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
 import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
 
@@ -28,13 +29,8 @@ public class CommandUpdateHotelStrategy implements CommandStrategy<HotelDto> {
     private final Parser parser;
 
     @Override
-    public HotelDto execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
+    public HotelDto execute(String messageText, Long chatId, BiConsumer<Long, String> callBack) {
         if (roleAuthenticator.getRoleByUserId(chatId) == null) {
-            callBack.accept(chatId, INCORRECT_INPUT);
-            return null;
-        }
-        String hotelId = parser.findIdInString(messageText);
-        if (hotelId == null) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }
@@ -45,11 +41,13 @@ public class CommandUpdateHotelStrategy implements CommandStrategy<HotelDto> {
         }
         try {
             HotelDto hotelDto = objectMapper.readValue(jsonText, HotelDto.class);
-            HotelDto result = hotelClient.updateHotel(Long.valueOf(hotelId), hotelDto);
+            HotelDto result = hotelClient.updateHotel(hotelDto);
             String hotelJson = objectMapper.writeValueAsString(result);
             callBack.accept(chatId, "OK " + hotelJson);
-        } catch (JsonProcessingException | FeignException e) {
+        } catch (JsonProcessingException e) {
             callBack.accept(chatId, INCORRECT_INPUT);
+        } catch (FeignException e){
+            callBack.accept(chatId, INCORRECT_HOTEL_ID);
         }
         return null;
     }

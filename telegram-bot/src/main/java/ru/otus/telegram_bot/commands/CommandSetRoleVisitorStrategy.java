@@ -19,7 +19,7 @@ public class CommandSetRoleVisitorStrategy implements CommandStrategy<TgUserDto>
     private final AuthenticationClient authenticationClient;
 
     @Override
-    public TgUserDto execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
+    public TgUserDto execute(String messageText, Long chatId, BiConsumer<Long, String> callBack) {
         RoleDto roleDto = RoleDto.builder()
                 .name(ROLE_VISITOR)
                 .build();

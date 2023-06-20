@@ -6,5 +6,5 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public interface CommandStrategy<T> {
-    T execute(String messageText, long chatId, BiConsumer<Long, String> callBack);
+    T execute(String messageText, Long chatId, BiConsumer<Long, String> callBack);
 }

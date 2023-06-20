@@ -26,7 +26,7 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
     private final Parser parser;
 
     @Override
-    public HotelDto execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
+    public HotelDto execute(String messageText, Long chatId, BiConsumer<Long, String> callBack) {
         if (roleAuthenticator.getRoleByUserId(chatId) == null) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;

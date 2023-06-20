@@ -10,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class SearchDto {
-    private long id;
     private String name;
     private String city;
     private String country;

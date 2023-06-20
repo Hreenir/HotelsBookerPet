@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.otus.telegram_bot.buttons.Buttons;
+import ru.otus.telegram_bot.buttons.QuickBotCommands;
 import ru.otus.telegram_bot.client.AuthenticationClient;
 import ru.otus.telegram_bot.commands.*;
 import ru.otus.telegram_bot.repository.CommandStrategyRepository;

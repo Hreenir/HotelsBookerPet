@@ -11,10 +11,12 @@ import ru.otus.dto.RoomDto;
 import ru.otus.telegram_bot.Parser;
 import ru.otus.telegram_bot.RoleAuthenticator;
 import ru.otus.telegram_bot.client.HotelClient;
+import ru.otus.telegram_bot.client.RoomClient;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import static ru.otus.telegram_bot.BotAnswer.INCORRECT_HOTEL_ID;
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
 import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
 
@@ -22,23 +24,19 @@ import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
 @Component
 @RequiredArgsConstructor
 public class CommandAddRoomStrategy implements CommandStrategy<RoomDto> {
-    private final HotelClient hotelClient;
+    private final RoomClient roomClient;
     private final ObjectMapper objectMapper;
     private final RoleAuthenticator roleAuthenticator;
     private final Parser parser;
 
     @Override
-    public RoomDto execute(String messageText, long chatId, BiConsumer<Long, String> callBack) {
+    public RoomDto execute(String messageText, Long chatId, BiConsumer<Long, String> callBack) {
 
         if (roleAuthenticator.getRoleByUserId(chatId) == null) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }
-        String hotelId = parser.findIdInString(messageText);
-        if (hotelId == null) {
-            callBack.accept(chatId, INCORRECT_INPUT);
-            return null;
-        }
+
         String jsonText = parser.findJsonInString(messageText);
         if (jsonText == null) {
             callBack.accept(chatId, INCORRECT_INPUT);
@@ -46,11 +44,13 @@ public class CommandAddRoomStrategy implements CommandStrategy<RoomDto> {
         }
         try {
             RoomDto roomDto = objectMapper.readValue(jsonText, RoomDto.class);
-            var json = hotelClient.addRoom(roomDto, Long.valueOf(hotelId));
+            var json = roomClient.addRoom(roomDto);
             String roomJson = objectMapper.writeValueAsString(json);
             callBack.accept(chatId, "OK " + roomJson);
-        } catch (JsonProcessingException | FeignException e) {
-            callBack.accept(chatId, "Hotel with id " + hotelId + " not found.");
+        } catch (JsonProcessingException e) {
+            callBack.accept(chatId, INCORRECT_INPUT);
+        } catch (FeignException e){
+            callBack.accept(chatId, INCORRECT_HOTEL_ID);
         }
         return null;
     }

@@ -7,10 +7,10 @@ public class BotAnswer {
             """
                     You can use commands:
                     /addhotel {hotelDto}
-                    /updatehotel (hotelId) {hotelDto}
-                    /addroom (hotelId) {roomDto}
-                    /addlocalroom (roomId) {localRoomDto}
-                    /disablelocalroom (localRoomDtoId)
+                    /updatehotel {hotelDto}
+                    /addroom {roomDto}
+                    /addlocalroom {localRoomDto}
+                    /disablelocalroom {localRoomDto}
                     """;
 
     public final static String VISITOR_COMMANDS =
@@ -21,4 +21,10 @@ public class BotAnswer {
 
     public final static String INCORRECT_INPUT =
             "Incorrect input, try again.";
+    public final static String INCORRECT_HOTEL_ID =
+            "Hotel not found!";
+    public final static String INCORRECT_LOCAL_ROOM_ID =
+            "LocalRoom not found!";
+    public final static String INCORRECT_ROOM_ID =
+            "LocalRoom not found!";
 }

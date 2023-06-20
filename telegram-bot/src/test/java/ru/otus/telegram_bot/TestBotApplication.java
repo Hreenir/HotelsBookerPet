@@ -19,7 +19,7 @@ public class TestBotApplication {
     @Disabled
     @Test
     public void testContextUp() {
-        List<HotelDto> allHotels = hotelClient.getAll("Moscow");
+        List<HotelDto> allHotels = hotelClient.getAllHotels("Moscow");
         Assertions.assertNotNull(allHotels);
     }
 }

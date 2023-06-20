@@ -26,7 +26,7 @@ public class RoomsController {
         return LocalRoomMapper.mapToLocalRoomDto(roomService.addLocalRoom(localRoomDto));
     }
 
-    @PatchMapping(path = "/localroom/disable")
+    @PostMapping(path = "/localroom/disable")
     public LocalRoomDto disableLocalRoom(@RequestBody LocalRoomDto localRoomDto) {
         return LocalRoomMapper.mapToLocalRoomDto(roomService.disableLocalRoom(localRoomDto));
     }
