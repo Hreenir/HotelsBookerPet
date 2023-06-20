@@ -8,7 +8,10 @@ import java.util.Calendar;
 
 @Data
 @Builder
+@Entity
 @Table(name = "bookings")
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookingCase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

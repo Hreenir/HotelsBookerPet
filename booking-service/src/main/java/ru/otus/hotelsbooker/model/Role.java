@@ -8,6 +8,8 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Role {
     @Id

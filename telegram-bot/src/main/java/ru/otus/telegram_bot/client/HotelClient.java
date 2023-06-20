@@ -1,31 +1,23 @@
 package ru.otus.telegram_bot.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
+import ru.otus.dto.SearchDto;
 
 import java.util.List;
 
 @FeignClient(url = "localhost:8881/api/v1/hotels", name = "hotel-client", configuration = FeignBasicAuthInterceptor.class)
 public interface HotelClient {
-    /**
-     * GET localhost:8881/hotel?city=something
-     *
-     * @param city
-     * @return
-     */
-    // todo: change return type to HotelDto
+
     @GetMapping
-    List<HotelDto> getAllHotels(@RequestParam(name = "city", required = false) String city);
+    List<HotelDto> getAll(@RequestBody SearchDto searchDto);
 
     /**
      * GET localhost:8881/hotel/{id}

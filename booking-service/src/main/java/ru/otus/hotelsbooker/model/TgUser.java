@@ -10,6 +10,8 @@ import java.util.Set;
 @Entity
 @Builder
 @Table(name = "tgusers")
+@NoArgsConstructor
+@AllArgsConstructor
 public class TgUser {
     @Id
     private long id;

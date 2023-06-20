@@ -17,7 +17,7 @@ public class HotelsController {
 
     //TODO Добавить построничный вывод
     @GetMapping
-    public List<HotelDto> getAll(SearchDto searchDto) {
+    public List<HotelDto> getAll(@RequestBody SearchDto searchDto) {
         return hotelsService.findAll(searchDto).stream()
                 .map(HotelMapper::mapToDto)
                 .toList();

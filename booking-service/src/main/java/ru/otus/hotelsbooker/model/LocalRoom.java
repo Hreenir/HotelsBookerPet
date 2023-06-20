@@ -7,6 +7,8 @@ import lombok.*;
 @Table(name = "local_rooms")
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LocalRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

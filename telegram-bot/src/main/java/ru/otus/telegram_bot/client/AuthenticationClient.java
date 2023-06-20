@@ -9,10 +9,10 @@ import ru.otus.dto.TgUserDto;
 
 @FeignClient(url = "localhost:8881/api/v1/tguser", name = "Authentication-client", configuration = FeignBasicAuthInterceptor.class)
 public interface AuthenticationClient {
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping
     void createTgUser(@RequestBody TgUserDto tgUserDto);
 
-    @GetMapping(path = "/{id}", produces = "application/json")
+    @GetMapping(path = "/{id}")
     TgUserDto findTgUser(@PathVariable Long id);
 
 }
