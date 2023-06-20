@@ -16,12 +16,11 @@ public class TgUserService {
     private final TgUserRepository tgUserRepository;
     private final RolesRepository rolesRepository;
     @Transactional
-    public TgUserDto createTgUser(TgUserDto tgUserDto ){
+    public TgUser createTgUser(TgUserDto tgUserDto ){
         TgUser tgUser = TgUserMapper.mapToTgUser(tgUserDto);
         String roleName = tgUserDto.getRole().getName();
         tgUser.setRole(rolesRepository.getRoleByName(roleName));
-        TgUser savedTgUser = tgUserRepository.save(tgUser);
-        return TgUserMapper.mapToTgUserDto(savedTgUser);
+        return tgUserRepository.save(tgUser);
     }
     public TgUser getUserById(long tgUserId){
         if (!tgUserRepository.existsById(tgUserId)) {

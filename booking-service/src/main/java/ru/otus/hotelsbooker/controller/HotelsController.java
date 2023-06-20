@@ -15,6 +15,7 @@ import ru.otus.hotelsbooker.service.HotelService;
 public class HotelsController {
     private final HotelService hotelsService;
 
+    //TODO Добавить построничный вывод
     @GetMapping
     public List<HotelDto> getAll(SearchDto searchDto) {
         return hotelsService.findAll(searchDto).stream()
@@ -23,8 +24,8 @@ public class HotelsController {
     }
 
     @GetMapping("/{id}")
-    public HotelDto getById(@PathVariable Long id) {
-        return hotelsService.getHotelById(id);
+    public HotelDto getById(@PathVariable Long hotelId) {
+        return HotelMapper.mapToDto(hotelsService.getHotelById(hotelId));
     }
 
     @PostMapping
@@ -35,5 +36,10 @@ public class HotelsController {
     @PutMapping
     public HotelDto update(@RequestBody HotelDto hotelDto) {
         return HotelMapper.mapToDto(hotelsService.updateHotel(hotelDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long hotelId){
+        hotelsService.deleteHotel(hotelId);
     }
 }

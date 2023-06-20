@@ -7,6 +7,7 @@ public class RoomMapper {
     public static RoomDto mapToRoomDto(Room room) {
         return RoomDto.builder()
                 .id(room.getId())
+                .hotelId(room.getHotel().getId())
                 .name(room.getName())
                 .capacity(room.getCapacity())
                 .priceByDay(room.getPriceByDay())

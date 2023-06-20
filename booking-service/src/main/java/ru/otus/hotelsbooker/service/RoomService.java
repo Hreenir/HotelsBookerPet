@@ -12,7 +12,6 @@ import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.LocalRoom;
 import ru.otus.hotelsbooker.model.Room;
-import ru.otus.hotelsbooker.repository.HotelRepository;
 import ru.otus.hotelsbooker.repository.LocalRoomRepository;
 import ru.otus.hotelsbooker.repository.RoomRepository;
 
@@ -21,18 +20,14 @@ import java.util.List;
 
 @Service
 @Getter
-@Transactional
 @RequiredArgsConstructor
 public class RoomService {
     private final LocalRoomRepository localRoomRepository;
     private final RoomRepository roomRepository;
-    private final HotelRepository hotelRepository;
-
-    public RoomDto addRoom(RoomDto roomDto) {
-        Hotel hotel = hotelRepository.findAllById(roomDto.getHotelId());
-        if (hotel == null) {
-            throw new ResourceNotFoundException("Hotel with id=" + roomDto.getHotelId() + " not found!");
-        }
+    private final HotelService hotelService;
+    @Transactional
+    public Room addRoom(RoomDto roomDto) {
+        Hotel hotel = hotelService.getHotelById(roomDto.getHotelId());
         Room room = RoomMapper.mapToRoom(roomDto);
         room.setHotel(hotel);
         roomRepository.save(room);
@@ -40,54 +35,38 @@ public class RoomService {
             hotel.setRooms(new ArrayList<>());
         }
         hotel.getRooms().add(room);
-        RoomDto savedRoomDto = RoomMapper.mapToRoomDto(room);
-        savedRoomDto.setHotelId(roomDto.getHotelId());
-        return savedRoomDto;
+        return room;
     }
 
-    public LocalRoomDto disableLocalRoom(long localRoomId) {
-        localRoomRepository.disableLocalRoom(localRoomId);
-        LocalRoom localRoom = localRoomRepository.findLocalRoomById(localRoomId);
-        if (localRoom == null) {
-            throw new ResourceNotFoundException("LocalRoom with id=" + localRoomId + " not found!");
-        }
-        return LocalRoomMapper.mapToLocalRoomDto(localRoom);
+    @Transactional
+    public LocalRoom disableLocalRoom(LocalRoomDto localRoomDto) {
+        findLocalRoomById(localRoomDto.getId());
+        localRoomRepository.disableLocalRoom(localRoomDto.getId());
+        return findLocalRoomById(localRoomDto.getId());
     }
-    public LocalRoomDto addLocalRoom(LocalRoomDto localRoomDto){
-        Room room = roomRepository.findRoomById(localRoomDto.getRoomId());
-        if (room == null) {
-            throw new ResourceNotFoundException("Room with id=" + localRoomDto.getRoomId() + " not found!");
-        }
 
+    @Transactional
+    public LocalRoom addLocalRoom(LocalRoomDto localRoomDto){
+        Room room = findRoomById(localRoomDto.getRoomId());
         LocalRoom localRoom = LocalRoomMapper.mapToLocalRoom(localRoomDto);
         localRoom.setRoom(room);
-
-        LocalRoom savedLocalRoom = localRoomRepository.save(localRoom);
-        RoomDto roomDto = RoomMapper.mapToRoomDto(room);
-        roomDto.setHotelId(room.getHotel().getId());
-        return LocalRoomDto.builder()
-                .id(savedLocalRoom.getId())
-                .roomId(localRoomDto.getRoomId())
-                .roomNumber(savedLocalRoom.getRoomNumber())
-                .enabled(savedLocalRoom.isEnabled())
-                .room(roomDto)
-                .build();
+        return localRoomRepository.save(localRoom);
     }
-    public List<LocalRoomDto> getAllLocalRooms(long roomId){
-        Room room = roomRepository.findRoomById(roomId);
-        if (room == null){
-            throw new ResourceNotFoundException("Room with id=" + roomId + " not found!");
-        }
-        List<LocalRoom> localRooms = room.getRooms();
-        return localRooms.stream()
-                .map(LocalRoomMapper::mapToLocalRoomDto)
-                .toList();
-
+    public List<LocalRoom> getAllLocalRooms(){
+        return localRoomRepository.findAll();
     }
+
     public LocalRoom findLocalRoomById (long localRoomId){
         if(!localRoomRepository.existsById(localRoomId)){
             throw new ResourceNotFoundException(("LocalRoom with id=" + localRoomId + " not found!"));
         }
         return localRoomRepository.findLocalRoomById(localRoomId);
+    }
+
+    public Room findRoomById (long roomId){
+        if (!roomRepository.existsById(roomId)) {
+            throw new ResourceNotFoundException("Room with id=" + roomId + " not found!");
+        }
+        return roomRepository.findRoomById(roomId);
     }
 }

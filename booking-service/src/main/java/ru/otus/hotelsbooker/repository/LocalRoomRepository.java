@@ -12,7 +12,7 @@ public interface LocalRoomRepository extends JpaRepository<LocalRoom, Long> {
                     "update LocalRoom \n" +
                     "set enabled = false\n" +
                     "where id = :localRoomId")
-    public void disableLocalRoom(@Param("localRoomId") long localRoomId);
+    void disableLocalRoom(@Param("localRoomId") long localRoomId);
 
     LocalRoom findLocalRoomById(long id);
 

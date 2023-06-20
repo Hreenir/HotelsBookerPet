@@ -13,6 +13,7 @@ public class LocalRoomMapper {
     public static LocalRoomDto mapToLocalRoomDto(LocalRoom localRoom) {
         return  LocalRoomDto.builder()
                 .id(localRoom.getId())
+                .roomId(localRoom.getRoom().getId())
                 .roomNumber(localRoom.getRoomNumber())
                 .enabled(localRoom.isEnabled())
                 .room(RoomMapper.mapToRoomDto(localRoom.getRoom()))

@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.dto.LocalRoomDto;
 import ru.otus.dto.RoomDto;
+import ru.otus.hotelsbooker.mapper.LocalRoomMapper;
+import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.service.RoomService;
 
 import java.util.List;
@@ -14,23 +16,25 @@ import java.util.List;
 public class RoomsController {
     private final RoomService roomService;
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping
     public RoomDto addRoom(@RequestBody RoomDto roomDto) {
-        return roomService.addRoom(roomDto);
+        return RoomMapper.mapToRoomDto(roomService.addRoom(roomDto));
     }
 
-    @PostMapping(path = "/localroom", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/localroom")
     public LocalRoomDto addLocalRoom(@RequestBody LocalRoomDto localRoomDto) {
-        return roomService.addLocalRoom(localRoomDto);
+        return LocalRoomMapper.mapToLocalRoomDto(roomService.addLocalRoom(localRoomDto));
     }
 
-    @PutMapping(path = "/{roomId}/localroom/{localRoomId}/disable")
-    public LocalRoomDto disableLocalRoom(@PathVariable Long localRoomId) {
-        return roomService.disableLocalRoom(localRoomId);
+    @PatchMapping(path = "/localroom/disable")
+    public LocalRoomDto disableLocalRoom(@RequestBody LocalRoomDto localRoomDto) {
+        return LocalRoomMapper.mapToLocalRoomDto(roomService.disableLocalRoom(localRoomDto));
     }
 
-    @GetMapping(path = "/{roomId}/localroom", produces = "application/json")
-    public List<LocalRoomDto> getAllLocalRooms(@PathVariable Long roomId) {
-        return roomService.getAllLocalRooms(roomId);
+    @GetMapping(path = "/localroom")
+    public List<LocalRoomDto> getAllLocalRooms() {
+        return roomService.getAllLocalRooms().stream()
+                .map(LocalRoomMapper::mapToLocalRoomDto)
+                .toList();
     }
 }

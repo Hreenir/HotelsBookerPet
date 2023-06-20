@@ -4,6 +4,7 @@ import java.lang.module.ResolutionException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,32 +32,26 @@ import ru.otus.hotelsbooker.repository.RoomRepository;
 @Getter
 @RequiredArgsConstructor
 public class HotelService {
-
     private final static double DEFAULT_RATING_FOR_NEW_HOTEL = 8.0;
     private final HotelRepository hotelRepository;
-    private final RoomRepository roomRepository;
-    private final LocalRoomRepository localRoomRepository;
-    private final RoomService roomService;
 
     public List<Room> findFreeRooms(Hotel hotel, LocalDate arrivalDate, LocalDate departureDate) {
         // поиск свободных номер по датам
         return null;
     }
 
-
     public List<Hotel> findAll(SearchDto searchDto) {
         return searchDto.getCity() == null ?
                 hotelRepository.findAll() : hotelRepository.findAllByCityIgnoreCase(searchDto.getCity());
     }
 
-
-    public HotelDto getHotelById(long id) {
-        Hotel hotel = hotelRepository.findAllById(id);
-        if (hotel == null) {
+    public Hotel getHotelById(long id) {
+        if (!hotelRepository.existsById(id)) {
             throw new ResourceNotFoundException("Hotel with id=" + id + " not found!");
         }
-        return HotelMapper.mapToDto(hotel);
+        return hotelRepository.findAllById(id);
     }
+
     @Transactional
     public Hotel createNewHotel(HotelDto hotelDto) {
         return hotelRepository.save(Hotel.builder()
@@ -72,48 +67,16 @@ public class HotelService {
     public void deleteHotel(Long id) {
         hotelRepository.deleteById(id);
     }
+
     @Transactional
     public Hotel updateHotel(HotelDto hotelDto) {
-        Hotel hotel = hotelRepository.findAllById(hotelDto.getId());
-        if (hotel == null) {
-            throw new ResourceNotFoundException("Hotel with id=" + hotelDto.getId() + " not found!");
-        }
-        if (hotelDto.getName() != null) {
-            hotel.setName(hotelDto.getName());
-        }
-        if (hotelDto.getCity() != null) {
-            hotel.setCity(hotelDto.getCity());
-        }
-        if (hotelDto.getCountry() != null) {
-            hotel.setCountry(hotelDto.getCountry());
-        }
-        if (hotelDto.getAddress() != null) {
-            hotel.setAddress(hotelDto.getAddress());
-        }
+        Hotel hotel = getHotelById(hotelDto.getId());
+        hotel.setName(Optional.ofNullable(hotelDto.getName()).orElse(hotel.getName()));
+        hotel.setCity(Optional.ofNullable(hotelDto.getCity()).orElse(hotel.getCity()));
+        hotel.setCountry(Optional.ofNullable(hotelDto.getCountry()).orElse(hotel.getCountry()));
+        hotel.setAddress(Optional.ofNullable(hotelDto.getAddress()).orElse(hotel.getAddress()));
         return hotelRepository.save(hotel);
 
-    }
-    @Transactional
-    public RoomDto addRoom(RoomDto roomDto, Long id) {
-        Hotel hotel = hotelRepository.findAllById(id);
-        if (hotel == null) {
-            throw new ResourceNotFoundException("Hotel with id=" + id + " not found!");
-        }
-        Room room = RoomMapper.mapToRoom(roomDto);
-        room.setHotel(hotel);
-        roomRepository.save(room);
-        if (hotel.getRooms() == null) {
-            hotel.setRooms(new ArrayList<>());
-        }
-        hotel.getRooms().add(room);
-        return RoomMapper.mapToRoomDto(room);
-
-    }
-    @Transactional
-    public void disableLocalRoom(long localRoomId){
-        if (localRoomRepository.findLocalRoomById(localRoomId) != null) {
-            localRoomRepository.disableLocalRoom(localRoomId);
-        }
     }
 
     public void clearAll() {

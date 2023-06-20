@@ -12,9 +12,9 @@ import ru.otus.hotelsbooker.service.TgUserService;
 public class TgUserController {
     private final TgUserService tgUsersService;
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping
     public TgUserDto createTgUser(@RequestBody TgUserDto tgUserDto) {
-        return tgUsersService.createTgUser(tgUserDto);
+        return TgUserMapper.mapToTgUserDto(tgUsersService.createTgUser(tgUserDto));
     }
 
     @GetMapping("/{id}")
