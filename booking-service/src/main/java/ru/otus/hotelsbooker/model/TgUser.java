@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@Builder
 @Table(name = "tgusers")
 public class TgUser {
     @Id
