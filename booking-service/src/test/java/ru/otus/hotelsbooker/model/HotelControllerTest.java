@@ -99,7 +99,7 @@ public class HotelControllerTest {
         HttpEntity<String> entity = new HttpEntity<>(hotelJson, headers);
         // способ 1
         ResponseEntity<HotelDto> hotelDtoResponseEntity = restTemplate
-                .postForEntity("http://localhost:" + port + "/hotel", entity, HotelDto.class);
+                .postForEntity("http://localhost:" + port + "/api/v1/hotels/create", entity, HotelDto.class);
 
         Assertions.assertEquals(HttpStatusCode.valueOf(200), hotelDtoResponseEntity.getStatusCode());
         HotelDto body = hotelDtoResponseEntity.getBody();
@@ -130,7 +130,7 @@ public class HotelControllerTest {
 
         // способ 2
         MvcResult mvcResult = mockMvc.perform(
-                        post("/hotel")
+                        post("/api/v1/hotels/create")
                                 .headers(headers)
                                 .content(hotelJson.getBytes()))
                 .andDo(print())

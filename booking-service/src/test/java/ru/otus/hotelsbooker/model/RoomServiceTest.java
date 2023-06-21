@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.dto.HotelDto;
 import ru.otus.dto.RoomDto;
+import ru.otus.hotelsbooker.mapper.RoomMapper;
 import ru.otus.hotelsbooker.service.HotelService;
 import ru.otus.hotelsbooker.service.RoomService;
 
@@ -24,23 +25,61 @@ public class RoomServiceTest {
     @Autowired
     private RoomService roomService;
 
-
     @Test
     @DisplayName("Тестирование успешного добавления апартаментов в отель")
     void testSuccessfullyAddRoomToAHotel() {
-        HotelDto hotelDto = hotelService.createNewHotel(new HotelDto("Hilton", "Moscow", "Russia", "address"));
-        RoomDto roomDtoFirst = roomService.addRoom(new RoomDto(1L,"Single", 1, new BigDecimal(100)), hotelDto.getId());
-        RoomDto roomDtoSecond = roomService.addRoom(new RoomDto(2L,"Double", 2, new BigDecimal(100)), hotelDto.getId());
-        List<RoomDto> expected = List.of(roomDtoFirst, roomDtoSecond);
-        List<RoomDto> actual = hotelService.getHotelById(hotelDto.getId()).getRooms();
+        Hotel hotel = hotelService.createNewHotel(HotelDto.builder()
+                .name("Hilton")
+                .city("Moscow")
+                .country("Russia")
+                .address("address").build());
+        RoomDto roomDtoFirst = RoomDto.builder()
+                .id(1L)
+                .name("Single")
+                .capacity(1)
+                .priceByDay(new BigDecimal(1100))
+                .hotelId(hotel.getId())
+                .build();
+        RoomDto roomDtoSecond = RoomDto.builder()
+                .id(2L)
+                .name("Double")
+                .capacity(1)
+                .priceByDay(new BigDecimal(1100))
+                .hotelId(hotel.getId())
+                .build();
+        roomService.addRoom(roomDtoFirst);
+        roomService.addRoom(roomDtoSecond);
+        Room first = Room.builder()
+                .id(roomDtoFirst.getId())
+                .name(roomDtoFirst.getName())
+                .capacity(roomDtoFirst.getCapacity())
+                .priceByDay(roomDtoFirst.getPriceByDay())
+                .hotel(hotelService.getHotelById(hotel.getId()))
+                .build();
+        Room second = Room.builder()
+                .id(roomDtoSecond.getId())
+                .name(roomDtoSecond.getName())
+                .capacity(roomDtoSecond.getCapacity())
+                .priceByDay(roomDtoSecond.getPriceByDay())
+                .hotel(hotelService.getHotelById(hotel.getId()))
+                .build();
+        List<Room> expected = List.of(first, second);
+        List<Room> actual = hotelService.getHotelById(hotel.getId()).getRooms();
         Assertions.assertEquals(expected, actual);
     }
     @Test
     @DisplayName("Тестирование связности апартоментов с отелем")
     void testThatHotelIdMatchesWithHotelIdAddedRoom() {
-        HotelDto hotelDto = hotelService.createNewHotel(new HotelDto("Hilton", "Moscow", "Russia", "address"));
-        Hotel createdHotel = hotelService.getHotelRepository().findAllById(hotelDto.getId());
-        roomService.addRoom(new RoomDto("Single", 1, new BigDecimal(100)), hotelDto.getId());
+        Hotel hotel = hotelService.createNewHotel(new HotelDto("Hilton", "Moscow", "Russia", "address"));
+        Hotel createdHotel = hotelService.getHotelRepository().findAllById(hotel.getId());
+        RoomDto roomDtoFirst = RoomDto.builder()
+                .id(1L)
+                .name("Single")
+                .capacity(1)
+                .priceByDay(new BigDecimal(100))
+                .hotelId(hotel.getId())
+                .build();
+        roomService.addRoom(roomDtoFirst);
         List <Room> rooms = createdHotel.getRooms();
         Room room = rooms.get(0);
 

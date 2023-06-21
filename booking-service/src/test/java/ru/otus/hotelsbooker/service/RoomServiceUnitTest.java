@@ -5,9 +5,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.otus.hotelsbooker.exception.ResourceNotFoundException;
 import ru.otus.hotelsbooker.model.Hotel;
 import ru.otus.hotelsbooker.model.LocalRoom;
 import ru.otus.hotelsbooker.model.Room;
+import ru.otus.hotelsbooker.repository.LocalRoomRepository;
 import ru.otus.hotelsbooker.repository.RoomRepository;
 
 import java.math.BigDecimal;
@@ -19,7 +22,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class RoomServiceUnitTest {
     @Mock
-    private RoomRepository roomRepository;
+    private LocalRoomRepository localRoomRepository;
     @InjectMocks
     private RoomService underTest;
     private final LocalRoom localRoom1 = new LocalRoom(1, 5, true, new Room());
@@ -28,11 +31,9 @@ public class RoomServiceUnitTest {
 
     @Test
     void findAll_LocalRooms_when_roomId_is_valid() {
-        long roomId = 1;
-        when(roomRepository.findRoomById(roomId)).thenReturn(room);
-        roomRepository.findRoomById(roomId);
+        when(localRoomRepository.findAll()).thenReturn(List.of(localRoom1, localRoom2));
 
-        var result = underTest.getAllLocalRooms(roomId);
+        var result = underTest.getAllLocalRooms();
         assertEquals(2, result.size());
 
         var localRoomDto = result.get(1);
@@ -40,15 +41,15 @@ public class RoomServiceUnitTest {
         assertEquals(2, localRoomDto.getId());
     }
 
-    @Test
-    void findAll_LocalRooms_when_roomId_is_noValid(){
-        long roomId = 1;
-        when(roomRepository.findRoomById(roomId)).thenReturn(null);
-        roomRepository.findRoomById(roomId);
-        try {
-            underTest.getAllLocalRooms(roomId);
-        } catch (RoomNotFoundException thrown) {
-            assertEquals("Room with id=1 not found!", thrown.getMessage());
-        }
-    }
+   // @Test
+   // void findAll_LocalRooms_when_roomId_is_noValid(){
+   //     long roomId = 1;
+   //     when(roomRepository.findRoomById(roomId)).thenReturn(null);
+   //     roomRepository.findRoomById(roomId);
+   //     try {
+   //         underTest.getAllLocalRooms();
+   //     } catch (ResourceNotFoundException thrown) {
+   //         assertEquals("Room with id=1 not found!", thrown.getMessage());
+   //     }
+   // }
 }

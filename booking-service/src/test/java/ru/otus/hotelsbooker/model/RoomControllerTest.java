@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,7 +49,7 @@ public class RoomControllerTest {
     private RoomRepository roomRepository;
     @Autowired
     private HotelRepository hotelRepository;
-    private final int NOT_EXISTING_HOTEL_ID = 132;
+
     @BeforeEach
     public void prepare(){
         clear();
@@ -75,8 +76,14 @@ public class RoomControllerTest {
     @DisplayName("Тестирование API успешного добавления номера в отель")
     public void testCreateNewRoomSuccessfullyMockMvc() throws Exception {
         HotelDto hotelDto = new HotelDto("Hilton", "Moscow", "Russia", "Red Square building 1");
-        hotelDto = hotelService.createNewHotel(hotelDto);
-        RoomDto roomDto = new RoomDto(1L, "single", 1, new BigDecimal(100));
+        Hotel hotel = hotelService.createNewHotel(hotelDto);
+        RoomDto roomDto = RoomDto.builder()
+                .id(1L)
+                .name("Single")
+                .capacity(1)
+                .priceByDay(new BigDecimal(1100))
+                .hotelId(hotel.getId())
+                .build();
 
         String roomJson = objectMapper.writeValueAsString(roomDto);
         // create headers
@@ -86,10 +93,9 @@ public class RoomControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        Long id = hotelDto.getId();
         // способ 2
         MvcResult mvcResult = mockMvc.perform(
-                        post("/hotel/" + id + "/room")
+                        post("/api/v1/rooms")
                                 .headers(headers)
                                 .content(roomJson.getBytes()))
                 .andDo(print())
@@ -111,8 +117,15 @@ public class RoomControllerTest {
     @DisplayName("Тестирование API неуспешного добавления апартаментов в отель")
     public void testCreateNewRoomNotSuccessfullyMockMvc() throws Exception {
         HotelDto hotelDto = new HotelDto("Hilton", "Moscow", "Russia", "Red Square building 1");
-        hotelDto = hotelService.createNewHotel(hotelDto);
-        RoomDto roomDto = new RoomDto(1L, "single", 1, new BigDecimal(100));
+        Hotel hotel = hotelService.createNewHotel(hotelDto);
+        Long NOT_EXISTING_HOTEL_ID = 132L;
+        RoomDto roomDto = RoomDto.builder()
+                .id(1L)
+                .name("Single")
+                .capacity(1)
+                .priceByDay(new BigDecimal(1100))
+                .hotelId(NOT_EXISTING_HOTEL_ID)
+                .build();
 
         String roomJson = objectMapper.writeValueAsString(roomDto);
         // create headers
@@ -122,14 +135,14 @@ public class RoomControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         // set `accept` header
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        Long id = hotelDto.getId();
+        Long id = hotel.getId();
         // способ 2
         HttpEntity<String> entity = new HttpEntity<>(roomJson, headers);
         ResponseEntity<String> roomDtoResponseEntity = restTemplate
-                .postForEntity("http://localhost:" + port + "/hotel/" + NOT_EXISTING_HOTEL_ID + "/room", entity, String.class);
+                .postForEntity("http://localhost:" + port + "/api/v1/rooms", entity, String.class);
 
         Assertions.assertNotNull(roomDtoResponseEntity);
-        Assertions.assertEquals("Hotel with id=" + NOT_EXISTING_HOTEL_ID +" not found!", roomDtoResponseEntity.getBody());
+        Assertions.assertEquals("404 NOT_FOUND", roomDtoResponseEntity.getStatusCode().toString());
 //        Assertions.assertEquals(roomDtoResponseEntity.getStatusCode(), HttpStatusCode.valueOf(500));
 //        RoomDto body = roomDtoResponseEntity.getBody();
 //        Assertions.assertEquals(null, body.getName());

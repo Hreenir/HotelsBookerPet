@@ -14,6 +14,7 @@ import ru.otus.dto.RoomDto;
 import ru.otus.hotelsbooker.repository.HotelRepository;
 import ru.otus.hotelsbooker.repository.RoomRepository;
 import ru.otus.hotelsbooker.service.HotelService;
+import ru.otus.hotelsbooker.service.RoomService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,7 +27,7 @@ class HotelRepositoryTest {
     private HotelRepository hotelRepository;
 
     @Autowired
-    private HotelService hotelService;
+    private RoomService roomService;
 
     @Mock
     private RoomRepository roomRepository;
@@ -41,7 +42,13 @@ class HotelRepositoryTest {
                 .address("address").build());
         Hotel createdHotel = hotelRepository.findAllById(hotel.getId());
 
-        hotelService.addRoom(new RoomDto("Single", 1, new BigDecimal(100)), hotel.getId());
+        roomService.addRoom(RoomDto.builder()
+                .name("Single")
+                .capacity(1)
+                .priceByDay(new BigDecimal(100))
+                .hotelId(hotel.getId())
+                .build());
+
         List <Room> rooms = createdHotel.getRooms();
         Room room = rooms.get(0);
 

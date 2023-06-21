@@ -58,7 +58,7 @@ public class LocalRoomRepositoryTest {
                 .build());
         localRoomRepository.disableLocalRoom(localRoom.getId());
         localRoom = localRoomRepository.findById(localRoom.getId()).get();
-        Assertions.assertEquals(false, localRoom.isEnabled());
+        Assertions.assertFalse(localRoom.isEnabled());
     }
    /* @Test
     @DisplayName("Тестирование добавления локальной комнаты")
