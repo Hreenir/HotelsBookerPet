@@ -16,8 +16,9 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
+import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_VISITOR;
 
-@Named("/searchbycity")
+@Named("/searchByCity")
 @Component
 @RequiredArgsConstructor
 public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto>> {
@@ -28,7 +29,7 @@ public class CommandSearchHotelStrategy implements CommandStrategy<List<HotelDto
 
     @Override
     public List<HotelDto> execute(String messageText, Long chatId, BiConsumer<Long, String> callBack) {
-        if (roleAuthenticator.getRoleByUserId(chatId) == null) {
+        if (!roleAuthenticator.getRoleByUserId(chatId).equals(ROLE_VISITOR)) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }

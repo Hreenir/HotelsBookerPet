@@ -20,7 +20,7 @@ public interface HotelClient {
     List<HotelDto> getAll(@RequestBody SearchDto searchDto);
     @GetMapping("/{id}")
     HotelDto getHotelById(@PathVariable Long id);
-    @PostMapping(path = "/create")
+    @PostMapping("/create")
     HotelDto createHotel(@RequestBody HotelDto hotel);
     @PutMapping
     HotelDto updateHotel(@RequestBody HotelDto hotel);

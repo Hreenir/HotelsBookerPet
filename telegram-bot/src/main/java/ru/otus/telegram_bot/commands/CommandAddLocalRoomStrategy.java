@@ -20,7 +20,7 @@ import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_ROOM_ID;
 import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
 
-@Named("/addlocalroom")
+@Named("/addLocalRoom")
 @Component
 @RequiredArgsConstructor
 public class CommandAddLocalRoomStrategy implements CommandStrategy<LocalRoomDto> {
@@ -31,7 +31,7 @@ public class CommandAddLocalRoomStrategy implements CommandStrategy<LocalRoomDto
 
     @Override
     public LocalRoomDto execute(String messageText, Long chatId, BiConsumer<Long, String> callBack) {
-        if (roleAuthenticator.getRoleByUserId(chatId) == null) {
+        if (!roleAuthenticator.getRoleByUserId(chatId).equals(ROLE_HOTEL)) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }

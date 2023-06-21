@@ -6,17 +6,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class CreateBookingDto {
+public class BookingCaseDto {
+    private Long id;
     private Long localRoomId;
     private Long tgUserId;
     private LocalRoomDto localRoom;
-    private Calendar checkInDate;
-    private Calendar checkOutDate;
+    private LocalDate checkInDate;
+    private LocalDate checkOutDate;
     private BigDecimal priceByDay;
+    private boolean enabled;
 }

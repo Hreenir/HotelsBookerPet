@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Calendar;
 
 @Data
@@ -27,12 +28,14 @@ public class BookingCase {
     private LocalRoom localRoom;
 
     @Column(name = "check_in_date")
-    private Calendar checkInDate;
+    private LocalDate checkInDate;
 
     @Column(name = "check_out_date")
-    private Calendar checkOutDate;
+    private LocalDate checkOutDate;
 
     @Column(name = "price_by_day")
     private BigDecimal priceByDay;
+    @Column(name = "enabled")
+    private boolean enabled;
 
 }

@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
 import static ru.otus.telegram_bot.BotAnswer.INCORRECT_INPUT;
 import static ru.otus.telegram_bot.RoleAuthenticator.ROLE_HOTEL;
 
-@Named("/addhotel")
+@Named("/addHotel")
 @Component
 @RequiredArgsConstructor
 public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
@@ -27,7 +27,7 @@ public class CommandAddHotelStrategy implements CommandStrategy<HotelDto> {
 
     @Override
     public HotelDto execute(String messageText, Long chatId, BiConsumer<Long, String> callBack) {
-        if (roleAuthenticator.getRoleByUserId(chatId) == null) {
+        if (!roleAuthenticator.getRoleByUserId(chatId).equals(ROLE_HOTEL)) {
             callBack.accept(chatId, INCORRECT_INPUT);
             return null;
         }

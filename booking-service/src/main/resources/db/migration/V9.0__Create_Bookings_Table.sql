@@ -3,6 +3,7 @@ create table bookings (
     tg_user_id bigint references tgusers(id),
     local_room_id bigint references local_rooms(id),
     price_by_day numeric(20, 2),
-    check_in_date datetime,
-    check_out_date datetime
+    check_in_date date,
+    check_out_date date,
+    enabled boolean
 );

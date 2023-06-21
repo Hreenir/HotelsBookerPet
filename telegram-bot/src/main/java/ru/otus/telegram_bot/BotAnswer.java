@@ -1,22 +1,24 @@
 package ru.otus.telegram_bot;
 
-import lombok.Getter;
 
 public class BotAnswer {
     public final static String HOTEL_COMMANDS =
             """
                     You can use commands:
-                    /addhotel {hotelDto}
-                    /updatehotel {hotelDto}
-                    /addroom {roomDto}
-                    /addlocalroom {localRoomDto}
-                    /disablelocalroom {localRoomDto}
+                    /addHotel {hotelDto}
+                    /updateHotel {hotelDto}
+                    /addRoom {roomDto}
+                    /addLocalRoom {localRoomDto}
+                    /disableLocalRoom {localRoomDto}
                     """;
 
     public final static String VISITOR_COMMANDS =
             """
                     You can use commands:
-                    /searchbycity {SearchDto}
+                    /searchByCity {SearchDto}
+                    /createBooking {CreateBookingDto}
+                    /getMyBookings
+                    /cancelBooking {CreateBookingDto}
                     """;
 
     public final static String INCORRECT_INPUT =
@@ -27,4 +29,6 @@ public class BotAnswer {
             "LocalRoom not found!";
     public final static String INCORRECT_ROOM_ID =
             "LocalRoom not found!";
+    public final static String INCORRECT_BOOKING_ID =
+            "BOOKING not found!";
 }

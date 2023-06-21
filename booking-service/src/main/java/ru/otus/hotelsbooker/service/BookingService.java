@@ -3,7 +3,7 @@ package ru.otus.hotelsbooker.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.dto.CreateBookingDto;
+import ru.otus.dto.BookingCaseDto;
 import ru.otus.hotelsbooker.model.BookingCase;
 import ru.otus.hotelsbooker.model.LocalRoom;
 import ru.otus.hotelsbooker.model.TgUser;
@@ -20,29 +20,34 @@ public class BookingService {
     private final TgUserService tgUserService;
     private final BookingRepository bookingRepository;
     private final RoomService roomService;
-//TODO
+    //TODO
     public List<BookingCase> search(String city, LocalDate arrivalDate, LocalDate departureDate) {
         return Collections.emptyList();
     }
     @Transactional
-    public BookingCase createBooking(CreateBookingDto createBookingDto) {
-        TgUser tgUser = tgUserService.getUserById(createBookingDto.getTgUserId());
-        LocalRoom localRoom = roomService.findLocalRoomById(createBookingDto.getLocalRoomId());
+    public BookingCase createBooking(BookingCaseDto bookingCaseDto) {
+        TgUser tgUser = tgUserService.getUserById(bookingCaseDto.getTgUserId());
+        LocalRoom localRoom = roomService.findLocalRoomById(bookingCaseDto.getLocalRoomId());
         // TODO Проверка того что дата уже занята, это делается sql запросом
         BookingCase bookingCase = BookingCase
                 .builder()
-                .checkInDate(createBookingDto.getCheckInDate())
-                .checkOutDate(createBookingDto.getCheckOutDate())
+                .checkInDate(bookingCaseDto.getCheckInDate())
+                .checkOutDate(bookingCaseDto.getCheckOutDate())
                 .tgUser(tgUser)
                 .priceByDay(BigDecimal.valueOf(100))
                 .localRoom(localRoom)
+                .enabled(bookingCaseDto.isEnabled())
                 .build();
 
         bookingCase = bookingRepository.save(bookingCase);
         return bookingCase;
     }
-
-    // TODO Нужно сделать получение списка брони по тгЮзерИд
-
-    // TODO Нужно сделать отмену брони (удаление)
+    public List<BookingCase> getBookings(BookingCaseDto bookingCaseDto) {
+        return bookingRepository.findAll(bookingCaseDto.getTgUserId());
+    }
+    @Transactional
+    public BookingCase cancel(BookingCaseDto bookingCaseDto) {
+        bookingRepository.cancel(bookingCaseDto.getId());
+        return bookingRepository.findBookingCaseById(bookingCaseDto.getId());
+    }
 }
