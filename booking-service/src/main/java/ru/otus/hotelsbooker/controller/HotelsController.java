@@ -24,8 +24,8 @@ public class HotelsController {
     }
 
     @GetMapping("/{id}")
-    public HotelDto getById(@PathVariable Long hotelId) {
-        return HotelMapper.mapToDto(hotelsService.getHotelById(hotelId));
+    public HotelDto getById(@PathVariable Long id) {
+        return HotelMapper.mapToDto(hotelsService.getHotelById(id));
     }
 
     @PostMapping("/create")
